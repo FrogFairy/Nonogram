@@ -5,7 +5,7 @@
 
 using namespace Graph_lib;
 
-class Box : public Shape   
+class Box : public Shape      
 {
   public:
     Box(Point point, int height, int width, int radius)
