@@ -476,6 +476,8 @@ struct Image : Shape
     p->draw(point(0).x, point(0).y);
   }
 
+  int get_pixel(int, int) const;
+
 private:
   int w, h, cx, cy;  // define "masking box" within image relative to position (cx,cy)
   Fl_Image* p;

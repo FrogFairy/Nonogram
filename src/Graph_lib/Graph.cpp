@@ -425,4 +425,15 @@ void Image::draw_lines() const
     p->draw(point(0).x, point(0).y);
 }
 
+int Image::get_pixel(int x, int y) const
+  {
+    int width = p->w(), height = p->h();
+    if (x < 0 || x >= width || y < 0 || y > height)
+    {
+      error("index of pixel out of range");
+    }
+
+    return *(*p->data() + (y * width + x) * 3);
+  }
+
 }  // namespace Graph_lib

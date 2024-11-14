@@ -109,13 +109,14 @@ struct Menu : Widget
     vertical
   };
 
-  Menu(Point xy, int w, int h, Kind kk, const std::string& label) : Widget{xy, w, h, label, nullptr}, k{kk}, offset{0}
+  Menu(Point xy, int w, int h, Kind kk, const std::string& label) : Widget{xy, w, h, label, nullptr}, k{kk}, offset{0}, margin{20}
   {
   }
 
   Vector_ref<Button> selection;
   Kind k;
   int offset;
+  int margin;
 
   int attach (Button& b);  // Menu does not delete &b
   int attach (Button* p);  // Menu deletes p

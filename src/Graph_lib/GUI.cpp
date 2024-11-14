@@ -58,11 +58,11 @@ int Menu::attach(Button& b)
   {
   case horizontal:
     b.loc = Point{loc.x + offset, loc.y};
-    offset += b.width;
+    offset += b.width + margin;
     break;
   case vertical:
     b.loc = Point{loc.x, loc.y + offset};
-    offset += b.height;
+    offset += b.height + margin;
     break;
   }
   selection.push_back(&b);
