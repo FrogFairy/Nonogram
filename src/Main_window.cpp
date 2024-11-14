@@ -1,24 +1,24 @@
 #include "Main_window.h"
 
-static void Main_window::cb_go_to_level(Graph_lib::Address, Graph_lib::Address widget)
+void Main_window::cb_go_to_level(Graph_lib::Address, Graph_lib::Address widget)
 {
     auto &btn = Graph_lib::reference_to<Graph_lib::Widget>(widget);
     go_to_level(btn);
 }
 
-static void Main_window::cb_create_level(Graph_lib::Address, Graph_lib::Address widget)
+void Main_window::cb_create_level(Graph_lib::Address, Graph_lib::Address widget)
 {
     auto &btn = Graph_lib::reference_to<Graph_lib::Widget>(widget);
     create_level(btn);
 }
 
-static void Main_window::go_to_level(Graph_lib::Widget &Button)
+void Main_window::go_to_level(Graph_lib::Widget &Button)
 {
     Graph_lib::Simple_window win = Graph_lib::Simple_window{Graph_lib::Point{400, 100}, 100, 100, "New Window"};
     win.wait_for_button();
 } // в аргументы к новому окну передавать размеры поля
 
-static void Main_window::create_level(Graph_lib::Widget &Button)
+void Main_window::create_level(Graph_lib::Widget &Button)
 {
     Graph_lib::Window win = Graph_lib::Window{Graph_lib::Point{400, 100}, 100, 100, "New Window"};
     // hide();
