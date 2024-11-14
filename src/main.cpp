@@ -2,7 +2,7 @@
 #include <Graph_lib/GUI.h>
 #include <Graph_lib/Window.h>
 #include <Graph_lib/Graph.h>
-
+#include <Graph_lib/Simple_window.h>
 
 class Main_window : Graph_lib::Window
 {
@@ -27,16 +27,14 @@ class Main_window : Graph_lib::Window
     }
 
     static void go_to_level(Graph_lib::Widget& Button){
-        Graph_lib::Window win=Graph_lib::Window{Graph_lib::Point{400,100},100,100, "New Window"};
-        // hide();
-    } //в аргументы к новому окну передавать размеры поля
+        Graph_lib::Simple_window win = Graph_lib::Simple_window{Graph_lib::Point{400,100},100,100, "New Window"};
+        win.wait_for_button();
+    } // в аргументы к новому окну передавать размеры поля
 
     static void create_level(Graph_lib::Widget& Button){
-        Graph_lib::Window win=Graph_lib::Window{Graph_lib::Point{400,100},100,100, "New Window"};
+        Graph_lib::Window win = Graph_lib::Window{Graph_lib::Point{400,100},100,100, "New Window"};
         // hide();
-    } //в аргументы к новому окну передавать размеры поля
-
-
+    } // в аргументы к новому окну передавать размеры поля
 };
 
 Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &title)

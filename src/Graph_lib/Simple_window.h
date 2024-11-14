@@ -6,6 +6,9 @@
 // Simple_window is basic scaffolding for ultra-simple interaction with graphics
 // it provides one window with one "next" button for ultra-simple animation
 
+namespace Graph_lib 
+{
+  
 struct Simple_window : Graph_lib::Window
 {
   Simple_window(Graph_lib::Point xy, int w, int h, const std::string& title)
@@ -38,5 +41,6 @@ private:
 
   void next () { button_pushed = true; }
 };
+} // namespace Graph_lib
 
 #endif  // SIMPLE_WINDOW_GUARD
