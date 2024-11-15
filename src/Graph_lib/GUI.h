@@ -127,7 +127,7 @@ struct Menu : Widget
       selection[i].show();
   }
 
-  void hide ()  // hide all buttons
+  void hide () // hide all buttons
   {
     for (int i = 0; i < selection.size(); ++i)
       selection[i].hide();

@@ -162,8 +162,8 @@ public:
 
   void clear ()
   {
-    for (unsigned int i = 0; i < owned.size(); ++i)
-      delete owned[i];
+    /*for (unsigned int i = 0; i < owned.size(); ++i)
+      delete owned[i];*/
     owned.clear();
     v.clear();
   }
