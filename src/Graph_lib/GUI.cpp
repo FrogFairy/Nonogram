@@ -84,3 +84,10 @@ void Choice_box::add(const std::string& option)
 {
   static_cast<Fl_Choice*>(pw)->add(option.c_str());
 }
+
+void File_chooser_box::attach(Window& win)
+{
+  n_pw = new Fl_File_Chooser(pathname, pattern, type, title);
+  n_pw -> callback();
+  own = &win;
+}

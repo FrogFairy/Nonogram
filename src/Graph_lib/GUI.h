@@ -153,6 +153,20 @@ struct Choice_box:Widget
   void attach (Window&);
   void add(const std::string& option);
 };
+struct File_chooser_box:Widget
+{
+  File_chooser_box(Point xy, int w, int h, const std::string& label) : Widget{xy, w, h, label, nullptr} {}
+  void attach(Window&);
+
+  protected:
+    const char *pathname;
+    const char *pattern;
+    int type;
+    const char *title;
+    Fl_File_Chooser* n_pw;
+    
+
+};
 
 //------------------------------------------------------------------------------
 
