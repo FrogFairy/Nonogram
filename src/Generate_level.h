@@ -10,7 +10,7 @@ struct Generate_level_window: public Window_with_back
 {
 public:
     Generate_level_window(Graph_lib::Point xy, int w, int h, const std::string &title);
-    
+
 private:
     Graph_lib::Choice_box size;
     Graph_lib::Point p;
