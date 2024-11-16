@@ -80,3 +80,7 @@ void Choice_box::attach(Window& win)
    pw->callback(reinterpret_cast<Fl_Callback*>(do_it), this);  // pass this widget
    own = &win;
 }
+void Choice_box::add(const std::string& label)
+{
+  //your code here
+}
