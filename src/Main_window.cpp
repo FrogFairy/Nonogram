@@ -1,4 +1,5 @@
 #include "Main_window.h"
+#include "Generate_level.h"
 
 
 void Main_window::cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr)
@@ -23,7 +24,7 @@ void Main_window::go_to_level(std::string btn_label)
 
 void Main_window::create_level()
 {
-    Window_with_back win {p, w, h, title};
+    Generate_level_window win {p, w, h, title};
     this->hide();
     win.wait_for_button();
     this->show();

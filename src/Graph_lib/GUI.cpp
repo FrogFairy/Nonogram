@@ -82,5 +82,5 @@ void Choice_box::attach(Window& win)
 }
 void Choice_box::add(const std::string& option)
 {
-  n_pw -> add(option.c_str());
+  static_cast<Fl_Choice*>(pw)->add(option.c_str());
 }
