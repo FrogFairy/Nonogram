@@ -3,6 +3,7 @@
 #include <map>
 #include <random>
 #include <stdexcept>
+#include <iostream>
 
 #include "Graph.h"
 
@@ -432,6 +433,8 @@ int Image::get_pixel(int x, int y) const
     {
       error("index of pixel out of range");
     }
+
+    std::cout << p->count() << std::endl;
 
     return *(*p->data() + (y * width + x) * 3);
   }
