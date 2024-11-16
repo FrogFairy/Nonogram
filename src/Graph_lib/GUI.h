@@ -147,6 +147,12 @@ struct Menu : Widget
   }
 };
 
+struct Choice_box:Widget
+{
+  Choice_box(Point xy, int w, int h, const std::string& label, Callback cb) : Widget{xy, w, h, label, cb} {}
+  void attach (Window&);
+};
+
 //------------------------------------------------------------------------------
 
 }  // namespace Graph_lib

@@ -483,7 +483,6 @@ private:
   Fl_Image* p;
   Text fn;
 };
-
 }  // namespace Graph_lib
 
 #endif  // GRAPH_GUARD
