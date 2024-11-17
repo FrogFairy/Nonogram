@@ -12,8 +12,9 @@ namespace Graph_lib {
 
 //------------------------------------------------------------------------------
 
-using Address = void*;                        // Address is a synonym for void*
-using Callback = void (*)(Address, Address);  // FLTK's required function type for all callbacks
+using Address = void*;                            // Address is a synonym for void*
+using Callback = void (*)(Address, Address);      // FLTK's required function type for all callbacks
+using Callback_for_file = void (*) (std::string); // Function for return a string - the path to the file - in window 
 
 //------------------------------------------------------------------------------
 
@@ -147,7 +148,9 @@ struct Menu : Widget
   }
 };
 
-struct Choice_box:Widget
+//------------------------------------------------------------------------------
+
+struct Choice_box : Widget
 {
   Choice_box(Point xy, int w, int h, const std::string& label) : Widget{xy, w, h, label, nullptr} {}
   void attach (Window&);
@@ -155,6 +158,12 @@ struct Choice_box:Widget
 };
 
 //------------------------------------------------------------------------------
+
+struct File_chooser_box : Widget
+{
+  File_chooser_box(Point xy, int w, int h, const std::string& label, Callback_for_file cb) : Widget{xy, w, h, label, nullptr} {}
+  void attach(Window&);
+};
 
 }  // namespace Graph_lib
 
