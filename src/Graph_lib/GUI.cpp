@@ -85,9 +85,11 @@ void Choice_box::add(const std::string& option)
   static_cast<Fl_Choice*>(pw)->add(option.c_str());
 }
 
-void File_chooser_box::attach(Window& win)
+void File_chooser_box::attach(Window& win, Button* btn)
 {
-  n_pw = new Fl_File_Chooser(pathname, pattern, type, title);
-  n_pw -> callback();
+
+  pw = new Fl_Button{loc.x, loc.y, width, height, label.c_str()};
+  pw->callback(reinterpret_cast<Fl_Callback*>(do_it), this); 
+  pw = new Fl_Output{loc.x, loc.y, width, height, label.c_str()};
   own = &win;
 }

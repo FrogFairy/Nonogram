@@ -156,26 +156,16 @@ struct Choice_box : Widget
   void attach (Window&);
   void add(const std::string& option);
 };
-struct File_chooser_box:Widget
-{
-  File_chooser_box(Point xy, int w, int h, const std::string& label) : Widget{xy, w, h, label, nullptr} {}
-  void attach(Window&);
-
-  protected:
-    const char *pathname;
-    const char *pattern;
-    int type;
-    const char *title;
-    Fl_File_Chooser* n_pw;
-    
-
-};
-
-//------------------------------------------------------------------------------
 
 struct File_chooser_box : Widget
 {
-  File_chooser_box(Point xy, int w, int h, const std::string& label, Callback_for_file cb) : Widget{xy, w, h, label, nullptr} {}
+  File_chooser_box(Point xy, int w, int h, const std::string& label, Callback_for_file cb) : Widget{xy, w, h, label, cb} {}
+  Button btn;
+  Out_box out_box;
+  Fl_File_Chooser *fl;
+  void cb_choose_file(Address, Address);
+  void save_file(Fl_File_Chooser *w, void *userdata);
+  Callback_for_file window_callback;
   void attach(Window&);
 };
 
