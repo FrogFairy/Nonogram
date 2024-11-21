@@ -11,6 +11,9 @@ struct Generate_level_window: public Window_with_back
 public:
     Generate_level_window(Graph_lib::Point xy, int w, int h, const std::string &title);
 
+    static void cb_save_button(Graph_lib::Address, Graph_lib::Address addr);
+    void save_button();
+
 private:
     Graph_lib::Choice_box size_box;
     Graph_lib::Point p;

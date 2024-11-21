@@ -85,15 +85,15 @@ void Choice_box::add(const std::string& option)
   static_cast<Fl_Choice*>(pw)->add(option.c_str());
 }
 
-void File_chooser_box::attach(Window& win)
-{
-  win.attach(btn);
-  win.attach(out_box);
-  own = &win;
-}
-void File_chooser_box::cb_choose_file()
-{
-  Fl_File_Chooser *fl;
-  fl -> callback(save_file())
-  fl -> show();
-}
+// void File_chooser_box::attach(Window& win)
+// {
+//   win.attach(btn);
+//   win.attach(out_box);
+//   own = &win;
+// }
+// void File_chooser_box::cb_choose_file()
+// {
+//   Fl_File_Chooser *fl;
+//   fl -> callback(save_file())
+//   fl -> show();
+// }
