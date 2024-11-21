@@ -13,10 +13,13 @@ public:
 
 private:
     Graph_lib::Choice_box size_box;
+    Graph_lib::File_chooser_box image_chooser;
     Graph_lib::Point p;
     int w;
     int h;
     std::string title;
+    static void cb_choose_file(Graph_lib::Address, Graph_lib::Address);
+    static void save_image(const std::string&);
 };
 
-#endif 
+#endif // GENERATE_LEVEL.H

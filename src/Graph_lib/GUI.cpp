@@ -1,5 +1,6 @@
 #include <sstream>
 #include <string>
+#include <iostream>
 
 #include "GUI.h"
 
@@ -83,4 +84,27 @@ void Choice_box::attach(Window& win)
 void Choice_box::add(const std::string& option)
 {
   static_cast<Fl_Choice*>(pw)->add(option.c_str());
+}
+
+void File_chooser_box::attach(Window& win)
+{
+  win.attach(btn);
+  win.attach(out_box);
+  own = &win;
+}
+
+void File_chooser_box::choose_file()
+{
+  Fl_File_Chooser *chooser = new Fl_File_Chooser{".", files.c_str(), 0, "Files"};
+  chooser->show();
+
+  while (chooser->shown())
+  {
+    Fl::wait();
+  }
+  
+  if (chooser->value())
+  {
+    out_box.put(chooser->value());
+  }
 }
