@@ -17,6 +17,7 @@ public:
 private:
     Graph_lib::Choice_box size_box;
     Graph_lib::File_chooser_box image_chooser;
+    Graph_lib::Button save_btn;
     Graph_lib::Point p;
     int w;
     int h;

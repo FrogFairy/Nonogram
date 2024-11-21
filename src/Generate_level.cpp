@@ -16,7 +16,7 @@ void Generate_level_window::save_button()
 
 Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h, const std::string &title)
 : Window_with_back{xy, w, h, title}, p{xy}, w{w}, h{h}, title{title},
-size_box{Graph_lib::Point{260, 250}, 200, 50, "size"},
+size_box{Graph_lib::Point{260, 250}, 200, 50, "size"}, save_btn{Graph_lib::Point{590, 670}, 100, 20, "save", cb_save_button},
 image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file}
 {
     attach(image_chooser);
@@ -25,8 +25,7 @@ image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image F
     size_box.add("15 x 15");
     size_box.add("20 x 20");
 
-    Graph_lib::Button save_button {Graph_lib::Point{590, 670}, 100, 20, "save", cb_save_button};
-    attach(save_button);
+    attach(save_btn);
 }
 
 void Generate_level_window::cb_choose_file(Graph_lib::Address, Graph_lib::Address addr)

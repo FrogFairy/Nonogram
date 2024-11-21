@@ -165,6 +165,7 @@ struct File_chooser_box : Widget
   
   Button btn;
   Out_box out_box;
+  // In_box input_box;
   Fl_File_Chooser *chooser;
   std::string files;
   Callback_for_file window_callback;
