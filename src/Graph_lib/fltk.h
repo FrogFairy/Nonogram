@@ -16,7 +16,5 @@
 #include <FL/Fl_GIF_Image.H>
 #include <FL/Fl_JPEG_Image.H>
 #include <FL/Fl_PNG_Image.H>
-#include <FL/Fl_Shared_Image.H>
-#include <FL/Fl_Image.H>
 
 #endif  // #ifndef FLTK_GUARD
