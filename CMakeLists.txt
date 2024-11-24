@@ -1,21 +1,25 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(Seminar12 LANGUAGES CXX)
+project(Nonogram LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_compile_options(-Wall -Wextra)
+#add_compile_options(-Wall -Wextra)
 
 set(FLTK_ROOT "C:/Program Files (x86)/FLTK/bin")
 find_package(FLTK REQUIRED)
 
-set(TARGET "Nonogram project")
+set(TARGET "Main")
 
 add_executable(
     ${TARGET}
     src/main.cpp
+    src/create_level.cpp
+    src/main_window.cpp
+    src/generate_level.cpp
+    src/choose_level.cpp
     src/Graph_lib/Graph.cpp
     src/Graph_lib/GUI.cpp
     src/Graph_lib/Window.cpp

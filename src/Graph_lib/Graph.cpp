@@ -401,17 +401,25 @@ Image::Image(Point xy, const std::string& s, Suffix::Encoding e) : w{0}, h{0}, f
   switch (e)
   {
   case Suffix::png:
+  {
     p = new Fl_PNG_Image{s.c_str()};
     break;
+  }
   case Suffix::jpg:
+  {
     p = new Fl_JPEG_Image{s.c_str()};
     break;
+  }
   case Suffix::gif:
+  {
     p = new Fl_GIF_Image{s.c_str()};
     break;
+  }
   default:  // Unsupported image encoding
+  {
     fn.set_label("unsupported file type \"" + s + '\"');
-    p = new Bad_image{30, 20};  // the "error image"
+    p = new Bad_image{30, 20};  // the "error image"'
+  }
   }
 }
 
