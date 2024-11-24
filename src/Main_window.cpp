@@ -1,5 +1,6 @@
-#include "Main_window.h"
-#include "Generate_level.h"
+#include "main_window.h"
+#include "generate_level.h"
+#include "choose_level.h"
 
 void Main_window::cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr)
 {
@@ -15,7 +16,7 @@ void Main_window::cb_create_level(Graph_lib::Address, Graph_lib::Address addr)
 
 void Main_window::go_to_level(std::string btn_label)
 {
-    Window_with_back win {p, w, h, title}; // создавать окно с уровнями; передавать в него label кнопки, на котором указаны размеры поля
+    Choose_level_window win {p, w, h, title, btn_label}; // создавать окно с уровнями; передавать в него label кнопки, на котором указаны размеры поля
     this->hide();
     win.wait_for_button();
     this->show();
@@ -44,3 +45,4 @@ Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &t
     main_widget.attach(button_3);
     attach(main_widget); 
 }
+
