@@ -1,5 +1,5 @@
 #include "generate_level.h"
-#include "main_window.h"
+#include "wrapper.h"
 
 void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Address addr)
 {
@@ -8,14 +8,13 @@ void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Addres
 }
 void Generate_level_window::save_button()
 {
-    Generate_level_window win {p, w, h, title};
-    this->hide();
-    win.wait_for_button();
-    this->show();
+    // здесь реализация сохранения в базу данных
+    button_pushed = true;
 }
 
-Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h, const std::string &title)
-: Window_with_back{xy, w, h, title}, p{xy}, w{w}, h{h}, title{title},
+Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h, 
+                                            const std::string &title, Windows_wrapper& own)
+: Window_with_back{xy, w, h, title}, own{own},
 size_box{Graph_lib::Point{260, 250}, 200, 50, "size"},
 image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file}
 {
