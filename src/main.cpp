@@ -5,8 +5,8 @@
 #include <Graph_lib/Graph.h>
 #include <Graph_lib/Simple_window.h>
 
-#include "Main_window.h"
-#include "Generate_level.h"
+#include "main_window.h"
+#include "generate_level.h"
 
 
 int main()

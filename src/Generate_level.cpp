@@ -1,5 +1,5 @@
-#include "Generate_level.h"
-#include "Main_window.h"
+#include "generate_level.h"
+#include "main_window.h"
 
 void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Address addr)
 {

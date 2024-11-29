@@ -16,8 +16,9 @@ set(TARGET "Nonogram_project")
 add_executable(
     ${TARGET}
     src/main.cpp
-    src/Main_window.cpp
-    src/Generate_level.cpp
+    src/main_window.cpp
+    src/generate_level.cpp
+    src/choose_level.cpp
     src/Graph_lib/Graph.cpp
     src/Graph_lib/GUI.cpp
     src/Graph_lib/Window.cpp

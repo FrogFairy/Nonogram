@@ -4,7 +4,7 @@
 #include <string>
 
 #include <Graph_lib/GUI.h>
-#include "Main_window.h"
+#include "main_window.h"
 
 struct Choose_level_window: public Window_with_back
 {

@@ -1,6 +1,6 @@
-#include "Main_window.h"
-#include "Generate_level.h"
-#include "Choose_level.h"
+#include "main_window.h"
+#include "generate_level.h"
+#include "choose_level.h"
 
 void Main_window::cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr)
 {
