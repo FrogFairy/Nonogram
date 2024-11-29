@@ -401,17 +401,25 @@ Image::Image(Point xy, const std::string& s, Suffix::Encoding e) : w{0}, h{0}, f
   switch (e)
   {
   case Suffix::png:
+  {
     p = new Fl_PNG_Image{s.c_str()};
     break;
+  }
   case Suffix::jpg:
+  {
     p = new Fl_JPEG_Image{s.c_str()};
     break;
+  }
   case Suffix::gif:
+  {
     p = new Fl_GIF_Image{s.c_str()};
     break;
+  }
   default:  // Unsupported image encoding
+  {
     fn.set_label("unsupported file type \"" + s + '\"');
-    p = new Bad_image{30, 20};  // the "error image"
+    p = new Bad_image{30, 20};  // the "error image"'
+  }
   }
 }
 
@@ -425,18 +433,5 @@ void Image::draw_lines() const
   else
     p->draw(point(0).x, point(0).y);
 }
-
-int Image::get_pixel(int x, int y) const
-  {
-    int width = p->w(), height = p->h();
-    if (x < 0 || x >= width || y < 0 || y > height)
-    {
-      error("index of pixel out of range");
-    }
-
-    std::cout << p->count() << std::endl;
-
-    return *(*p->data() + (y * width + x) * 3);
-  }
 
 }  // namespace Graph_lib

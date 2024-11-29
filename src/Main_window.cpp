@@ -1,6 +1,5 @@
 #include "main_window.h"
-#include "generate_level.h"
-#include "choose_level.h"
+#include "wrapper.h"
 
 void Main_window::cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr)
 {
@@ -16,22 +15,16 @@ void Main_window::cb_create_level(Graph_lib::Address, Graph_lib::Address addr)
 
 void Main_window::go_to_level(std::string btn_label)
 {
-    Choose_level_window win {p, w, h, title, btn_label}; // создавать окно с уровнями; передавать в него label кнопки, на котором указаны размеры поля
-    this->hide();
-    win.wait_for_button();
-    this->show();
+    own.open_choose_window(btn_label);
 }
 
 void Main_window::create_level()
 {
-    Generate_level_window win {p, w, h, title};
-    this->hide();
-    win.wait_for_button();
-    this->show();
+    own.open_generate_window();
 }
 
-Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &title)
-    : Graph_lib::Window{xy, w, h, title}, p{xy}, w{w}, h{h}, title{title},
+Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &title, Windows_wrapper& own)
+    : Graph_lib::Window{xy, w, h, title}, own{own},
     main_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"}
 {
     Graph_lib::Menu levels_menu {Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "levels"};

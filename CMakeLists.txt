@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_compile_options(-Wall -Wextra)
+#add_compile_options(-Wall -Wextra)
 
 set(FLTK_ROOT "C:/Program Files (x86)/FLTK/bin")
 find_package(FLTK REQUIRED)
@@ -16,6 +16,8 @@ set(TARGET "Nonogram_project")
 add_executable(
     ${TARGET}
     src/main.cpp
+    src/wrapper.cpp
+    src/create_level.cpp
     src/main_window.cpp
     src/generate_level.cpp
     src/choose_level.cpp
@@ -40,11 +42,11 @@ target_link_libraries(${TARGET} PRIVATE
     fltk_z
 )
 
-# add_custom_target(CopyResources ALL
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory
-#     ${PROJECT_SOURCE_DIR}/resources
-#     ${CMAKE_BINARY_DIR}/resources
-#     COMMENT "Copying resources into runtime output directory"
-# )
+add_custom_target(CopyResources ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${PROJECT_SOURCE_DIR}/resources
+    ${CMAKE_BINARY_DIR}/resources
+    COMMENT "Copying resources into runtime output directory"
+)
 
-# add_dependencies(${TARGET} CopyResources)
+add_dependencies(${TARGET} CopyResources)

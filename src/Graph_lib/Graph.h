@@ -476,13 +476,27 @@ struct Image : Shape
     p->draw(point(0).x, point(0).y);
   }
 
-  int get_pixel(int, int) const;
+  int width()
+  {
+    return p->w();
+  }
+
+  int height()
+  {
+    return p->h();
+  }
+
+  void resize(int new_w, int new_h)
+  {
+    p = p->copy(new_w, new_h);
+  }
 
 private:
   int w, h, cx, cy;  // define "masking box" within image relative to position (cx,cy)
   Fl_Image* p;
   Text fn;
 };
+
 }  // namespace Graph_lib
 
 #endif  // GRAPH_GUARD
