@@ -1,28 +1,26 @@
 cmake_minimum_required(VERSION 3.20)
-
-project(Nonogram LANGUAGES CXX)
+project(nonogram)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-#add_compile_options(-Wall -Wextra)
 
 set(FLTK_ROOT "C:/Program Files (x86)/FLTK/bin")
 find_package(FLTK REQUIRED)
 
-set(TARGET "Main")
-
+set(TARGET "nonogram")
 add_executable(
-    ${TARGET}
+    ${TARGET} 
     src/main.cpp
+    src/database.cpp
     src/create_level.cpp
     src/main_window.cpp
     src/generate_level.cpp
     src/choose_level.cpp
+    src/wrapper.cpp
     src/Graph_lib/Graph.cpp
     src/Graph_lib/GUI.cpp
     src/Graph_lib/Window.cpp
+    src/sqlite3/sqlite3.h
+    src/sqlite3/sqlite3.c
 )
 
 target_include_directories(${TARGET} PRIVATE 
