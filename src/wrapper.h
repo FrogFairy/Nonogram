@@ -5,6 +5,7 @@
 
 #include <Graph_lib/Window.h>
 #include "main_window.h"
+#include "database.h"
 
 struct Choose_level_window;
 struct Generate_level_window;
@@ -13,6 +14,8 @@ struct Windows_wrapper
 {
   Windows_wrapper(Graph_lib::Point xy, int w, int h, const std::string &title)
     : xy{xy}, w{w}, h{h}, title{title}, main_win{new Main_window(xy, w, h, title, *this)} {};
+
+  Database_levels db_levels{};
 
   void open_generate_window();
   void open_choose_window(const std::string& btn_label);
