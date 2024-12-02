@@ -13,7 +13,7 @@ namespace Graph_lib {
 
 using Address = void*;                            // Address is a synonym for void*
 using Callback = void (*)(Address, Address);      // FLTK's required function type for all callbacks
-using Callback_for_file = void (*) (const std::string&); // Function for return a string - the path to the file - in window 
+using Callback_for_file = void (*) (Window*, const std::string&); // Function for return a string - the path to the file - in window 
 
 //------------------------------------------------------------------------------
 

@@ -13,9 +13,9 @@ struct Generate_level_window;
 struct Windows_wrapper
 {
   Windows_wrapper(Graph_lib::Point xy, int w, int h, const std::string &title)
-    : xy{xy}, w{w}, h{h}, title{title}, main_win{new Main_window(xy, w, h, title, *this)} {};
+    : xy{xy}, w{w}, h{h}, title{title}, main_win{new Main_window(xy, w, h, title, *this)}, db_levels{} {};
 
-  Database_levels db_levels{};
+  Database_levels db_levels;
 
   void open_generate_window();
   void open_choose_window(const std::string& btn_label);

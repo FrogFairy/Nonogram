@@ -106,5 +106,6 @@ void File_chooser_box::choose_file()
   if (chooser->value())
   {
     out_box.put(chooser->value());
+    window_callback(own, chooser->value());
   }
 }
