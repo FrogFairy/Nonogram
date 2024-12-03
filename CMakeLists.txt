@@ -16,10 +16,10 @@ add_executable(
     src/generate_level.cpp
     src/choose_level.cpp
     src/wrapper.cpp
+    src/helping_func.cpp
     src/Graph_lib/Graph.cpp
     src/Graph_lib/GUI.cpp
     src/Graph_lib/Window.cpp
-    src/sqlite3/sqlite3.h
     src/sqlite3/sqlite3.c
 )
 
