@@ -1,0 +1,57 @@
+#include "generate_level.h"
+#include "wrapper.h"
+#include "create_level.h"
+
+#include <iostream>
+#include <typeinfo>
+
+void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Address addr)
+{
+    auto *pb = static_cast<Graph_lib::Button *>(addr);
+    static_cast<Generate_level_window &>(pb->window()).save_button();
+}
+void Generate_level_window::save_button()
+{
+    Database_levels::Response res = own.db_levels.add_level(Level{"level " + std::to_string(own.db_levels.get_new_id("10x10")),
+                                                                  "10x10", create_matrix_level(10, 10, "resources/hamster.jpg")});
+    if (res == Database_levels::Response::OK)
+        std::cout << 1;
+    else if (res == Database_levels::Response::FAIL)
+        std::cout << 2;
+    else if (res == Database_levels::Response::ALREADY_EXISTS)
+        std::cout << 3;
+    else
+    {
+        std::cout << 4;
+    }
+
+    button_pushed = true;
+}
+
+// добавить inbox название
+Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h,
+                                             const std::string &title, Windows_wrapper &own)
+    : Window_with_back{xy, w, h, title}, own{own},
+      size_box{Graph_lib::Point{260, 250}, 200, 50, "size"},
+      image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file}
+{
+    attach(image_chooser);
+    attach(size_box);
+    size_box.add("10x10");
+    size_box.add("15x15");
+    size_box.add("20x20");
+
+    Graph_lib::Button save_button{Graph_lib::Point{590, 670}, 100, 20, "save", cb_save_button};
+    attach(save_button);
+}
+
+void Generate_level_window::cb_choose_file(Graph_lib::Address, Graph_lib::Address addr)
+{
+    auto *pb = static_cast<Graph_lib::Button *>(addr);
+    static_cast<Generate_level_window &>(pb->window()).image_chooser.choose_file();
+}
+
+void Generate_level_window::save_image(Graph_lib::Window *own, const std::string &filename)
+{
+    static_cast<Generate_level_window *>(own)->filename = filename;
+};

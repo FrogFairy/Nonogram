@@ -12,6 +12,7 @@ using namespace Graph_lib;
 
 class Level_button: public Button
 {
+public:
     Level_button(Point xy, const std::string& name_of_level): Button{xy, B_w, B_h, name_of_level, cb};
 
     constexpr static int B_h = 20;
