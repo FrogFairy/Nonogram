@@ -59,7 +59,7 @@ public:
   virtual ~Widget() {}
 
   Widget& operator= (const Widget&) = delete;  // don't copy Widgets
-  Widget(const Widget&) = delete;
+  // Widget(const Widget&) = delete;
 
 protected:
   Window* own;    // every Widget belongs to a Window
@@ -68,7 +68,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-struct Button : Widget
+struct Button : public Widget
 {
   Button(Point xy, int w, int h, const std::string& label, Callback cb) : Widget{xy, w, h, label, cb} {}
 
