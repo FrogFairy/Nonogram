@@ -47,7 +47,7 @@ public:
 
     Response add_level(Level level);
 
-    Level get_level(const std::string& title, const std::string& size);
+    std::vector<Level> get_levels(const std::string& size);
 
     int get_new_id(const std::string& size);
 
@@ -56,7 +56,7 @@ private:
 
     static int new_id(void * id, int count, char **values, char **cols);
 
-    static int select_level(void * l, int count, char **values, char **cols);
+    static int select_levels(void * l, int count, char **values, char **cols);
 
     static int check_exists(void * r, int counts, char **values, char **cols);
 

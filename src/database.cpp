@@ -40,20 +40,20 @@ Database_levels::Response Database_levels::add_level(Level level)
     return Response::OK;
 }
 
-Level Database_levels::get_level(const std::string& title, const std::string& size)
+std::vector<Level> Database_levels::get_levels(const std::string& size)
 {
     char* err;
-    Level level{};
+    std::vector<Level> levels{};
     std::string sql_check = "SELECT title, size, correct_values, current_values, hearts_count, finished "
-                            "FROM levels WHERE title = '" + title + "' AND size = '" + size + "'";
-    int rs = sqlite3_exec(db, sql_check.c_str(), select_level, &level, &err);
+                            "FROM levels WHERE size = '" + size + "'";
+    int rs = sqlite3_exec(db, sql_check.c_str(), select_levels, &levels, &err);
     if (rs != SQLITE_OK)
     {
         std::cerr << "Error select title and size from table: " << err << std::endl;
         sqlite3_free(err);
-        return Level{};
+        return std::vector<Level> {};
     }
-    return level;
+    return levels;
 }
 
 int Database_levels::get_new_id(const std::string& size)
@@ -77,18 +77,19 @@ int Database_levels::new_id(void * id, int count, char **values, char **cols)
     return 0;
 }
 
-int Database_levels::select_level(void * l, int count, char **values, char **cols)
+int Database_levels::select_levels(void * l, int count, char **values, char **cols)
 {
-    (*(Level*) l) = Level{};
+    Level level {};
     if (count)
     {
-        ((Level*) l)->title = values[0];
-        ((Level*) l)->size = values[1];
-        ((Level*) l)->correct_values = string_to_vector(values[2]);
-        ((Level*) l)->current_values = string_to_vector(values[3]);
-        ((Level*) l)->hearts_count = std::atoi(values[4]);
-        ((Level*) l)->finished = std::atoi(values[5]);
+        level.title = values[0];
+        level.size = values[1];
+        level.correct_values = string_to_vector(values[2]);
+        level.current_values = string_to_vector(values[3]);
+        level.hearts_count = std::atoi(values[4]);
+        level.finished = std::atoi(values[5]);
     }
+    (*(std::vector<Level>*) l).push_back(level);
     return 0;
 }
 
