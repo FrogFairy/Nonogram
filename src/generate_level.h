@@ -7,6 +7,21 @@
 #include "main_window.h"
 #include "database.h"
 
+struct Empty_image_chooser : Graph_lib::Widget
+{
+public:
+    Empty_image_chooser(Graph_lib::Point xy, const std::string& title)
+        : Graph_lib::Widget{xy, 300, 50, "exception empty path", nullptr}, label{xy, title} {}
+    void attach (Graph_lib::Window& win)
+    {
+        win.attach(label);
+        own = &win;
+    }
+
+private:
+    Graph_lib::Text label;
+};
+
 struct Generate_level_window: public Window_with_back
 {
 public:
@@ -17,8 +32,10 @@ public:
 
 private:
     std::string filename;
+    std::string level_size;
     Graph_lib::Choice_box size_box;
     Graph_lib::File_chooser_box image_chooser;
+    Empty_image_chooser empty_path;
     Windows_wrapper& own;
 
     static void cb_choose_file(Graph_lib::Address, Graph_lib::Address);

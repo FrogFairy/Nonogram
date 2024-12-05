@@ -157,6 +157,8 @@ struct Choice_box : Widget
   int current_value();
 };
 
+//------------------------------------------------------------------------------
+
 struct File_chooser_box : Widget
 {
   File_chooser_box(Point xy, int w, int h, const std::string& label, const std::string& btn_label, const std::string& files,
