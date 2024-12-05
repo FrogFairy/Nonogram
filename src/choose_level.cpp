@@ -18,15 +18,9 @@ Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, cons
 {
     Graph_lib::Menu level_widget {Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "levels"};
 
-    Graph_lib::Button level_1 {Graph_lib::Point{0, 0}, 0, 0, "1 level", cb_start_level};
-    Graph_lib::Button level_2 {Graph_lib::Point{0, 0}, 0, 0, "2 level", cb_start_level};
-    Graph_lib::Button level_3 {Graph_lib::Point{0, 0}, 0, 0, "3 level", cb_start_level};
-    Graph_lib::Button level_4 {Graph_lib::Point{0, 0}, 0, 0, "4 level", cb_start_level};
+    Level_button level_1 {Graph_lib::Point{0, 0}, 0, 0, "1 level", cb_start_level, true};
 
     level_widget.attach(level_1);
-    level_widget.attach(level_2);
-    level_widget.attach(level_3);
-    level_widget.attach(level_4);
 
     attach(level_widget); 
 }

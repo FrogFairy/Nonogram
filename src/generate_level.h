@@ -11,16 +11,18 @@ struct Empty_image_chooser : Graph_lib::Widget
 {
 public:
     Empty_image_chooser(Graph_lib::Point xy, const std::string& title)
-        : Graph_lib::Widget{xy, 300, 20, "exception empty path", nullptr}, label{title} {}
+        : Graph_lib::Widget{xy, w, h, "exception empty path", nullptr}, label{title} {}
     
     void attach (Graph_lib::Window& win)
     {
-        pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, 300, 20, label.c_str());
+        pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, w, h, label.c_str());
         own = &win;
     }
 
 private:
     std::string label;
+    const int w = 300;
+    const int h = 20;
 };
 
 struct Generate_level_window: public Window_with_back
