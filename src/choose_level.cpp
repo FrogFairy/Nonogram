@@ -12,15 +12,19 @@ void Choose_level_window::start_level(const std::string& title)
     own.open_play_window(btn_label, title);
 }
 
-Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, const std::string &btn_label, Windows_wrapper& own)
+Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, const std::string &size, Windows_wrapper& own)
     : Window_with_back{xy, w, h, title}, 
     level_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"}, own{own}
 {
     Graph_lib::Menu level_widget {Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "levels"};
 
-    Level_button level_1 {Graph_lib::Point{0, 0}, 0, 0, "1 level", cb_start_level, true};
-
-    level_widget.attach(level_1);
+    levels = own.db_levels.get_levels(size);
+    for (Level level : levels)
+    {
+        Level_button* level_button {new Level_button{Graph_lib::Point{0, 0}, 0, 0, level.title, cb_start_level, level.finished}};
+        level_buttons.push_back(level_button);
+        level_widget.attach(level_buttons[level_buttons.size() - 1]);
+    }
 
     attach(level_widget); 
 }
