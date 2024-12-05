@@ -75,15 +75,22 @@ int Menu::attach(Button* p)
   //  owned.push_back(p);
   return attach(*p);
 }
+
 void Choice_box::attach(Window& win)
 {
    pw = new Fl_Choice(loc.x, loc.y, width, height, label.c_str());
    pw->callback(reinterpret_cast<Fl_Callback*>(do_it), this);  // pass this widget
    own = &win;
 }
+
 void Choice_box::add(const std::string& option)
 {
   static_cast<Fl_Choice*>(pw)->add(option.c_str());
+}
+
+int Choice_box::current_value()
+{
+  return static_cast<Fl_Choice*>(pw)->value();
 }
 
 void File_chooser_box::attach(Window& win)

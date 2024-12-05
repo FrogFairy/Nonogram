@@ -11,6 +11,7 @@ void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Addres
 }
 void Generate_level_window::save_button()
 {
+    std::cout << size_box.current_value() << std::endl;;
     Database_levels::Response res = own.db_levels.add_level(Level {"level " + std::to_string(own.db_levels.get_new_id("10x10")), 
                                                                    "10x10", "resources/hamster.jpg"});
     button_pushed = true;
