@@ -1,6 +1,5 @@
 #include "generate_level.h"
 #include "wrapper.h"
-#include "create_level.h"
 
 #include <iostream>
 #include <typeinfo>
@@ -13,17 +12,7 @@ void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Addres
 void Generate_level_window::save_button()
 {
     Database_levels::Response res = own.db_levels.add_level(Level {"level " + std::to_string(own.db_levels.get_new_id("10x10")), 
-                                                                   "10x10", create_matrix_level(10, 10, "resources/hamster.jpg")});
-    if (res == Database_levels::Response::OK)
-        std::cout << 1;
-    else if (res == Database_levels::Response::FAIL)
-        std::cout << 2;
-    else if (res == Database_levels::Response::ALREADY_EXISTS)
-        std::cout << 3;
-    else {
-        std::cout << 4;
-    }
-    
+                                                                   "10x10", "resources/hamster.jpg"});
     button_pushed = true;
 }
 

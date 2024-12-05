@@ -1,5 +1,5 @@
-#ifndef GENERATE_LEVEL.H
-#define GENERATE_LEVEL.H
+#ifndef GENERATE_LEVEL_H
+#define GENERATE_LEVEL_H
 
 #include <string>
 
@@ -25,4 +25,4 @@ private:
     static void save_image(Graph_lib::Window *own, const std::string&);
 };
 
-#endif // GENERATE_LEVEL.H
+#endif // GENERATE_LEVEL_H

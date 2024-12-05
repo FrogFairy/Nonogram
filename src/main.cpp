@@ -1,13 +1,22 @@
 #include "wrapper.h"
-#include "database.h"
-#include "create_level.h"
-#include "database.h"
 
 #include <iostream>
+#include <vector>
 
 
 int main()
 {
+    // auto vec = create_matrix_level(30, 30, "resources/heart.png");
+    // std::vector<std::vector<int>> vec1 {std::vector<int>{30}};
+    // for (int i = 0; i < 30; ++i)
+    // {
+    //     for (int j = 0; j < 30; ++j)
+    //     {
+    //         vec1[i].push_back(1);
+    //     }
+    // }
+    // auto vec2 = vec;
+    // std::cout << check_click(vec1, vec) << check_click(vec2, vec);
     Windows_wrapper win{Graph_lib::Point{400, 100}, 700, 700, "window"};
     return Graph_lib::gui_main();
     // Level level{"hamster level", "30x30", create_matrix_level(30, 30, "resources/hamster.jpg")};

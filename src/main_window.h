@@ -1,5 +1,5 @@
-#ifndef MAIN_WINDOW.H
-#define MAIN_WINDOW.H
+#ifndef MAIN_WINDOW_H
+#define MAIN_WINDOW_H
 
 #include <string>
 #include <vector>
@@ -54,4 +54,4 @@ private:
     Windows_wrapper& own;
 };
 
-#endif // MAIN_WINDOWS.H
+#endif // MAIN_WINDOWS_H

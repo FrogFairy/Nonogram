@@ -1,5 +1,5 @@
-#ifndef CHOOSE_LEVEL.H
-#define CHOOSE_LEVEL.H
+#ifndef CHOOSE_LEVEL_H
+#define CHOOSE_LEVEL_H
 
 #include <string>
 
@@ -21,4 +21,4 @@ private:
     Windows_wrapper& own;
 };
 
-#endif
+#endif // CHOOSE_LEVEL_H
