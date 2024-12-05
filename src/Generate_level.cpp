@@ -25,6 +25,12 @@ void Generate_level_window::save_button()
             break;
 
     }
+    str_level_name = level_name.get_string();
+    
+    if (str_level_name=="")
+    {
+        str_level_name = "level " + std::to_string(own.db_levels.get_new_id(level_size));
+    }
 
     if(filename=="")
     {
@@ -32,7 +38,7 @@ void Generate_level_window::save_button()
     }
     else
     {
-        Database_levels::Response res = own.db_levels.add_level(Level {"level " + std::to_string(own.db_levels.get_new_id(level_size)), 
+        Database_levels::Response res = own.db_levels.add_level(Level {str_level_name, 
                                                                    level_size, filename});
         button_pushed = true;
     }
