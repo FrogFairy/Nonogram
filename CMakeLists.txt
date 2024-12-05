@@ -19,7 +19,6 @@ add_executable(
     src/Graph_lib/Graph.cpp
     src/Graph_lib/GUI.cpp
     src/Graph_lib/Window.cpp
-    src/sqlite3/sqlite3.h
     src/sqlite3/sqlite3.c
 )
 

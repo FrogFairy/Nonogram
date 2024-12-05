@@ -1,5 +1,5 @@
-#ifndef WRAPPER.H
-#define WRAPPER.H
+#ifndef WRAPPER_H
+#define WRAPPER_H
 
 #include <string>
 
@@ -30,4 +30,4 @@ private:
   std::string title;
 };
 
-#endif // WRAPPER.H
+#endif // WRAPPER_H

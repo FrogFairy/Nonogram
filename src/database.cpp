@@ -3,11 +3,18 @@
 
 #include "database.h"
 
+std::vector<int> size_to_int(const std::string& size)
+{
+    int w = std::stoi(size.substr(0, size.find("x")));
+    int h = std::stoi(size.substr(size.find("x" + 1)));
+    return std::vector<int> {w, h};
+}
+
 Database_levels::Response Database_levels::add_level(Level level)
 {
     char* err;
-    Response response;
-    std::string sql_check = "SELECT title, size FROM levels WHERE title == '" + level.title + "' AND size == '" + level.size + "'";
+    Response response = Response::OK;
+    std::string sql_check = "SELECT title, size FROM levels WHERE title = '" + level.title + "' AND size = '" + level.size + "'";
     int rs = sqlite3_exec(db, sql_check.c_str(), check_exists, &response, &err);
     if (rs != SQLITE_OK)
     {
@@ -36,9 +43,9 @@ Database_levels::Response Database_levels::add_level(Level level)
 Level Database_levels::get_level(const std::string& title, const std::string& size)
 {
     char* err;
-    Level level;
+    Level level{};
     std::string sql_check = "SELECT title, size, correct_values, current_values, hearts_count, finished "
-                            "FROM levels WHERE title == '" + title + "' AND size == '" + size + "'";
+                            "FROM levels WHERE title = '" + title + "' AND size = '" + size + "'";
     int rs = sqlite3_exec(db, sql_check.c_str(), select_level, &level, &err);
     if (rs != SQLITE_OK)
     {
@@ -52,8 +59,8 @@ Level Database_levels::get_level(const std::string& title, const std::string& si
 int Database_levels::get_new_id(const std::string& size)
 {
     char* err;
-    int id;
-    std::string sql_check = "SELECT size FROM levels WHERE size == '" + size + "'";
+    int id = 1;
+    std::string sql_check = "SELECT size FROM levels WHERE size = '" + size + "'";
     int rs = sqlite3_exec(db, sql_check.c_str(), new_id, &id, &err);
     if (rs != SQLITE_OK)
     {
@@ -66,32 +73,29 @@ int Database_levels::get_new_id(const std::string& size)
 
 int Database_levels::new_id(void * id, int count, char **values, char **cols)
 {
-    int* res = static_cast<int*>(id);
-    *res = count + 1;
+    (*(int*) id)++;
     return 0;
 }
 
 int Database_levels::select_level(void * l, int count, char **values, char **cols)
 {
-    Level* res = static_cast<Level*>(l);
-    *res = Level{};
+    (*(Level*) l) = Level{};
     if (count)
     {
-        res->title = values[0];
-        res->size = values[1];
-        res->correct_values = string_to_vector(values[2]);
-        res->current_values = string_to_vector(values[3]);
-        res->hearts_count = std::atoi(values[4]);
-        res->finished = std::atoi(values[5]);
+        ((Level*) l)->title = values[0];
+        ((Level*) l)->size = values[1];
+        ((Level*) l)->correct_values = string_to_vector(values[2]);
+        ((Level*) l)->current_values = string_to_vector(values[3]);
+        ((Level*) l)->hearts_count = std::atoi(values[4]);
+        ((Level*) l)->finished = std::atoi(values[5]);
     }
     return 0;
 }
 
 int Database_levels::check_exists(void * r, int counts, char **values, char **cols)
 {
-    Response* res = static_cast<Response*>(r);
-    if (counts) *res = Response::ALREADY_EXISTS;
-    else *res = Response::OK;
+    if (counts) (*(Response*) r) = Response::ALREADY_EXISTS;
+    else (*(Response*) r) = Response::OK;
     return 0;
 }
 

@@ -1,14 +1,25 @@
-#ifndef DATABASE.H
-#define DATABASE.H
+#ifndef DATABASE_H
+#define DATABASE_H
+
+#include "sqlite3/sqlite3.h"
+#include "create_level.h"
 
 #include <string>
 #include <vector>
 #include <iostream>
 
-#include "sqlite3/sqlite3.h"
+std::vector<int> size_to_int(const std::string& size);
 
 struct Level
 {
+    Level() = default;
+    Level(const std::string& title, const std::string size, const std::string filename)
+        : title{title}, size{size}
+        {
+            std::vector<int> s = size_to_int(size);
+            correct_values = create_matrix_level(s[0], s[1], filename);
+        }
+    
     std::string title{};
     std::string size{};
     std::vector<std::vector<int>> correct_values{};
@@ -54,4 +65,4 @@ private:
     static std::vector<std::vector<int>> string_to_vector(const std::string& str);
 };
 
-#endif // DATABASE.H
+#endif // DATABASE_H

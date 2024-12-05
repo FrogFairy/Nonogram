@@ -1,6 +1,8 @@
 #include "generate_level.h"
 #include "wrapper.h"
-#include "create_level.h"
+
+#include <iostream>
+#include <typeinfo>
 
 void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Address addr)
 {
@@ -9,7 +11,22 @@ void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Addres
 }
 void Generate_level_window::save_button()
 {
-    Database_levels::Response res = own.db_levels.add_level(Level {"level "+own.db_levels.get_new_id("10x10"), "10x10", create_matrix_level(10, 10, "resources/hamster.jpg")});
+    // std::cout << size_box.current_value() << std::endl;;
+    switch(size_box.current_value())
+    {
+        case 0:
+            level_size = "10x10";
+            break;
+        case 1:
+            level_size = "15x15";
+            break;
+        case 2:
+            level_size = "20x20";
+            break;
+
+    }
+    Database_levels::Response res = own.db_levels.add_level(Level {"level " + std::to_string(own.db_levels.get_new_id(level_size)), 
+                                                                   level_size, "resources/hamster.jpg"});
     button_pushed = true;
 }
 

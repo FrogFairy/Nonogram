@@ -390,6 +390,7 @@ Image::Image(Point xy, const std::string& s, Suffix::Encoding e) : w{0}, h{0}, f
 
   if (!can_open(s))
   {
+    std::cerr << "cannot open " + s << std::endl;
     fn.set_label("cannot open \"" + s + '\"');
     p = new Bad_image{30, 20};  // the "error image"
     return;
