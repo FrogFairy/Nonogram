@@ -27,9 +27,10 @@ Database_levels::Response Database_levels::add_level(Level level)
         return response;
     }
 
-    std::string sql = "INSERT INTO levels (title, size, correct_values) "
+    std::string sql = "INSERT INTO levels (title, size, correct_values, current_values, empty) "
                     "VALUES ('" + level.title + "', '" + level.size + "', '" +
-                    vector_to_string(level.correct_values) + "')";
+                    vector_to_string(level.correct_values) + "', '" + vector_to_string(level.current_values) +
+                    "', '" + vector_to_string(level.empty) + "')";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
     {
@@ -40,11 +41,27 @@ Database_levels::Response Database_levels::add_level(Level level)
     return Response::OK;
 }
 
+Level Database_levels::get_level(const std::string& size, const std::string& title)
+{
+    char* err;
+    std::vector<Level> level{};
+    std::string sql_check = "SELECT title, size, correct_values, current_values, empty, hearts_count, finished "
+                            "FROM levels WHERE size = '" + size + "' AND title = '" + title + "'";
+    int rs = sqlite3_exec(db, sql_check.c_str(), select_levels, &level, &err);
+    if (rs != SQLITE_OK)
+    {
+        std::cerr << "Error select title and size from table: " << err << std::endl;
+        sqlite3_free(err);
+        return level[0];
+    }
+    return level[0];
+}
+
 std::vector<Level> Database_levels::get_levels(const std::string& size)
 {
     char* err;
     std::vector<Level> levels{};
-    std::string sql_check = "SELECT title, size, correct_values, current_values, hearts_count, finished "
+    std::string sql_check = "SELECT title, size, correct_values, current_values, empty, hearts_count, finished "
                             "FROM levels WHERE size = '" + size + "'";
     int rs = sqlite3_exec(db, sql_check.c_str(), select_levels, &levels, &err);
     if (rs != SQLITE_OK)
@@ -86,8 +103,9 @@ int Database_levels::select_levels(void * l, int count, char **values, char **co
         level.size = values[1];
         level.correct_values = string_to_vector(values[2]);
         level.current_values = string_to_vector(values[3]);
-        level.hearts_count = std::atoi(values[4]);
-        level.finished = std::atoi(values[5]);
+        level.empty = string_to_vector(values[4]);
+        level.hearts_count = std::atoi(values[5]);
+        level.finished = std::atoi(values[6]);
     }
     (*(std::vector<Level>*) l).push_back(level);
     return 0;
@@ -105,7 +123,7 @@ std::string Database_levels::vector_to_string(std::vector<std::vector<int>>& vec
     std::string res = "";
     for (size_t y = 0; y < vec.size(); ++y)
     {
-        for (size_t x = 0; x < vec.size(); ++x)
+        for (size_t x = 0; x < vec[0].size(); ++x)
         {
             res += std::to_string(vec[y][x]);
             if (x != vec.size() - 1) res += " ";

@@ -16,6 +16,7 @@ add_executable(
     src/generate_level.cpp
     src/choose_level.cpp
     src/wrapper.cpp
+    src/logic_board.cpp
     src/Graph_lib/Graph.cpp
     src/Graph_lib/GUI.cpp
     src/Graph_lib/Window.cpp

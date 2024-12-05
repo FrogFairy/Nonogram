@@ -26,14 +26,22 @@ void Generate_level_window::save_button()
 
     }
 
-    if(filename=="")
+    str_level_name = level_name.get_string();
+    
+    if (str_level_name == "")
+    {
+        str_level_name = "level " + std::to_string(own.db_levels.get_new_id(level_size));
+    }
+
+    if(filename == "")
     {
         empty_path.show();
     }
     else
     {
-        Database_levels::Response res = own.db_levels.add_level(Level {"level " + std::to_string(own.db_levels.get_new_id(level_size)), 
-                                                                   level_size, filename});
+        Level level {str_level_name, level_size, filename};
+        level.init();
+        Database_levels::Response res = own.db_levels.add_level(level);
         button_pushed = true;
     }
 }
@@ -44,7 +52,8 @@ Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h,
 : Window_with_back{xy, w, h, title}, own{own},
 size_box{Graph_lib::Point{260, 250}, 200, 50, "size"},
 image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file},
-empty_path {Graph_lib::Point{210, 400}, "please specify the path to the image"}
+empty_path {Graph_lib::Point{210, 450}, "please specify the path to the image"},
+level_name{Graph_lib::Point{260, 400}, 200, 30, "level name:"}
 {
     attach(image_chooser);
     attach(size_box);
@@ -55,6 +64,8 @@ empty_path {Graph_lib::Point{210, 400}, "please specify the path to the image"}
 
     Graph_lib::Button save_button {Graph_lib::Point{590, 670}, 100, 20, "save", cb_save_button};
     attach(save_button);
+    attach(level_name);
+
     attach(empty_path);
     empty_path.hide();
 }
