@@ -88,9 +88,14 @@ void Choice_box::add(const std::string& option)
   static_cast<Fl_Choice*>(pw)->add(option.c_str());
 }
 
-int Choice_box::current_value()
+int Choice_box::get_value()
 {
   return static_cast<Fl_Choice*>(pw)->value();
+}
+
+void Choice_box::set_value(int ind)
+{
+  static_cast<Fl_Choice*>(pw)->value(ind);
 }
 
 void File_chooser_box::attach(Window& win)

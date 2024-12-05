@@ -154,7 +154,8 @@ struct Choice_box : Widget
   Choice_box(Point xy, int w, int h, const std::string& label) : Widget{xy, w, h, label, nullptr} {}
   void attach (Window&);
   void add(const std::string& option);
-  int current_value();
+  int get_value();
+  void set_value(int ind);
 };
 
 //------------------------------------------------------------------------------
