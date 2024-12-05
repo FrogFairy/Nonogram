@@ -25,9 +25,17 @@ void Generate_level_window::save_button()
             break;
 
     }
-    Database_levels::Response res = own.db_levels.add_level(Level {"level " + std::to_string(own.db_levels.get_new_id(level_size)), 
-                                                                   level_size, "resources/hamster.jpg"});
-    button_pushed = true;
+
+    if(filename=="")
+    {
+        attach(empty_image_chooser);
+    }
+    else
+    {
+        Database_levels::Response res = own.db_levels.add_level(Level {"level " + std::to_string(own.db_levels.get_new_id(level_size)), 
+                                                                   level_size, filename});
+        button_pushed = true;
+    }
 }
 
 //добавить inbox название 
@@ -35,7 +43,8 @@ Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h,
                                             const std::string &title, Windows_wrapper& own)
 : Window_with_back{xy, w, h, title}, own{own},
 size_box{Graph_lib::Point{260, 250}, 200, 50, "size"},
-image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file}
+image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file},
+empty_image_chooser{Graph_lib::Point{260,400}, "please specify the path to the file"}
 {
     attach(image_chooser);
     attach(size_box);

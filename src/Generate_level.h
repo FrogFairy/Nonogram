@@ -20,6 +20,7 @@ private:
     std::string level_size;
     Graph_lib::Choice_box size_box;
     Graph_lib::File_chooser_box image_chooser;
+    Graph_lib::Text empty_image_chooser;
     Windows_wrapper& own;
 
     static void cb_choose_file(Graph_lib::Address, Graph_lib::Address);
