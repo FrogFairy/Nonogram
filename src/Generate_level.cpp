@@ -34,7 +34,7 @@ void Generate_level_window::save_button()
 
     if(filename=="")
     {
-        empty_path.put("please specify the path to the file");
+        empty_path.show();
     }
     else
     {
@@ -50,7 +50,7 @@ Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h,
 : Window_with_back{xy, w, h, title}, own{own},
 size_box{Graph_lib::Point{260, 250}, 200, 50, "size"},
 image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file},
-empty_path {Graph_lib::Point{230, 200}, 250, 20, ""},
+empty_path {Graph_lib::Point{210, 200}, "please specify the path to the image"},
 level_name{Graph_lib::Point{260, 400}, 200, 30, "level name:"}
 {
     attach(image_chooser);
@@ -62,9 +62,10 @@ level_name{Graph_lib::Point{260, 400}, 200, 30, "level name:"}
 
     Graph_lib::Button save_button {Graph_lib::Point{590, 670}, 100, 20, "save", cb_save_button};
     attach(save_button);
-    attach(empty_path);
     attach(level_name);
-    empty_path.put("input data for create level");
+
+    attach(empty_path);
+    empty_path.hide();
 }
 
 void Generate_level_window::cb_choose_file(Graph_lib::Address, Graph_lib::Address addr)
