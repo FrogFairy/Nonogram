@@ -43,13 +43,13 @@ public:
 
     Main_window(Graph_lib::Point xy, int w, int h, const std::string &title, Windows_wrapper& own);
 
+private:
     static void cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr);
     static void cb_create_level(Graph_lib::Address, Graph_lib::Address addr);
 
     void go_to_level(std::string btn_label);
     void create_level();
 
-private:
     Graph_lib::Menu main_widget;
     Windows_wrapper& own;
 };

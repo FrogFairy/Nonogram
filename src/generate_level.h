@@ -30,9 +30,6 @@ struct Generate_level_window: public Window_with_back
 public:
     Generate_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, Windows_wrapper& own);
 
-    static void cb_save_button(Graph_lib::Address, Graph_lib::Address addr);
-    void save_button();
-
 private:
     std::string filename;
     std::string level_size;
@@ -48,6 +45,8 @@ private:
 
     static void cb_choose_file(Graph_lib::Address, Graph_lib::Address);
     static void save_image(Graph_lib::Window *own, const std::string&);
+    static void cb_save_button(Graph_lib::Address, Graph_lib::Address addr);
+    void save_button();
 };
 
 #endif // GENERATE_LEVEL_H
