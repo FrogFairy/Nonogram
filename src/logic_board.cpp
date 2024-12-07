@@ -3,6 +3,50 @@
 #include <random>
 #include <algorithm>
 
+void Logic_board::fill_row_digits()
+{
+    for (int i = 0; i < correct.size(); ++i)
+    {
+        int rows_count = 0;
+        std::vector<int> row {};
+        for (int j = 0; j < correct[0].size(); ++j)
+        {
+            if (correct[i][j] == 1)
+                ++rows_count;
+            if (rows_count && (correct[i][j] == 0 || j == correct[0].size() - 1))
+            {
+                row.push_back(rows_count);
+                rows_count = 0;
+            }
+        }
+        if (!row.size()) row.push_back(0);
+        row_digits.push_back(row);
+        max_rows = std::max(max_rows, (int) row.size());
+    }
+}
+
+void Logic_board::fill_col_digits()
+{
+    for (int i = 0; i < correct[0].size(); ++i)
+    {
+        int cols_count = 0;
+        std::vector<int> col {};
+        for (int j = correct.size() - 1; j >= 0; --j)
+        {
+            if (correct[j][i] == 1)
+                ++cols_count;
+            if (cols_count && (correct[j][i] == 0 || j == 0))
+            {
+                col.push_back(cols_count);
+                cols_count = 0;
+            }
+        }
+        if (!col.size()) col.push_back(0);
+        col_digits.push_back(col);
+        max_cols = std::max(max_cols, (int) col.size());
+    }  
+}
+
 bool Logic_board::set_click(int x, int y, int val)
 {
     if (current[x][y] == -1)
