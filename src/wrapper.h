@@ -6,6 +6,8 @@
 #include <Graph_lib/Window.h>
 #include "main_window.h"
 #include "database.h"
+#include "play_window.h"
+#include "rules_window.h"
 
 struct Choose_level_window;
 struct Generate_level_window;
@@ -20,11 +22,15 @@ struct Windows_wrapper
   void open_generate_window();
   void open_choose_window(const std::string& btn_label);
   void open_play_window(const std::string& size, const std::string& level_title);
+  void open_rules_window();
+
 private:
   Main_window* main_win;
   Choose_level_window* choose_win;
   Generate_level_window* generate_win;
-  Window_with_back* win_back; // заменить на окно с уровнем
+  Play_window* play_win;
+  Rules_window* rul_win;
+
   Graph_lib::Point xy;
   int w, h;
   std::string title;

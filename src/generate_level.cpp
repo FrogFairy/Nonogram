@@ -11,7 +11,6 @@ void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Addres
 }
 void Generate_level_window::save_button()
 {
-    // std::cout << size_box.current_value() << std::endl;
     switch(size_box.get_value())
     {
         case 0:
@@ -46,14 +45,13 @@ void Generate_level_window::save_button()
     }
 }
 
-//добавить inbox название 
 Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h, 
                                             const std::string &title, Windows_wrapper& own)
 : Window_with_back{xy, w, h, title}, own{own},
-size_box{Graph_lib::Point{260, 250}, 200, 50, "size"},
+size_box{Graph_lib::Point{260, 250}, 200, 50, "size: "},
 image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file},
 empty_path {Graph_lib::Point{210, 450}, "please specify the path to the image"},
-level_name{Graph_lib::Point{260, 400}, 200, 30, "level name:"}
+level_name{Graph_lib::Point{260, 400}, 200, 30, "level name: "}
 {
     attach(image_chooser);
     attach(size_box);

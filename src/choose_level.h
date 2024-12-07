@@ -35,7 +35,7 @@ private:
     static void cb_start_level(Graph_lib::Address, Graph_lib::Address addr);
     void start_level(const std::string& title);
 
-    std::string btn_label;
+    std::string size;
     Graph_lib::Menu level_widget;
     std::vector<Level> levels;
     Graph_lib::Vector_ref<Level_button*> level_buttons;

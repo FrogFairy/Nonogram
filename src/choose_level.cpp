@@ -9,12 +9,12 @@ void Choose_level_window::cb_start_level(Graph_lib::Address, Graph_lib::Address 
 
 void Choose_level_window::start_level(const std::string& title)
 {
-    own.open_play_window(btn_label, title);
+    own.open_play_window(size, title);
 }
 
 Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, const std::string &size, Windows_wrapper& own)
     : Window_with_back{xy, w, h, title}, 
-    level_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"}, own{own}
+    level_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"}, size{size}, own{own}
 {
     Graph_lib::Menu level_widget {Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "levels"};
 

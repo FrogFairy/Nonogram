@@ -12,7 +12,7 @@ struct Windows_wrapper;
 struct Window_with_back : public Graph_lib::Window
 {
   Window_with_back(Graph_lib::Point xy, int w, int h, const std::string& title)
-      : Graph_lib::Window{xy, w, h, title}, back_button{Graph_lib::Point{10, y_max() - 30}, 100, 20, "Back", cb_back} 
+      : Graph_lib::Window{xy, w, h, title}, back_button{Graph_lib::Point{10, y_max() - 30}, 100, 20, "back", cb_back} 
   {
     attach(back_button);
   }

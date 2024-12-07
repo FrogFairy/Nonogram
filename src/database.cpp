@@ -1,4 +1,3 @@
-#include <iostream>
 #include <sstream>
 
 #include "database.h"
@@ -45,9 +44,9 @@ Level Database_levels::get_level(const std::string& size, const std::string& tit
 {
     char* err;
     std::vector<Level> level{};
-    std::string sql_check = "SELECT title, size, correct_values, current_values, empty, hearts_count, finished "
+    std::string sql = "SELECT title, size, correct_values, current_values, empty, hearts_count, finished "
                             "FROM levels WHERE size = '" + size + "' AND title = '" + title + "'";
-    int rs = sqlite3_exec(db, sql_check.c_str(), select_levels, &level, &err);
+    int rs = sqlite3_exec(db, sql.c_str(), select_levels, &level, &err);
     if (rs != SQLITE_OK)
     {
         std::cerr << "Error select title and size from table: " << err << std::endl;
@@ -61,9 +60,9 @@ std::vector<Level> Database_levels::get_levels(const std::string& size)
 {
     char* err;
     std::vector<Level> levels{};
-    std::string sql_check = "SELECT title, size, correct_values, current_values, empty, hearts_count, finished "
+    std::string sql = "SELECT title, size, correct_values, current_values, empty, hearts_count, finished "
                             "FROM levels WHERE size = '" + size + "'";
-    int rs = sqlite3_exec(db, sql_check.c_str(), select_levels, &levels, &err);
+    int rs = sqlite3_exec(db, sql.c_str(), select_levels, &levels, &err);
     if (rs != SQLITE_OK)
     {
         std::cerr << "Error select title and size from table: " << err << std::endl;
