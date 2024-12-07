@@ -20,6 +20,7 @@ public:
     {
         Graph_lib::Button::attach(win);
         pw->color(color);
+        pw->color2(color);
     }
 
 private:

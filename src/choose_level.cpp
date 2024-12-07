@@ -16,6 +16,7 @@ Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, cons
     : Window_with_back{xy, w, h, title}, 
     level_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"}, size{size}, own{own}
 {
+    Window_with_back::size_range(w, h, w, h);
     Graph_lib::Menu level_widget {Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "levels"};
 
     levels = own.db_levels.get_levels(size);

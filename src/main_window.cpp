@@ -27,6 +27,7 @@ Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &t
     : Graph_lib::Window{xy, w, h, title}, own{own},
     main_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"}
 {
+    Graph_lib::Window::size_range(w, h, w, h);
     Graph_lib::Menu levels_menu {Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "levels"};
     Graph_lib::Button button_1 {Graph_lib::Point{0, 0}, 0, 0, "10x10", cb_go_to_level};
     Graph_lib::Button button_2 {Graph_lib::Point{0, 0}, 0, 0, "15x15", cb_go_to_level};

@@ -9,6 +9,7 @@ void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Addres
     auto* pb = static_cast<Graph_lib::Button*>(addr);
     static_cast<Generate_level_window&>(pb->window()).save_button();
 }
+
 void Generate_level_window::save_button()
 {
     switch(size_box.get_value())
@@ -53,6 +54,7 @@ image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image F
 empty_path {Graph_lib::Point{210, 450}, "please specify the path to the image"},
 level_name{Graph_lib::Point{260, 400}, 200, 30, "level name: "}
 {
+    Window_with_back::size_range(w, h, w, h);
     attach(image_chooser);
     attach(size_box);
     size_box.add("10x10");

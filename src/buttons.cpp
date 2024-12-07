@@ -11,10 +11,3 @@ void Game_button::change_button()
 {
     
 }
-
-void Game_button::change_color()
-{
-    // {
-    //     pw->color(Graph_lib::Color::green);
-    // }
-}

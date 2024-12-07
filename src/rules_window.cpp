@@ -7,8 +7,8 @@ Rules_window::Rules_window(Graph_lib::Point xy, int w, int h, const std::string 
       rt{Graph_lib::Point{(x_max() - 70) / 2, 40}, "Rules"},
       rules{Graph_lib::Point{80, 50}, "resources/rules.png"}
 {
+    Window_with_back::size_range(w, h, w, h);
     rt.set_font_size(30);
-
    
     attach(rules);
     attach(rt);

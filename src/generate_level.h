@@ -7,7 +7,7 @@
 #include "main_window.h"
 #include "database.h"
 
-struct Empty_image_chooser : Graph_lib::Widget
+struct Empty_image_chooser : public Graph_lib::Widget
 {
 public:
     Empty_image_chooser(Graph_lib::Point xy, const std::string& title)
