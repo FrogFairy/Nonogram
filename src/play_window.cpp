@@ -8,8 +8,8 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       hint_button{Graph_lib::Point{60, 10}, 40, 40, "", cb_hint},
       lamp{Graph_lib::Point{63, 12}, "resources/hint.png"},
       restart_button{Graph_lib::Point{120, y_max() - 30}, 100, 20, "restart", cb_restart},
-      fill_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "f", cb_choose_option, true},
-      cross_button{Graph_lib::Point{x_max() - 100, y_max() -50}, 40, 40, "c", cb_choose_option, false},
+      filled_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "", cb_choose_option, true, Fill_button::FILLED},
+      cross_button{Graph_lib::Point{x_max() - 100, y_max() -50}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
       option{1},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
       hearts_img{}
@@ -26,7 +26,7 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
     attach(hint_button);
     attach(lamp);
     attach(restart_button);
-    attach(fill_button);
+    attach(filled_button);
     attach(cross_button);
     attach(board);
 }
@@ -67,13 +67,13 @@ void Play_window::cb_choose_option(Graph_lib::Address, Graph_lib::Address addr)
 
 void Play_window::choose_option()
 {
-    fill_button.change_color();
+    filled_button.change_color();
     cross_button.change_color();
 
-    fill_button.redraw();
+    filled_button.redraw();
     cross_button.redraw();
 
-    if (fill_button.active)
+    if (filled_button.active)
         option = 1;
     else
         option = 0;

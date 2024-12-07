@@ -44,7 +44,7 @@ struct Level
 struct Database_levels
 {
 public:
-    enum class Response {OK, ALREADY_EXISTS, FAIL};
+    enum Response {OK, ALREADY_EXISTS, FAIL};
 
     Database_levels()
     {

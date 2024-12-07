@@ -34,9 +34,9 @@ private:
     Graph_lib::Button restart_button;
     Graph_lib::Image lamp;
 
-    Fill_button fill_button;
+    Fill_button filled_button;
     Fill_button cross_button;
-    int option;
+    int option; // !!!!!
 
     Graph_lib::Vector_ref<Graph_lib::Image> hearts_img;
 };

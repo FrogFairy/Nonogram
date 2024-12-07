@@ -26,12 +26,33 @@ private:
 class Fill_button : public Graph_lib::Button
 {
 public:
-    Fill_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
-                : Graph_lib::Button{xy, w, h, label, cb}, active{active} {}
+    enum Button_type {FILLED, CROSS};
+
+    Fill_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active, Button_type b_type)
+                : Graph_lib::Button{xy, w, h, label, cb}, active{active} 
+    {
+        int margin = 5;
+        if (b_type == Button_type::FILLED)
+        {
+            mark = new Graph_lib::Rectangle(Graph_lib::Point(xy.x + margin, xy.y + margin), w - margin * 2, h - margin * 2);
+        }
+        else
+        {
+            mark = new Graph_lib::Lines;
+            ((Graph_lib::Lines*)mark)->add(Graph_lib::Point(xy.x + margin, xy.y + margin), Graph_lib::Point(xy.x + w - margin, xy.y + h - margin));
+            ((Graph_lib::Lines*)mark)->add(Graph_lib::Point(xy.x + margin, xy.y + h - margin), Graph_lib::Point(xy.x + w - margin, xy.y + margin));
+            mark->set_style(Graph_lib::Line_style(Graph_lib::Line_style::solid, 3));
+        }
+        mark->set_color(Graph_lib::Color::black);
+        mark->set_fill_color(Graph_lib::Color::black);
+    }
+
+    ~Fill_button() { delete mark; }
 
     void attach(Graph_lib::Window& win)
     {
         Graph_lib::Button::attach(win);
+        win.attach(*mark);
         set_color();
     }
 
@@ -50,14 +71,15 @@ public:
         }
         else
         {
-            pw->color(Graph_lib::Color::black);
-            pw->color2(Graph_lib::Color::black);
+            pw->color(Graph_lib::Color::no_color);
+            pw->color2(Graph_lib::Color::no_color);
         }
     }
     
     bool active;
 
 private:
+    Graph_lib::Shape* mark;
 };
 
 

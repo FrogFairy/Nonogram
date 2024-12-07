@@ -30,7 +30,7 @@ struct Color
 {
   enum Color_type
   {
-    no_color = FL_INACTIVE_COLOR,
+    no_color = FL_BACKGROUND_COLOR,
     red = FL_RED,
     blue = FL_BLUE,
     green = FL_GREEN,
