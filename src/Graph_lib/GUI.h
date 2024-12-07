@@ -46,6 +46,8 @@ public:
 
   virtual void show () { pw->show(); }
 
+  virtual void redraw () { pw->redraw(); }
+
   virtual void attach (Window&) = 0;
 
   Window& window () { return *own; }
@@ -60,10 +62,11 @@ public:
 
   Widget& operator= (const Widget&) = delete;  // don't copy Widgets
   // Widget(const Widget&) = delete;
+  Fl_Widget* pw;  // connection to the FLTK Widget
 
 protected:
   Window* own;    // every Widget belongs to a Window
-  Fl_Widget* pw;  // connection to the FLTK Widget
+  
 };
 
 //------------------------------------------------------------------------------

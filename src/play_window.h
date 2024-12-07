@@ -12,16 +12,17 @@ public:
     Play_window(Graph_lib::Point xy, int w, int h, const std::string& title, Level& level, Windows_wrapper &own);
 
 private:
-    void rules();
     static void cb_rules(Graph_lib::Address, Graph_lib::Address addr);
-    void hint();
+    void rules();
+
     static void cb_hint(Graph_lib::Address, Graph_lib::Address addr);
-    void restart();
+    void hint();
+
     static void cb_restart(Graph_lib::Address, Graph_lib::Address addr);
-    void fill();
-    static void cb_fill(Graph_lib::Address, Graph_lib::Address addr);
-    void cross();
-    static void cb_cross(Graph_lib::Address, Graph_lib::Address addr);
+    void restart();
+
+    static void cb_choose_option(Graph_lib::Address, Graph_lib::Address addr);
+    void choose_option();
 
     Graph_board board;
 
@@ -32,8 +33,11 @@ private:
     Graph_lib::Button hint_button;
     Graph_lib::Button restart_button;
     Graph_lib::Image lamp;
-    Fill_Button fill_button;
-    Graph_lib::Button cross_button;
+
+    Fill_button fill_button;
+    Fill_button cross_button;
+    int option;
+
     Graph_lib::Vector_ref<Graph_lib::Image> hearts_img;
 };
 

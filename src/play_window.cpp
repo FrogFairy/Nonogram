@@ -8,11 +8,13 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       hint_button{Graph_lib::Point{60, 10}, 40, 40, "", cb_hint},
       lamp{Graph_lib::Point{63, 12}, "resources/hint.png"},
       restart_button{Graph_lib::Point{120, y_max() - 30}, 100, 20, "restart", cb_restart},
-      fill_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "", cb_fill},
-      cross_button{Graph_lib::Point{x_max() - 100, y_max() -50}, 40, 40, "", cb_cross},
+      fill_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "f", cb_choose_option, true},
+      cross_button{Graph_lib::Point{x_max() - 100, y_max() -50}, 40, 40, "c", cb_choose_option, false},
+      option{1},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
       hearts_img{}
 {
+    Window_with_back::size_range(w, h, w, h);
     hearts_img.push_back(new Graph_lib::Image(Graph_lib::Point(x_max() - 100, 20), "resources/heart.png"));
     hearts_img.push_back(new Graph_lib::Image(Graph_lib::Point(x_max() - 70, 20), "resources/heart.png"));
     hearts_img.push_back(new Graph_lib::Image(Graph_lib::Point(x_max() - 40, 20), "resources/heart.png"));
@@ -28,39 +30,51 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
     attach(cross_button);
     attach(board);
 }
-      
-void Play_window::rules()
-{
-    own.open_rules_window();
-}
 
 void Play_window::cb_rules(Graph_lib::Address, Graph_lib::Address addr)
 {
     auto *pb = static_cast<Graph_lib::Button *>(addr);
     static_cast<Play_window &>(pb->window()).rules();
 }
-void Play_window::hint()
+
+void Play_window::rules()
 {
+    own.open_rules_window();
 }
+
 void Play_window::cb_hint(Graph_lib::Address, Graph_lib::Address addr)
 {
 }
+
+void Play_window::hint()
+{
+}
+
+
 void Play_window::restart()
 {
 }
+
 void Play_window::cb_restart(Graph_lib::Address, Graph_lib::Address addr)
 {
 }
 
-void Play_window::fill()
+void Play_window::cb_choose_option(Graph_lib::Address, Graph_lib::Address addr)
 {
+    auto* pb = static_cast<Graph_lib::Button*>(addr);
+    static_cast<Play_window&>(pb->window()).choose_option();
 }
-void Play_window::cb_fill(Graph_lib::Address, Graph_lib::Address addr)
+
+void Play_window::choose_option()
 {
-}
-void Play_window::cross()
-{
-}
-void Play_window::cb_cross(Graph_lib::Address, Graph_lib::Address addr)
-{
+    fill_button.change_color();
+    cross_button.change_color();
+
+    fill_button.redraw();
+    cross_button.redraw();
+
+    if (fill_button.active)
+        option = 1;
+    else
+        option = 0;
 }

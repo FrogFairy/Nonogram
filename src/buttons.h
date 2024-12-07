@@ -2,56 +2,62 @@
 #define BUTTONS_H
 
 #include <Graph_lib/GUI.h>
-#include <Graph_lib/Window.h>
 #include <Graph_lib/Graph.h>
 
-struct Game_Button : Graph_lib::Widget
+struct Game_button : public Graph_lib::Button
 {
 public:
-    Game_Button(Graph_lib::Point xy, int w, int h, const std::string &label, Graph_lib::Callback cb, int is_fill) : Widget{xy, w, h, label, cb} {}
-    void attach(Window &);
+    // enum class State
+    // {
+    //     EMPTY = -1;
+    //     CROSS = 0;
+    //     FILLED = 1;
+    // };
+
+    Game_button(Graph_lib::Point xy, int w, int h, const std::string &label, Graph_lib::Callback cb, int value) : Graph_lib::Button{xy, w, h, label, cb} {}
+    void attach(Window& win);
 
     void change_button();
-    void change_color();
 
 private:
-
+    
 };
 
-class Fill_Button : public Graph_lib::Button
+class Fill_button : public Graph_lib::Button
 {
 public:
-    Fill_Button(Graph_lib::Point xy, int w, int h, std::string label, Graph_lib::Callback cb): Button{xy, w, h, label, cb} {}
+    Fill_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
+                : Graph_lib::Button{xy, w, h, label, cb}, active{active} {}
 
-   
+    void attach(Graph_lib::Window& win)
+    {
+        Graph_lib::Button::attach(win);
+        set_color();
+    }
 
-    void attach(Graph_lib::Window& win) override
-  {
-    Button::attach(win);
-    pw->color(Graph_lib::Color::black);
-  }
+    virtual void change_color()
+    {
+        active = !active;
+        set_color();
+    }
 
-    void wait_for_button ()
-   {
-    while (!button_pushed && Fl::wait())
-      ;
-    button_pushed = false;
-    Fl::redraw(); 
-   }
+    void set_color()
+    {
+        if (active)
+        {
+            pw->color(Graph_lib::Color::dark_green);
+            pw->color2(Graph_lib::Color::dark_green);
+        }
+        else
+        {
+            pw->color(Graph_lib::Color::black);
+            pw->color2(Graph_lib::Color::black);
+        }
+    }
+    
+    bool active;
 
-protected:
-   bool button_pushed{false};
-   static void cb(Graph_lib::Address, Graph_lib::Address addr)
-   {
-   }
-
-   void change_color()
-   {
-       // if (database.label.flag)
-       {
-           pw->color(Graph_lib::Color::green);
-       }
-   }
+private:
 };
 
 
