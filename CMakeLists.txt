@@ -13,7 +13,6 @@ add_executable(
     src/database.cpp
     src/create_level.cpp
 
-
     src/main_window.cpp
     src/generate_level.cpp
     src/choose_level.cpp
@@ -23,7 +22,6 @@ add_executable(
 
     src/logic_board.cpp
     src/graph_board.cpp
-    src/buttons.cpp
 
     src/Graph_lib/Graph.cpp
     src/Graph_lib/GUI.cpp

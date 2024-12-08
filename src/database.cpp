@@ -9,7 +9,7 @@ std::vector<int> size_to_int(const std::string& size)
     return std::vector<int> {w, h};
 }
 
-Database_levels::Response Database_levels::add_level(Level level)
+Database_levels::Response Database_levels::add_level(Level& level)
 {
     char* err;
     Response response = Response::OK;
@@ -70,6 +70,56 @@ std::vector<Level> Database_levels::get_levels(const std::string& size)
         return std::vector<Level> {};
     }
     return levels;
+}
+
+Database_levels::Response Database_levels::update_current(Level& level)
+{
+    char* err;
+    Response response = Response::OK;
+    std::string sql = "UPDATE levels SET current_values = '" + vector_to_string(level.current_values) +
+                      "', empty = '" + vector_to_string(level.empty) + "' WHERE size = '" + level.size + 
+                      "' AND title = '" + level.title + "'";
+    int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
+    if (res != SQLITE_OK)
+    {
+        std::cerr << "Error update_current level: " << err << std::endl;
+        sqlite3_free(err);
+        return Response::FAIL;
+    }
+    return Response::OK;
+}
+
+Database_levels::Response Database_levels::update_finished(Level& level)
+{
+    char* err;
+    Response response = Response::OK;
+    std::string finish = level.finished ? "1" : "0";
+    std::string sql = "UPDATE levels SET finished = '" + finish + "' WHERE size = '" + level.size +
+                      "' AND title = '" + level.title + "'";
+    int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
+    if (res != SQLITE_OK)
+    {
+        std::cerr << "Error update_finished level: " << err << std::endl;
+        sqlite3_free(err);
+        return Response::FAIL;
+    }
+    return Response::OK;
+}
+
+Database_levels::Response Database_levels::update_heart_count(Level& level)
+{
+    char* err;
+    Response response = Response::OK;
+    std::string sql = "UPDATE levels SET hearts_count = '" + std::to_string(level.hearts_count) + "' WHERE size = '" + level.size +
+                      "' AND title = '" + level.title + "'";
+    int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
+    if (res != SQLITE_OK)
+    {
+        std::cerr << "Error update_finished level: " << err << std::endl;
+        sqlite3_free(err);
+        return Response::FAIL;
+    }
+    return Response::OK;
 }
 
 int Database_levels::get_new_id(const std::string& size)

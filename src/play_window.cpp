@@ -1,7 +1,39 @@
 #include "play_window.h"
 #include "rules_window.h"
-#include "graph_board.h"
 #include "wrapper.h"
+
+Fill_button::Fill_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active, Button_type b_type)
+                : Graph_lib::Button{xy, w, h, label, cb}, active{active} 
+{
+    int margin = 5;
+    if (b_type == Button_type::FILLED)
+    {
+        mark = new Graph_lib::Rectangle(Graph_lib::Point(xy.x + margin, xy.y + margin), w - margin * 2, h - margin * 2);
+    }
+    else
+    {
+        mark = new Graph_lib::Lines;
+        ((Graph_lib::Lines*) mark)->add(Graph_lib::Point(xy.x + margin, xy.y + margin), Graph_lib::Point(xy.x + w - margin, xy.y + h - margin));
+        ((Graph_lib::Lines*) mark)->add(Graph_lib::Point(xy.x + margin, xy.y + h - margin), Graph_lib::Point(xy.x + w - margin, xy.y + margin));
+        mark->set_style(Graph_lib::Line_style(Graph_lib::Line_style::solid, 3));
+    }
+    mark->set_color(Graph_lib::Color::black);
+    mark->set_fill_color(Graph_lib::Color::black);
+}
+
+void Fill_button::set_color()
+{
+    if (active)
+    {
+        pw->color(Graph_lib::Color::dark_green);
+        pw->color2(Graph_lib::Color::dark_green);
+    }
+    else
+    {
+        pw->color(Graph_lib::Color::no_color);
+        pw->color2(Graph_lib::Color::no_color);
+    }
+}
 
 Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& title, Level& level, Windows_wrapper &own)
     : Window_with_back{xy, w, h, title}, own{own}, rules_button{Graph_lib::Button{Graph_lib::Point{10, 10}, 40, 40, "?", cb_rules}},
@@ -10,7 +42,7 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       restart_button{Graph_lib::Point{120, y_max() - 30}, 100, 20, "restart", cb_restart},
       filled_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "", cb_choose_option, true, Fill_button::FILLED},
       cross_button{Graph_lib::Point{x_max() - 100, y_max() -50}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
-      option{1},
+      button_option{Game_button::FILLED},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
       hearts_img{}
 {
@@ -61,7 +93,7 @@ void Play_window::cb_restart(Graph_lib::Address, Graph_lib::Address addr)
 
 void Play_window::cb_choose_option(Graph_lib::Address, Graph_lib::Address addr)
 {
-    auto* pb = static_cast<Graph_lib::Button*>(addr);
+    auto* pb = static_cast<Fill_button*>(addr);
     static_cast<Play_window&>(pb->window()).choose_option();
 }
 
@@ -74,7 +106,22 @@ void Play_window::choose_option()
     cross_button.redraw();
 
     if (filled_button.active)
-        option = 1;
+        button_option = Game_button::FILLED;
     else
-        option = 0;
+        button_option = Game_button::CROSS;
+}
+
+void Play_window::update_current(Level& level)
+{
+    own.db_levels.update_current(level);
+}
+
+void Play_window::update_finished(Level& level)
+{
+    own.db_levels.update_finished(level);
+}
+
+void Play_window::update_heart_count(Level& level)
+{
+    own.db_levels.update_heart_count(level);
 }

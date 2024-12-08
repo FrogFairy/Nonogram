@@ -7,10 +7,10 @@
 #include "main_window.h"
 #include "database.h"
 
-struct Empty_image_chooser : public Graph_lib::Widget
+struct Label_widget : public Graph_lib::Widget
 {
 public:
-    Empty_image_chooser(Graph_lib::Point xy, const std::string& title)
+    Label_widget(Graph_lib::Point xy, const std::string& title)
         : Graph_lib::Widget{xy, w, h, "exception empty path", nullptr}, label{title} {}
     
     void attach (Graph_lib::Window& win)
@@ -39,7 +39,8 @@ private:
     Graph_lib::File_chooser_box image_chooser;
     Graph_lib::In_box level_name;
 
-    Empty_image_chooser empty_path;
+    Label_widget empty_path;
+    Label_widget exists_level;
 
     Windows_wrapper& own;
 

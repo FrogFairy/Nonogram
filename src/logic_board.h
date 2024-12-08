@@ -8,32 +8,47 @@
 struct Logic_board
 {
 public:
+    enum Response {OK, MISTAKE, FINISH};
+
     Logic_board(Level& level) 
         : current{level.current_values}, correct{level.correct_values},
-        empty{level.empty}, row_digits{}, col_digits{}
+        empty{level.empty}, row_digits{}, col_digits{}, status{OK}
     {
+        std::vector<int> size = size_to_int(level.size);
+        height = size[0];
+        width = size[1];
         fill_col_digits();
-        fill_row_digits();    
+        fill_row_digits();
+        if (correct_count == finish_count) status = FINISH;
     }
     
-    bool set_click(int x, int y, int val);
+    void set_click(int x, int y, int val);
     std::vector<int> hint_click();
     void after_hint(std::vector<int> position);
+    void after_mistake(std::vector<int> position);
 
     void fill_row_digits();
     void fill_col_digits();
 
     int max_rows  = 0; // maximum of digits in rows
     int max_cols = 0; // maximum of digits in cols
+
+    int width, height;
     
     std::vector<std::vector<int>> row_digits;
     std::vector<std::vector<int>> col_digits;
     std::vector<std::vector<int>> current;
     std::vector<std::vector<int>> correct;
+    std::vector<std::vector<int>> empty;
+
+    Response status;
+
+    int correct_count = 0; // count of correct click (filled)
+    int finish_count = 0;
 
 private:
-    std::vector<std::vector<int>> empty;
-    int correct_count = 0;
+    // int correct_count = 0; // count of correct click (filled)
+    // int finish_count = 0; // count of filled cells in correct
 };
 
 #endif // LOGIC_BOARD_H

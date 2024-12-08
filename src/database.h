@@ -13,11 +13,20 @@ std::vector<int> size_to_int(const std::string& size);
 struct Level
 {
     Level() = default;
-    Level(const std::string& title, const std::string size, const std::string filename)
+    Level(const std::string& title, const std::string& size, const std::string& filename)
         : title{title}, size{size}
     {
         std::vector<int> s = size_to_int(size);
         correct_values = create_matrix_level(s[0], s[1], filename);
+    }
+
+    bool operator==(const Level& other) const
+    {
+        return (title == other.title && size == other.size &&
+                correct_values == other.correct_values &&
+                current_values == other.current_values &&
+                empty == other.empty && hearts_count == other.hearts_count &&
+                finished == other.finished);
     }
     
     void init()
@@ -31,6 +40,15 @@ struct Level
             current_values.push_back(std::vector<int>(correct_values[0].size(), -1));
         }
     }
+    
+    void set_current(std::vector<std::vector<int>>& current, std::vector<std::vector<int>>& empty) 
+    { 
+        this->current_values = current;
+        this->empty = empty;
+    }
+
+    void set_hearts(int hearts) { hearts_count = hearts; }
+    void set_finished(bool finish) { finished = finish; }
     
     std::string title{};
     std::string size{};
@@ -58,9 +76,14 @@ public:
         sqlite3_close(db);
     }
 
-    Response add_level(Level level);
+    Response add_level(Level& level);
+
     Level get_level(const std::string& size, const std::string& title);
     std::vector<Level> get_levels(const std::string& size);
+
+    Response update_current(Level& level);
+    Response update_finished(Level& level);
+    Response update_heart_count(Level& level);
 
     int get_new_id(const std::string& size);
 

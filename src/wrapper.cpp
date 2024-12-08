@@ -35,6 +35,7 @@ void Windows_wrapper::open_play_window(const std::string& size, const std::strin
     if (!play_win->shown())
         exit(0);
     delete play_win;
+    // choose_win->update_level(level);
     choose_win->show();
 }
 

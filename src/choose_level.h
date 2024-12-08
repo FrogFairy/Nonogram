@@ -2,6 +2,7 @@
 #define CHOOSE_LEVEL_H
 
 #include <string>
+#include <algorithm>
 
 #include <Graph_lib/GUI.h>
 #include "main_window.h"
@@ -31,6 +32,14 @@ struct Choose_level_window : public Window_with_back
 {
 public:
     Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, const std::string &size, Windows_wrapper& own);
+
+    // void update_level(Level& level) 
+    // {
+    //     Level_button** btn = std::find_if(level_buttons.begin(), level_buttons.end(), [level](Level_button* btn) { btn->label == level.title; }); 
+    //     delete *btn;
+    //     *btn = new Level_button{Graph_lib::Point{0, 0}, 0, 0, level.title, cb_start_level, level.finished};
+    //     // (*btn)->redraw();
+    // }
 
 private:
     static void cb_start_level(Graph_lib::Address, Graph_lib::Address addr);
