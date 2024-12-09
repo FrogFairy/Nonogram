@@ -75,10 +75,19 @@ public:
         if (level.hearts_count == 0 || level.finished) block_buttons();
     }
 
+    void restart()
+    {
+        level.restart();
+        logic_board = Logic_board(level);
+        init();
+    }
+
     void init();
     void attach(Graph_lib::Window &win);
 
     void block_buttons();
+
+    void hide();
     
 private:
     static void cb_click_button(Graph_lib::Address, Graph_lib::Address addr);

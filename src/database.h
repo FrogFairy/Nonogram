@@ -14,10 +14,19 @@ struct Level
 {
     Level() = default;
     Level(const std::string& title, const std::string& size, const std::string& filename)
-        : title{title}, size{size}
+        : title{title}, size{size}, filename{filename}
     {
         std::vector<int> s = size_to_int(size);
         correct_values = create_matrix_level(s[0], s[1], filename);
+    }
+
+    void restart()
+    {
+        current_values = std::vector<std::vector<int>> {};
+        empty = std::vector<std::vector<int>> {};
+        hearts_count = 3;
+        finished = false;
+        init();
     }
 
     bool operator==(const Level& other) const
@@ -57,6 +66,8 @@ struct Level
     std::vector<std::vector<int>> empty{};
     int hearts_count = 3;
     bool finished = false;
+
+    std::string filename;
 };
 
 struct Database_levels

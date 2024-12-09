@@ -494,6 +494,8 @@ struct Image : Shape
     p = p->copy(new_w, new_h);
   }
 
+  Fl_Image* fl_image() { return p; }
+
 private:
   int w, h, cx, cy;  // define "masking box" within image relative to position (cx,cy)
   Fl_Image* p;

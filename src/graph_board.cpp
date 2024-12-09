@@ -110,6 +110,27 @@ void Graph_board::init()
     }
 }
 
+void Graph_board::hide()
+{
+    for (int i = 0; i < logic_board.height; ++i)
+    {
+        for (int j = 0; j < logic_board.width; ++j)
+        {
+            own->detach(buttons[i * logic_board.height + j]);
+            if (j < logic_board.row_digits[i].size())
+                own->detach(row_digits[i][j]);
+        }
+    }
+
+    for (int i = 0; i < logic_board.width; ++i)
+    {
+        for (int j = 0; j < logic_board.col_digits[i].size(); ++j)
+        {
+            own->detach(col_digits[i][j]);
+        }
+    }
+}
+
 void Graph_board::attach(Graph_lib::Window &win)
 { 
     for (int i = 0; i < buttons.size(); ++i)

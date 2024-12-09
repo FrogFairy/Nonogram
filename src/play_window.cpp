@@ -36,7 +36,8 @@ void Fill_button::set_color()
 }
 
 Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& title, Level& level, Windows_wrapper &own)
-    : Window_with_back{xy, w, h, title}, own{own}, rules_button{Graph_lib::Button{Graph_lib::Point{10, 10}, 40, 40, "?", cb_rules}},
+    : Window_with_back{xy, w, h, title}, level{level}, own{own}, 
+      rules_button{Graph_lib::Button{Graph_lib::Point{10, 10}, 40, 40, "?", cb_rules}},
       hint_button{Graph_lib::Point{60, 10}, 40, 40, "", cb_hint},
       lamp{Graph_lib::Point{63, 12}, "resources/hint.png"},
       restart_button{Graph_lib::Point{120, y_max() - 30}, 100, 20, "restart", cb_restart},
@@ -47,9 +48,12 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       hearts_img{}
 {
     Window_with_back::size_range(w, h, w, h);
-    hearts_img.push_back(new Graph_lib::Image(Graph_lib::Point(x_max() - 100, 20), "resources/heart.png"));
-    hearts_img.push_back(new Graph_lib::Image(Graph_lib::Point(x_max() - 70, 20), "resources/heart.png"));
-    hearts_img.push_back(new Graph_lib::Image(Graph_lib::Point(x_max() - 40, 20), "resources/heart.png"));
+    
+    int heart_size = 20, margin = 5;
+    for (int i = 0; i < 3; ++i)
+    {
+        hearts_img.push_back(Heart{Graph_lib::Point(x_max() - (heart_size + margin) * (3 - i), 20), heart_size, heart_size, level.hearts_count - (2 - i) > 0});
+    }
     
     for (int i = 0; i < hearts_img.size(); ++i)
         attach(hearts_img[i]);
@@ -82,14 +86,23 @@ void Play_window::hint()
 {
 }
 
+void Play_window::cb_restart(Graph_lib::Address, Graph_lib::Address addr)
+{
+    auto* pb = static_cast<Graph_lib::Button*>(addr);
+    static_cast<Play_window&>(pb->window()).restart();
+}
 
 void Play_window::restart()
 {
+    level.restart();
+    detach(board);
+    board.restart();
+    attach(board);
+    own.db_levels.update_current(level);
+    own.db_levels.update_finished(level);
+    own.db_levels.update_heart_count(level);
 }
 
-void Play_window::cb_restart(Graph_lib::Address, Graph_lib::Address addr)
-{
-}
 
 void Play_window::cb_choose_option(Graph_lib::Address, Graph_lib::Address addr)
 {
@@ -123,5 +136,17 @@ void Play_window::update_finished(Level& level)
 
 void Play_window::update_heart_count(Level& level)
 {
+    for (int i = 0; i < hearts_img.size(); ++i)
+    {
+        if (hearts_img[i].is_filled())
+        {
+            // hearts_img[i] = Heart(hearts_img[i].loc, hearts_img[i].width, hearts_img[i].height, false);
+            detach(hearts_img[i]);
+            hearts_img[i].change(false);
+            attach(hearts_img[i]);
+            // hearts_img[i].redraw();
+            break;
+        }
+    }
     own.db_levels.update_heart_count(level);
 }
