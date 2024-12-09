@@ -7,6 +7,11 @@ void Game_button::init_mark()
     int margin = 5;
     switch (cur_state)
     {
+        case EMPTY:
+        {
+            mark = nullptr;
+            break;
+        }
         case FILLED:
         case HINT_FILLED:
         case MISTAKE_FILLED:
@@ -22,6 +27,8 @@ void Game_button::init_mark()
             mark->set_style(Graph_lib::Line_style(Graph_lib::Line_style::solid, 3));
         }
     }
+
+    if (!mark) return;
 
     Graph_lib::Color color = Graph_lib::Color::black;
     switch (cur_state)
@@ -48,7 +55,9 @@ void Game_button::change_button(State state)
     own->detach(*mark);
     delete mark;
     init_mark();
-    own->attach(*mark);
+
+    if (mark)
+        own->attach(*mark);
 }
 
 void Graph_board::init()
@@ -64,15 +73,23 @@ void Graph_board::init()
         for (int j = 0; j < logic_board.width; ++j)
         {
             Game_button::State state = Game_button::State(logic_board.current[i][j]);
-            if (state == Game_button::HINT_CROSS || state == Game_button::HINT_FILLED)
+            switch (state)
             {
-                logic_board.after_hint(std::vector<int> {i, j});
-                state = Game_button::State(logic_board.current[i][j]);
-            }
-            else if (state == Game_button::MISTAKE_CROSS || state == Game_button::MISTAKE_FILLED)
-            {
-                logic_board.after_mistake(std::vector<int> {i, j});
-                state = Game_button::State(logic_board.current[i][j]);
+                case Game_button::HINT_CROSS:
+                case Game_button::HINT_FILLED:
+                {
+                    logic_board.after_hint(std::vector<int> {i, j});
+                    state = Game_button::State(logic_board.current[i][j]);
+                    break;
+                }
+
+                case Game_button::MISTAKE_CROSS:
+                case Game_button::MISTAKE_FILLED:
+                {
+                    logic_board.after_mistake(std::vector<int> {i, j});
+                    state = Game_button::State(logic_board.current[i][j]);
+                    break;
+                }
             }
 
             auto button = new Game_button{Graph_lib::Point{loc.x + x_margin + j * button_size, loc.y + y_margin + i * button_size}, button_size, button_size, "", cb_click_button,
@@ -110,25 +127,22 @@ void Graph_board::init()
     }
 }
 
-void Graph_board::hide()
+void Graph_board::change_buttons()
 {
     for (int i = 0; i < logic_board.height; ++i)
     {
         for (int j = 0; j < logic_board.width; ++j)
         {
-            own->detach(buttons[i * logic_board.height + j]);
-            if (j < logic_board.row_digits[i].size())
-                own->detach(row_digits[i][j]);
+            buttons[i * logic_board.height + j].change_button((Game_button::State) logic_board.current[i][j]);
+            buttons[i * logic_board.height + j].block();
         }
     }
+}
 
-    for (int i = 0; i < logic_board.width; ++i)
-    {
-        for (int j = 0; j < logic_board.col_digits[i].size(); ++j)
-        {
-            own->detach(col_digits[i][j]);
-        }
-    }
+void Graph_board::redraw()
+{
+    for (int i = 0; i < buttons.size(); ++i)
+        buttons[i].redraw();
 }
 
 void Graph_board::attach(Graph_lib::Window &win)
@@ -154,7 +168,7 @@ void Graph_board::attach(Graph_lib::Window &win)
 
 void Graph_board::block_buttons()
 {
-    is_blocked = true;
+    blocked = !blocked;
     for (int i = 0; i < buttons.size(); ++i)
         buttons[i].block();
 }
@@ -174,9 +188,41 @@ void Graph_board::change_previous()
     {
         logic_board.after_hint(hint);
         int x = hint[0], y = hint[1];
-        buttons[logic_board.height * x + y].change_button(logic_board.current[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
+        Game_button& button = buttons[logic_board.height * x + y];
+        button.change_button(logic_board.current[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
+        button.redraw();
         hint = {};
     }
+}
+
+void Graph_board::get_hint()
+{
+    if (blocked) return;
+    change_previous();
+    Play_window* win = (Play_window*) own;
+
+    std::vector<int> pos = logic_board.hint_click();
+    int x = pos[0], y = pos[1];
+    Game_button& btn = buttons[x * logic_board.height + y];
+
+    auto state = (Game_button::State) logic_board.current[x][y];
+
+    level.set_current(logic_board.current, logic_board.empty);
+    win->update_current(level);
+
+    if (logic_board.status == Logic_board::OK)
+    {
+        hint = {x, y};
+        btn.change_button(state);
+    }
+    else if (logic_board.status == Logic_board::FINISH)
+    {
+        btn.change_button(state);
+        level.set_finished(true);
+        win->update_finished(level);
+        block_buttons();
+    }
+    btn.redraw();
 }
 
 void Graph_board::cb_click_button(Graph_lib::Address, Graph_lib::Address addr)
@@ -187,16 +233,20 @@ void Graph_board::cb_click_button(Graph_lib::Address, Graph_lib::Address addr)
 
 void Graph_board::click_button(Game_button* btn)
 {
-    if (is_blocked || btn->state() != Game_button::EMPTY) return;
+    if (blocked || btn->state() != Game_button::EMPTY) return;
     change_previous();
+
     Play_window* win = (Play_window*) own;
     Game_button::State state = win->option();
     int x = btn->x(), y = btn->y();
+
     logic_board.set_click(x, y, state);
     level.set_current(logic_board.current, logic_board.empty);
     win->update_current(level);
+
     if (logic_board.status == Logic_board::OK)
         btn->change_button(state);
+
     else if (logic_board.status == Logic_board::FINISH)
     {
         btn->change_button(state);
@@ -204,6 +254,7 @@ void Graph_board::click_button(Game_button* btn)
         win->update_finished(level);
         block_buttons();
     }
+    
     else if (logic_board.status == Logic_board::MISTAKE)
     {
         mistake = {x, y};

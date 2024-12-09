@@ -181,6 +181,31 @@ struct File_chooser_box : Widget
   void attach(Window&);
 };
 
+//------------------------------------------------------------------------------
+
+struct Label_widget : public Widget
+{
+public:
+    Label_widget(Graph_lib::Point xy, const std::string& text)
+        : Widget{xy, w, h, "", nullptr}, text{text} {}
+    
+    void attach (Window& win)
+    {
+        pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, w, h, text.c_str());
+        own = &win;
+    }
+
+    void set_label(const std::string& label)
+    {
+      pw->label(label.c_str());
+    }
+
+private:
+    std::string text;
+    const int w = 300;
+    const int h = 20;
+};
+
 }  // namespace Graph_lib
 
 #endif  // GUI_GUARD

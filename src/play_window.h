@@ -1,6 +1,7 @@
 #ifndef PLAY_WINDOW_H
 #define PLAY_WINDOW_H
 
+#include <Graph_lib/GUI.h>
 #include "main_window.h"
 #include "database.h"
 #include "graph_board.h"
@@ -79,7 +80,6 @@ struct Play_window : public Window_with_back
 {
 public:
     Play_window(Graph_lib::Point xy, int w, int h, const std::string& title, Level& level, Windows_wrapper &own);
-    // ~Play_window() { delete board; }
 
     Game_button::State option() { return button_option; }
 
@@ -109,6 +109,7 @@ private:
     Graph_lib::Button hint_button;
     Graph_lib::Button restart_button;
     Graph_lib::Image lamp;
+    Graph_lib::Label_widget exception_label;
 
     Fill_button filled_button;
     Fill_button cross_button;

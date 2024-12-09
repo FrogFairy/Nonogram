@@ -26,12 +26,9 @@ public:
     };
 
     Game_button(Graph_lib::Point xy, int w, int h, const std::string &label, Graph_lib::Callback cb, int x, int y, State state, Graph_board& board)
-        : Graph_lib::Button{xy, w, h, label, cb}, x_coord{x}, y_coord{y}, cur_state{state}, board{board}, mark{nullptr}, blocked{false}
+        : Graph_lib::Button{xy, w, h, label, cb}, x_coord{x}, y_coord{y}, cur_state{state}, board{board}, blocked{false}
     {
-        if (state != State::EMPTY) 
-        {
-            init_mark();
-        }
+        init_mark();
     }
 
     ~Game_button() { delete mark; }
@@ -79,15 +76,23 @@ public:
     {
         level.restart();
         logic_board = Logic_board(level);
-        init();
+        mistake = std::vector<int> {};
+        hint = std::vector<int> {};
+        block_buttons();
+        change_buttons();
     }
 
+    void change_buttons();
     void init();
+    void get_hint();
+
+    bool is_blocked() { return blocked; }
+
     void attach(Graph_lib::Window &win);
 
     void block_buttons();
 
-    void hide();
+    void redraw() override;
     
 private:
     static void cb_click_button(Graph_lib::Address, Graph_lib::Address addr);
@@ -95,17 +100,17 @@ private:
 
     void change_previous();
 
-    Graph_lib::Vector_ref<Game_button> buttons;
-    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> row_digits;
-    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> col_digits;
+    Graph_lib::Vector_ref<Game_button> buttons {};
+    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> row_digits {};
+    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> col_digits {};
 
     Logic_board logic_board;
     Level level;
 
-    std::vector<int> mistake; // coord mistake cell
-    std::vector<int> hint; // coord hint cell
+    std::vector<int> mistake {}; // coord mistake cell
+    std::vector<int> hint {}; // coord hint cell
 
-    bool is_blocked = false;
+    bool blocked = false;
 };
 
 

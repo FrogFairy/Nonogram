@@ -35,8 +35,7 @@ void Generate_level_window::save_button()
 
     if(filename == "")
     {
-        exists_level.hide();
-        empty_path.show();
+        exception_label.set_label("please specify the path to the image");
     }
     else
     {
@@ -45,8 +44,7 @@ void Generate_level_window::save_button()
         Database_levels::Response res = own.db_levels.add_level(level);
         if (res == Database_levels::ALREADY_EXISTS) 
         {
-            empty_path.hide();
-            exists_level.show();
+            exception_label.set_label("level with this size and title already exists");
             return;
         }
         button_pushed = true;
@@ -58,8 +56,7 @@ Generate_level_window::Generate_level_window(Graph_lib::Point xy, int w, int h,
 : Window_with_back{xy, w, h, title}, own{own},
 size_box{Graph_lib::Point{260, 250}, 200, 50, "size: "},
 image_chooser{Graph_lib::Point{260, 350}, 200, 50, " ", "choose image", "Image Files (*.{jpg,png})", save_image, cb_choose_file},
-empty_path {Graph_lib::Point{210, 450}, "please specify the path to the image"},
-exists_level{Graph_lib::Point{210, 450}, "level with this size and title already exists"},
+exception_label {Graph_lib::Point{210, 450}, ""},
 level_name{Graph_lib::Point{260, 400}, 200, 30, "level name: "}
 {
     Window_with_back::size_range(w, h, w, h);
@@ -74,10 +71,7 @@ level_name{Graph_lib::Point{260, 400}, 200, 30, "level name: "}
     attach(save_button);
     attach(level_name);
 
-    attach(empty_path);
-    attach(exists_level);
-    empty_path.hide();
-    exists_level.hide();
+    attach(exception_label);
 }
 
 void Generate_level_window::cb_choose_file(Graph_lib::Address, Graph_lib::Address addr)

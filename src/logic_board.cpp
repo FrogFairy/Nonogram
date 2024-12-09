@@ -69,6 +69,7 @@ std::vector<int> Logic_board::hint_click()
 {
     if (correct_count == current.size() * current[0].size()) 
         return std::vector<int> {};
+    
     int rand_ind = std::rand() % empty.size();
     std::vector<int> pos = empty[rand_ind];
     int x = pos[0];

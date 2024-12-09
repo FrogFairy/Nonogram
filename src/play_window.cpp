@@ -42,18 +42,17 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       lamp{Graph_lib::Point{63, 12}, "resources/hint.png"},
       restart_button{Graph_lib::Point{120, y_max() - 30}, 100, 20, "restart", cb_restart},
       filled_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "", cb_choose_option, true, Fill_button::FILLED},
-      cross_button{Graph_lib::Point{x_max() - 100, y_max() -50}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
+      cross_button{Graph_lib::Point{x_max() - 100, y_max() - 50}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
       button_option{Game_button::FILLED},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
+      exception_label{Graph_lib::Point{220, y_max() - 30}, ""},
       hearts_img{}
 {
     Window_with_back::size_range(w, h, w, h);
     
     int heart_size = 20, margin = 5;
     for (int i = 0; i < 3; ++i)
-    {
         hearts_img.push_back(Heart{Graph_lib::Point(x_max() - (heart_size + margin) * (3 - i), 20), heart_size, heart_size, level.hearts_count - (2 - i) > 0});
-    }
     
     for (int i = 0; i < hearts_img.size(); ++i)
         attach(hearts_img[i]);
@@ -65,6 +64,7 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
     attach(filled_button);
     attach(cross_button);
     attach(board);
+    attach(exception_label);
 }
 
 void Play_window::cb_rules(Graph_lib::Address, Graph_lib::Address addr)
@@ -80,10 +80,13 @@ void Play_window::rules()
 
 void Play_window::cb_hint(Graph_lib::Address, Graph_lib::Address addr)
 {
+    auto* pb = static_cast<Graph_lib::Button*>(addr);
+    static_cast<Play_window&>(pb->window()).hint();
 }
 
 void Play_window::hint()
 {
+    board.get_hint();
 }
 
 void Play_window::cb_restart(Graph_lib::Address, Graph_lib::Address addr)
@@ -95,9 +98,19 @@ void Play_window::cb_restart(Graph_lib::Address, Graph_lib::Address addr)
 void Play_window::restart()
 {
     level.restart();
-    detach(board);
+
     board.restart();
-    attach(board);
+    board.redraw();
+
+    for (int i = 0; i < hearts_img.size(); ++i)
+    {
+        detach(hearts_img[i]);
+        hearts_img[i].change(true);
+        attach(hearts_img[i]);
+    }
+
+    exception_label.set_label("");
+
     own.db_levels.update_current(level);
     own.db_levels.update_finished(level);
     own.db_levels.update_heart_count(level);
@@ -132,6 +145,7 @@ void Play_window::update_current(Level& level)
 void Play_window::update_finished(Level& level)
 {
     own.db_levels.update_finished(level);
+    exception_label.set_label("you have completed this level!");
 }
 
 void Play_window::update_heart_count(Level& level)
@@ -140,13 +154,14 @@ void Play_window::update_heart_count(Level& level)
     {
         if (hearts_img[i].is_filled())
         {
-            // hearts_img[i] = Heart(hearts_img[i].loc, hearts_img[i].width, hearts_img[i].height, false);
             detach(hearts_img[i]);
             hearts_img[i].change(false);
             attach(hearts_img[i]);
-            // hearts_img[i].redraw();
             break;
         }
     }
+    
     own.db_levels.update_heart_count(level);
+    if (board.is_blocked()) 
+        exception_label.set_label("you've run out of hearts. please restart the level");
 }
