@@ -116,6 +116,10 @@ private:
     Game_button::State button_option;
 
     std::vector<Heart> hearts_img;
+
+    const std::string text_finish = "you have completed this level!";
+    const std::string text_hearts = "you've run out of hearts.";
+    const std::string text_empty = "";
 };
 
 

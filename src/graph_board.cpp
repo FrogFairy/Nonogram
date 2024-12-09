@@ -219,8 +219,8 @@ void Graph_board::get_hint()
     {
         btn.change_button(state);
         level.set_finished(true);
-        win->update_finished(level);
         block_buttons();
+        win->update_finished(level);
     }
     btn.redraw();
 }
@@ -251,8 +251,8 @@ void Graph_board::click_button(Game_button* btn)
     {
         btn->change_button(state);
         level.set_finished(true);
-        win->update_finished(level);
         block_buttons();
+        win->update_finished(level);
     }
     
     else if (logic_board.status == Logic_board::MISTAKE)
@@ -260,7 +260,7 @@ void Graph_board::click_button(Game_button* btn)
         mistake = {x, y};
         btn->change_button(logic_board.current[x][y] == 4 ? Game_button::MISTAKE_CROSS : Game_button::MISTAKE_FILLED);
         level.set_hearts(level.hearts_count - 1);
-        win->update_heart_count(level);
         if (level.hearts_count == 0) block_buttons();
+        win->update_heart_count(level);
     }
 }

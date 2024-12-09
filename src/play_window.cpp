@@ -45,7 +45,7 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       cross_button{Graph_lib::Point{x_max() - 100, y_max() - 50}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
       button_option{Game_button::FILLED},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
-      exception_label{Graph_lib::Point{220, y_max() - 30}, ""},
+      exception_label{Graph_lib::Point{220, y_max() - 30}, text_empty},
       hearts_img{}
 {
     Window_with_back::size_range(w, h, w, h);
@@ -65,6 +65,13 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
     attach(cross_button);
     attach(board);
     attach(exception_label);
+
+    if (level.finished)
+        exception_label.set_label(text_finish);
+    else if (level.hearts_count == 0)
+        exception_label.set_label(text_hearts);
+    else
+        exception_label.set_label(text_empty);
 }
 
 void Play_window::cb_rules(Graph_lib::Address, Graph_lib::Address addr)
@@ -109,7 +116,7 @@ void Play_window::restart()
         attach(hearts_img[i]);
     }
 
-    exception_label.set_label("");
+    exception_label.set_label(text_empty);
 
     own.db_levels.update_current(level);
     own.db_levels.update_finished(level);
@@ -145,7 +152,8 @@ void Play_window::update_current(Level& level)
 void Play_window::update_finished(Level& level)
 {
     own.db_levels.update_finished(level);
-    exception_label.set_label("you have completed this level!");
+    exception_label.set_label(text_finish);
+
 }
 
 void Play_window::update_heart_count(Level& level)
@@ -160,8 +168,8 @@ void Play_window::update_heart_count(Level& level)
             break;
         }
     }
-    
+
     own.db_levels.update_heart_count(level);
-    if (board.is_blocked()) 
-        exception_label.set_label("you've run out of hearts. please restart the level");
+    if (board.is_blocked())
+        exception_label.set_label(text_hearts);
 }
