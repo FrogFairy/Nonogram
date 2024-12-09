@@ -3,13 +3,13 @@
 
 void Choose_level_window::cb_start_level(Graph_lib::Address, Graph_lib::Address addr) 
 {
-    auto* pb = static_cast<Graph_lib::Button*>(addr);
-    static_cast<Choose_level_window&>(pb->window()).start_level(pb->label);
+    auto* pb = static_cast<Level_button*>(addr);
+    static_cast<Choose_level_window&>(pb->window()).start_level(pb->label, *pb);
 }
 
-void Choose_level_window::start_level(const std::string& title)
+void Choose_level_window::start_level(const std::string& title, Level_button& btn)
 {
-    own.open_play_window(size, title);
+    own.open_play_window(size, title, btn);
 }
 
 Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, const std::string &size, Windows_wrapper& own)

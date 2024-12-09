@@ -45,7 +45,7 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       cross_button{Graph_lib::Point{x_max() - 100, y_max() - 50}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
       button_option{Game_button::FILLED},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
-      exception_label{Graph_lib::Point{220, y_max() - 30}, text_empty},
+      exception_label{Graph_lib::Point{220, y_max() - 30}, ""},
       hearts_img{}
 {
     Window_with_back::size_range(w, h, w, h);
@@ -70,8 +70,6 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
         exception_label.set_label(text_finish);
     else if (level.hearts_count == 0)
         exception_label.set_label(text_hearts);
-    else
-        exception_label.set_label(text_empty);
 }
 
 void Play_window::cb_rules(Graph_lib::Address, Graph_lib::Address addr)

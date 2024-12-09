@@ -26,16 +26,20 @@ void Windows_wrapper::open_generate_window()
     main_win->show();
 }
 
-void Windows_wrapper::open_play_window(const std::string& size, const std::string& level_title)
+void Windows_wrapper::open_play_window(const std::string& size, const std::string& level_title, Level_button& btn)
 {
     choose_win->hide();
+
     Level level = db_levels.get_level(size, level_title);
     play_win = new Play_window(xy, w, h, "Play window", level, *this);
     play_win->wait_for_button();
     if (!play_win->shown())
         exit(0);
     delete play_win;
-    // choose_win->update_level(level);
+
+    level = db_levels.get_level(size, level_title);
+    if (level.finished)
+        btn.change_color(true);
     choose_win->show();
 }
 

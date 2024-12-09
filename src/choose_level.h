@@ -24,6 +24,13 @@ public:
         pw->color2(color);
     }
 
+    void change_color(bool is_finished)
+    {
+        color = (is_finished ? FL_DARK_GREEN : FL_BACKGROUND_COLOR);
+        pw->color(color);
+        pw->color2(color);
+    }
+
 private:
     Fl_Color color;
 };
@@ -33,17 +40,14 @@ struct Choose_level_window : public Window_with_back
 public:
     Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, const std::string &size, Windows_wrapper& own);
 
-    // void update_level(Level& level) 
-    // {
-    //     Level_button** btn = std::find_if(level_buttons.begin(), level_buttons.end(), [level](Level_button* btn) { btn->label == level.title; }); 
-    //     delete *btn;
-    //     *btn = new Level_button{Graph_lib::Point{0, 0}, 0, 0, level.title, cb_start_level, level.finished};
-    //     // (*btn)->redraw();
-    // }
+    void update_level_button(Level& level) 
+    {
+        
+    }
 
 private:
     static void cb_start_level(Graph_lib::Address, Graph_lib::Address addr);
-    void start_level(const std::string& title);
+    void start_level(const std::string& title, Level_button& btn);
 
     std::string size;
     Graph_lib::Menu level_widget;

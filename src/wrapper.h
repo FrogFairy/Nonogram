@@ -11,6 +11,7 @@
 
 struct Choose_level_window;
 struct Generate_level_window;
+struct Level_button;
 
 struct Windows_wrapper
 {
@@ -21,7 +22,7 @@ struct Windows_wrapper
 
   void open_generate_window();
   void open_choose_window(const std::string& btn_label);
-  void open_play_window(const std::string& size, const std::string& level_title);
+  void open_play_window(const std::string& size, const std::string& level_title, Level_button& btn);
   void open_rules_window();
 
 private:
