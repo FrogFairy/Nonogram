@@ -24,8 +24,8 @@ struct Level
     {
         current_values = std::vector<std::vector<int>> {};
         empty = std::vector<std::vector<int>> {};
-        hidden_rows = empty_rows;
-        hidden_cols = empty_cols;
+        hidden_rows = std::vector<std::vector<int>> {};
+        hidden_cols = std::vector<std::vector<int>> {};
         hearts_count = 3;
         finished = false;
         init();
@@ -48,9 +48,6 @@ struct Level
         this->current_values = current;
         this->empty = empty;
     }
-
-    void set_hearts(int hearts) { hearts_count = hearts; }
-    void set_finished(bool finish) { finished = finish; }
     
     std::string title{};
     std::string size{};
@@ -61,9 +58,6 @@ struct Level
     std::vector<std::vector<int>> hidden_cols{};
     int hearts_count = 3;
     bool finished = false;
-
-    std::vector<std::vector<int>> empty_rows {}; // for coord 0 digits in rows
-    std::vector<std::vector<int>> empty_cols {}; // for coord 0 digits in cols
 
     std::string filename;
 };
@@ -90,7 +84,6 @@ public:
     Level get_level(const std::string& size, const std::string& title);
     std::vector<Level> get_levels(const std::string& size);
 
-    Response update_level(Level& level);
     Response update_current(Level& level);
     Response update_finished(Level& level);
     Response update_heart_count(Level& level);

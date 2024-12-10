@@ -116,7 +116,9 @@ void Play_window::restart()
 
     exception_label.set_label(text_empty);
 
-    own.db_levels.update_level(level);
+    own.db_levels.update_current(level);
+    own.db_levels.update_finished(level);
+    own.db_levels.update_heart_count(level);
 }
 
 

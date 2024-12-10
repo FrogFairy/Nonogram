@@ -11,8 +11,8 @@ public:
     enum Response {OK, MISTAKE, FINISH};
 
     Logic_board(Level& level) 
-        : current{level.current_values}, correct{level.correct_values},
-        empty{level.empty}, row_intervals{}, col_intervals{}, status{OK}
+        : current{level.current_values}, correct{level.correct_values}, empty{level.empty},
+        row_intervals{}, col_intervals{}, status{OK}
     {
         std::vector<int> size = size_to_int(level.size);
         height = size[0];
@@ -27,8 +27,6 @@ public:
     void after_hint(std::vector<int> position);
     void after_mistake(std::vector<int> position);
 
-    std::vector<int> row_changed(int x, int y);
-    std::vector<int> col_changed(int x, int y);
     std::vector<std::vector<int>> changed_digits(int x, int y);
 
     void fill_row_digits();
@@ -48,6 +46,9 @@ public:
     Response status;
 
 private:
+    std::vector<int> row_changed(int x, int y); // return vector of changed digit on rows
+    std::vector<int> col_changed(int x, int y); // return vector of changed digit on cols
+
     int correct_count = 0; // count of correct click (filled)
     int finish_count = 0; // count of filled cells in correct
 };

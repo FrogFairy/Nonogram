@@ -187,17 +187,33 @@ struct Label_widget : public Widget
 {
 public:
     Label_widget(Graph_lib::Point xy, const std::string& text)
-        : Widget{xy, w, h, "", nullptr}, text{text} {}
+        : Widget{xy, w, h, "", nullptr}, text{text} 
+    {}
     
     void attach (Window& win)
     {
-        pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, w, h, text.c_str());
-        own = &win;
+      pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, w, h, text.c_str());
+      own = &win;
     }
 
     void set_label(const std::string& label)
     {
       pw->label(label.c_str());
+    }
+
+    void set_font_size(int fnt_size)
+    {
+      pw->labelsize(fnt_size);
+    }
+
+    void set_color(Graph_lib::Color color)
+    {
+      pw->labelcolor(color.as_int());
+    }
+
+    int length()
+    {
+      return text.length();
     }
 
 private:

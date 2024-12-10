@@ -68,9 +68,24 @@ public:
     Graph_board(Graph_lib::Point xy, int w, int h, Level& level)
         : Widget{xy, w, h, "", nullptr}, level{level}, logic_board{Logic_board(level)}
     {
-        init_widgets();
-        if (level.hearts_count == 0 || level.finished) block_buttons(true);
+        init();
+        if (level.hearts_count == 0 || level.finished) block_buttons(false);
     }
+
+    // ~Graph_board() 
+    // {
+    //     for (int i = 0; i < row_digits.size(); ++i)
+    //     {
+    //         for (int j = 0; j < row_digits[i].size(); ++j)
+    //             delete &row_digits[i][j];
+    //     }
+
+    //     for (int i = 0; i < col_digits.size(); ++i)
+    //     {
+    //         for (int j = 0; j < col_digits[i].size(); ++j)
+    //             delete &col_digits[i][j];
+    //     }
+    // }
 
     void restart()
     {
@@ -81,14 +96,17 @@ public:
         block_buttons(false);
         change_buttons(false);
     }
-    
-    void init_widgets();
 
+    void change_buttons(bool state);
+    void change_digits();
+    void init();
     void get_hint();
 
     bool is_blocked() { return blocked; }
 
     void attach(Graph_lib::Window &win);
+
+    void block_buttons(bool state);
 
     void redraw() override;
     
@@ -97,15 +115,12 @@ private:
     void click_button(Game_button* btn);
 
     void change_previous();
-    void change_buttons(bool state);
-    void change_digits(int x, int y);
-
-    void set_digit_color(Graph_lib::Text& text, Graph_lib::Color color);
-    void block_buttons(bool state);
+    void change_digit(int x, int y);
+    void set_digit_color(Graph_lib::Label_widget* text, Graph_lib::Color color);
 
     Graph_lib::Vector_ref<Game_button> buttons {};
-    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> row_digits {};
-    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> col_digits {};
+    std::vector<Graph_lib::Vector_ref<Graph_lib::Label_widget>> row_digits {};
+    std::vector<Graph_lib::Vector_ref<Graph_lib::Label_widget>> col_digits {};
 
     Logic_board logic_board;
     Level level;

@@ -2,6 +2,8 @@
 #include "play_window.h"
 #include "wrapper.h"
 
+#include <algorithm>
+
 void Game_button::init_mark()
 {
     int margin = 5;
@@ -60,7 +62,7 @@ void Game_button::change_button(State state)
         own->attach(*mark);
 }
 
-void Graph_board::init_widgets()
+void Graph_board::init()
 {
     int font_size = 20;
     int button_size = std::min((height - logic_board.max_cols * font_size) / logic_board.width, (width - logic_board.max_rows) / logic_board.height);
@@ -69,7 +71,7 @@ void Graph_board::init_widgets()
 
     for (int i = 0; i < logic_board.height; ++i)
     {
-        Graph_lib::Vector_ref<Graph_lib::Text> r_digits;
+        Graph_lib::Vector_ref<Graph_lib::Label_widget> r_digits;
         for (int j = 0; j < logic_board.width; ++j)
         {
             Game_button::State state = Game_button::State(logic_board.current[i][j]);
@@ -98,19 +100,8 @@ void Graph_board::init_widgets()
 
             if (j < logic_board.row_intervals[i].size())
             {
-                std::string value = "0";
-                if (!logic_board.row_intervals[i][j].empty())
-                    value = std::to_string(logic_board.row_intervals[i][j][1] - logic_board.row_intervals[i][j][0] + 1);
-
-                auto text = new Graph_lib::Text{Graph_lib::Point(0, 0), value};
-                auto color = (std::find(level.hidden_rows.begin(), level.hidden_rows.end(), std::vector<int> {i, j}) == level.hidden_rows.end() ? 
-                                        Graph_lib::Color::black : Graph_lib::Color::white);
-                Graph_lib::Point p{(int) (loc.x + x_margin - (logic_board.row_intervals[i].size() - j) * font_size - font_size / 4 * text->length()), 
-                            loc.y + y_margin + i * button_size + std::max(button_size - font_size, font_size)};
-                text->move(p.x, p.y);
-                text->set_font_size(font_size);
-                text->set_color(color);
-                r_digits.push_back(*text);
+                auto text = Graph_lib::Label_widget{Graph_lib::Point(0, 0), ""};
+                r_digits.push_back(text);
             }
         }
         row_digits.push_back(r_digits);
@@ -118,23 +109,11 @@ void Graph_board::init_widgets()
 
     for (int i = 0; i < logic_board.width; ++i)
     {
-        Graph_lib::Vector_ref<Graph_lib::Text> c_digits;
+        Graph_lib::Vector_ref<Graph_lib::Label_widget> c_digits;
         for (int j = 0; j < logic_board.col_intervals[i].size(); ++j)
         {
-            std::string value = "0";
-            if (!logic_board.col_intervals[i][j].empty())
-                value = std::to_string(logic_board.col_intervals[i][j][1] - logic_board.col_intervals[i][j][0] + 1);
-
-            auto text = new Graph_lib::Text{Graph_lib::Point(0, 0), value};
-            auto color = (std::find(level.hidden_cols.begin(), level.hidden_cols.end(), std::vector<int> {i, j}) == level.hidden_cols.end() ? 
-                                        Graph_lib::Color::black : Graph_lib::Color::white);
-            Graph_lib::Point p{loc.x + x_margin + i * button_size + (button_size - font_size / 2 * text->length()) / 2, 
-                            (int) (loc.y + y_margin - j * font_size - font_size / 2)};
-
-            text->move(p.x, p.y);
-            text->set_font_size(font_size);
-            text->set_color(color);
-            c_digits.push_back(*text);
+            auto text = Graph_lib::Label_widget{Graph_lib::Point(0, 0), ""};
+            c_digits.push_back(text);
         }
         col_digits.push_back(c_digits);
     }
@@ -152,18 +131,14 @@ void Graph_board::change_buttons(bool state)
     }
 }
 
-void Graph_board::redraw()
+void Graph_board::change_digits()
 {
-    for (int i = 0; i < buttons.size(); ++i)
-        buttons[i].redraw();
-    
     for (int i = 0; i < row_digits.size(); ++i)
     {
         for (int j = 0; j < row_digits[i].size(); ++j)
         {
-            auto color = (std::find(level.hidden_rows.begin(), level.hidden_rows.end(), std::vector<int> {i, j}) == level.hidden_rows.end() ? 
-                                        Graph_lib::Color::black : Graph_lib::Color::white);
-            set_digit_color(row_digits[i][j], color);
+            auto text = &row_digits[i][j];
+            set_digit_color(text, Graph_lib::Color::black);
         }
     }
 
@@ -171,17 +146,25 @@ void Graph_board::redraw()
     {
         for (int j = 0; j < col_digits[i].size(); ++j)
         {
-            auto color = (std::find(level.hidden_cols.begin(), level.hidden_cols.end(), std::vector<int> {i, j}) == level.hidden_cols.end() ? 
-                                        Graph_lib::Color::black : Graph_lib::Color::white);
-            set_digit_color(col_digits[i][j], color);
+            auto text = &col_digits[i][j];
+            set_digit_color(text, Graph_lib::Color::black);
         }
     }
+}
 
-    // win->redraw();
+void Graph_board::redraw()
+{
+    for (int i = 0; i < buttons.size(); ++i)
+        buttons[i].redraw();
 }
 
 void Graph_board::attach(Graph_lib::Window &win)
 { 
+    int font_size = 20;
+    int button_size = std::min((height - logic_board.max_cols * font_size) / logic_board.width, (width - logic_board.max_rows) / logic_board.height);
+    int x_margin = width - button_size * logic_board.width;
+    int y_margin = height - button_size * logic_board.height;
+    
     for (int i = 0; i < buttons.size(); ++i)
     {
         win.attach(buttons[i]);
@@ -190,12 +173,40 @@ void Graph_board::attach(Graph_lib::Window &win)
             for (int j = 0; j < row_digits[i].size(); ++j)
             {
                 win.attach(row_digits[i][j]);
+
+                std::string value = "0";
+                if (logic_board.row_intervals[i][j].size())
+                    value = std::to_string(logic_board.row_intervals[i][j][1] - logic_board.row_intervals[i][j][0] + 1);
+                
+                auto color = (std::find(level.hidden_cols.begin(), level.hidden_cols.end(), std::vector<int> {i, j}) == level.hidden_cols.end() ? 
+                                        Graph_lib::Color::black : Graph_lib::Color::white);
+                Graph_lib::Point p{(int) (loc.x + x_margin - (logic_board.row_intervals[i].size() - j) * font_size - font_size / 4 * row_digits[i][j].length()), 
+                            loc.y + y_margin + i * button_size + std::max(button_size - font_size, font_size)};
+
+                row_digits[i][j].set_font_size(font_size);
+                row_digits[i][j].set_color(color);
+                row_digits[i][j].set_label(value);
+                row_digits[i][j].move(p.x, p.y);
             }
         }
         if (i < col_digits.size())
             for (int j = 0; j < col_digits[i].size(); ++j)
             {
                 win.attach(col_digits[i][j]);
+
+                std::string value = "0";
+                if (logic_board.col_intervals[i][j].size())
+                    value = std::to_string(logic_board.col_intervals[i][j][1] - logic_board.col_intervals[i][j][0] + 1);
+                
+                auto color = (std::find(level.hidden_cols.begin(), level.hidden_cols.end(), std::vector<int> {i, j}) == level.hidden_cols.end() ? 
+                                        Graph_lib::Color::black : Graph_lib::Color::white);
+                Graph_lib::Point p{loc.x + x_margin + i * button_size + (button_size - font_size / 2 * col_digits[i][j].length()) / 2, 
+                                (int) (loc.y + y_margin - j * font_size - font_size / 2)};
+
+                col_digits[i][j].set_font_size(font_size);
+                col_digits[i][j].set_color(color);
+                col_digits[i][j].set_label(value);
+                col_digits[i][j].move(p.x, p.y);
             }
     }
     own = &win;
@@ -216,7 +227,7 @@ void Graph_board::change_previous()
         int x = mistake[0], y = mistake[1];
         Game_button& button = buttons[logic_board.height * x + y];
         button.change_button(logic_board.current[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
-        // button.redraw();
+        button.redraw();
         mistake = {};
     }
     else if (hint.size())
@@ -225,39 +236,36 @@ void Graph_board::change_previous()
         int x = hint[0], y = hint[1];
         Game_button& button = buttons[logic_board.height * x + y];
         button.change_button(logic_board.current[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
-        // button.redraw();
+        button.redraw();
         hint = {};
     }
 }
 
-void Graph_board::set_digit_color(Graph_lib::Text& text, Graph_lib::Color color)
+void Graph_board::set_digit_color(Graph_lib::Label_widget* text, Graph_lib::Color color)
 {
-    own->detach(text);
-    text.set_color(color);
-    own->attach(text);
+    own->detach(*text);
+    text->set_color(Graph_lib::Color::white);
+    own->attach(*text);
 }
 
-void Graph_board::change_digits(int x, int y)
+void Graph_board::change_digit(int x, int y)
 {
     Play_window* win = (Play_window*) own;
     std::vector<std::vector<int>> pos_digits = logic_board.changed_digits(x, y);
-
     if (pos_digits[0].size())
     {
-        Graph_lib::Text& text = row_digits[pos_digits[0][0]][pos_digits[0][1]];
+        Graph_lib::Label_widget* text = &row_digits[pos_digits[0][0]][pos_digits[0][1]];
         set_digit_color(text, Graph_lib::Color::white);
         
         level.hidden_rows.push_back(pos_digits[0]);
-        // win->redraw();
         win->update_hidden_rows(level);
     }
     if (pos_digits[1].size())
     {
-        Graph_lib::Text& text = col_digits[pos_digits[1][0]][pos_digits[1][1]];
+        Graph_lib::Label_widget* text = &col_digits[pos_digits[1][0]][pos_digits[1][1]];
         set_digit_color(text, Graph_lib::Color::white);
 
         level.hidden_cols.push_back(pos_digits[1]);
-        // win->redraw();
         win->update_hidden_cols(level);
     }
 }
@@ -273,11 +281,11 @@ void Graph_board::get_hint()
     Game_button& btn = buttons[x * logic_board.height + y];
 
     auto state = (Game_button::State) logic_board.current[x][y];
-
     level.set_current(logic_board.current, logic_board.empty);
-    win->update_current(level);
 
-    change_digits(x, y);
+    change_digit(x, y);
+
+    win->update_current(level);
 
     if (logic_board.status == Logic_board::OK)
     {
@@ -287,12 +295,12 @@ void Graph_board::get_hint()
     else if (logic_board.status == Logic_board::FINISH)
     {
         btn.change_button(state);
-        level.set_finished(true);
+        level.finished = true;
         block_buttons(true);
         win->update_finished(level);
     }
-    // btn.redraw();
-    win->redraw();
+    btn.redraw();
+    // win->redraw();
 }
 
 void Graph_board::cb_click_button(Graph_lib::Address, Graph_lib::Address addr)
@@ -312,9 +320,10 @@ void Graph_board::click_button(Game_button* btn)
 
     logic_board.set_click(x, y, state);
     level.set_current(logic_board.current, logic_board.empty);
-    win->update_current(level);
 
-    change_digits(x, y);
+    change_digit(x, y);
+
+    win->update_current(level);
 
     if (logic_board.status == Logic_board::OK)
         btn->change_button(state);
@@ -322,7 +331,7 @@ void Graph_board::click_button(Game_button* btn)
     else if (logic_board.status == Logic_board::FINISH)
     {
         btn->change_button(state);
-        level.set_finished(true);
+        level.finished = true;
         block_buttons(true);
         win->update_finished(level);
     }
@@ -330,8 +339,8 @@ void Graph_board::click_button(Game_button* btn)
     else if (logic_board.status == Logic_board::MISTAKE)
     {
         mistake = {x, y};
-        btn->change_button(logic_board.current[x][y] == 4 ? Game_button::MISTAKE_CROSS : Game_button::MISTAKE_FILLED);
-        level.set_hearts(level.hearts_count - 1);
+        btn->change_button(level.current_values[x][y] == 4 ? Game_button::MISTAKE_CROSS : Game_button::MISTAKE_FILLED);
+        level.hearts_count = level.hearts_count - 1;
         if (level.hearts_count == 0) block_buttons(true);
         win->update_heart_count(level);
     }
