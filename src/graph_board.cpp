@@ -216,7 +216,7 @@ void Graph_board::change_previous()
         int x = mistake[0], y = mistake[1];
         Game_button& button = buttons[logic_board.height * x + y];
         button.change_button(logic_board.current[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
-        // button.redraw();
+        button.redraw();
         mistake = {};
     }
     else if (hint.size())
@@ -225,7 +225,7 @@ void Graph_board::change_previous()
         int x = hint[0], y = hint[1];
         Game_button& button = buttons[logic_board.height * x + y];
         button.change_button(logic_board.current[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
-        // button.redraw();
+        button.redraw();
         hint = {};
     }
 }
@@ -248,7 +248,8 @@ void Graph_board::change_digits(int x, int y)
         set_digit_color(text, Graph_lib::Color::white);
         
         level.hidden_rows.push_back(pos_digits[0]);
-        // win->redraw();
+        // text.draw();
+        win->redraw();
         win->update_hidden_rows(level);
     }
     if (pos_digits[1].size())
@@ -257,7 +258,8 @@ void Graph_board::change_digits(int x, int y)
         set_digit_color(text, Graph_lib::Color::white);
 
         level.hidden_cols.push_back(pos_digits[1]);
-        // win->redraw();
+        // text.draw();
+        win->redraw();
         win->update_hidden_cols(level);
     }
 }
@@ -291,8 +293,7 @@ void Graph_board::get_hint()
         block_buttons(true);
         win->update_finished(level);
     }
-    // btn.redraw();
-    win->redraw();
+    btn.redraw();
 }
 
 void Graph_board::cb_click_button(Graph_lib::Address, Graph_lib::Address addr)
@@ -335,6 +336,4 @@ void Graph_board::click_button(Game_button* btn)
         if (level.hearts_count == 0) block_buttons(true);
         win->update_heart_count(level);
     }
-
-    win->redraw();
 }

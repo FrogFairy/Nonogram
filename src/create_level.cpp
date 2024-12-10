@@ -57,8 +57,8 @@ std::vector<std::vector<int>> const brightness_method(Graph_lib::Image& img)
     {
         for (int i = 0; i < w; ++i)
         {
-            if (pixels[j][i] < t) result[j][i] = 0; // white pixel, cross
-            else result[j][i] = 1; // black pixel, painted
+            if (pixels[j][i] < t) result[j][i] = 1; // white pixel, cross
+            else result[j][i] = 0; // black pixel, painted
         }
     }
     return result;

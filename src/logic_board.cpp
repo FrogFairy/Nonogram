@@ -136,9 +136,9 @@ void Logic_board::set_click(int x, int y, int val)
         current[x][y] = val;
         empty.erase(std::find(empty.begin(), 
                     empty.end(), std::vector<int> {x, y}));
-        if (current[x][y] == correct[x][y] && correct[x][y] == 1) ++correct_count;
+        if (correct[x][y] == 1) ++correct_count;
     }
-    status = (current[x][y] == correct[x][y] ? (correct_count == finish_count ? FINISH : OK) : MISTAKE);
+    status = (correct_count == finish_count ? FINISH : (current[x][y] == correct[x][y] ? OK : MISTAKE));
     if (status == MISTAKE)
         current[x][y] = correct[x][y] + 4;
 }
