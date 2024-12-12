@@ -67,7 +67,7 @@ void Logic_board::fill_col_digits()
     }  
 }
 
-std::vector<int> Logic_board::row_changed(Position pos)
+Position Logic_board::row_changed(Position pos)
 {
     Position res {};
 
@@ -92,7 +92,7 @@ std::vector<int> Logic_board::row_changed(Position pos)
     return res;
 }
 
-std::vector<int> Logic_board::col_changed(Position pos)
+Position Logic_board::col_changed(Position pos)
 {
     Position res {};
 
@@ -118,7 +118,7 @@ std::vector<int> Logic_board::col_changed(Position pos)
     return res;
 }
 
-std::vector<std::vector<int>> Logic_board::changed_digits(Position pos)
+std::vector<Position> Logic_board::changed_digits(Position pos)
 {
     std::vector<Position> res (2, Position {});
     if (current[pos.x][pos.y] < 0 || current[pos.x][pos.y] % 2 == 0) return res;

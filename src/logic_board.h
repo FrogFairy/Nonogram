@@ -38,9 +38,9 @@ public:
     void after_hint(Position pos);
     void after_mistake(Position pos);
 
-    std::vector<int> row_changed(Position pos);
-    std::vector<int> col_changed(Position pos);
-    std::vector<std::vector<int>> changed_digits(Position pos);
+    Position row_changed(Position pos);
+    Position col_changed(Position pos);
+    std::vector<Position> changed_digits(Position pos);
 
     void fill_row_digits();
     void fill_col_digits();
