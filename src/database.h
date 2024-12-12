@@ -8,16 +8,30 @@
 #include <vector>
 #include <iostream>
 
-std::vector<int> size_to_int(const std::string& size);
+struct Size
+{
+    Size() : _width(0), _height(0) {};
+    Size(unsigned int width, unsigned int height) : _width{width}, _height{height} {}
+    unsigned int width() { return _width; }
+    unsigned int height() { return _height; }
+
+private:
+    unsigned int _width;
+    unsigned int _height;
+};
+
+std::string to_string(Size size)
+{
+    return std::string {size.width() + "x" + size.height()};
+}
 
 struct Level
 {
     Level() = default;
-    Level(const std::string& title, const std::string& size, const std::string& filename)
-        : title{title}, size{size}, filename{filename}
+    Level(const std::string& title, Size size, const std::string& filename)
+        : title{title}, size{size}
     {
-        std::vector<int> s = size_to_int(size);
-        correct_values = create_matrix_level(s[0], s[1], filename);
+        correct_values = create_matrix_level(size, filename);
     }
 
     void restart()
@@ -45,27 +59,22 @@ struct Level
     
     void set_current(std::vector<std::vector<int>>& current, std::vector<std::vector<int>>& empty) 
     { 
-        this->current_values = current;
-        this->empty = empty;
+        current_values = current;
+        empty = empty;
     }
-
-    void set_hearts(int hearts) { hearts_count = hearts; }
-    void set_finished(bool finish) { finished = finish; }
     
     std::string title{};
-    std::string size{};
+    Size size{};
     std::vector<std::vector<int>> correct_values{};
     std::vector<std::vector<int>> current_values{};
     std::vector<std::vector<int>> empty{};
     std::vector<std::vector<int>> hidden_rows{};
     std::vector<std::vector<int>> hidden_cols{};
-    int hearts_count = 3;
+    char hearts_count = 3;
     bool finished = false;
 
     std::vector<std::vector<int>> empty_rows {}; // for coord 0 digits in rows
     std::vector<std::vector<int>> empty_cols {}; // for coord 0 digits in cols
-
-    std::string filename;
 };
 
 struct Database_levels
@@ -87,8 +96,8 @@ public:
 
     Response add_level(Level& level);
 
-    Level get_level(const std::string& size, const std::string& title);
-    std::vector<Level> get_levels(const std::string& size);
+    Level get_level(Size size, const std::string& title);
+    std::vector<Level> get_levels(Size size);
 
     Response update_level(Level& level);
     Response update_current(Level& level);
@@ -97,7 +106,7 @@ public:
     Response update_hidden_rows(Level& level);
     Response update_hidden_cols(Level& level);
 
-    int get_new_id(const std::string& size);
+    int get_new_id(Size size);
 
 private:
     sqlite3* db;

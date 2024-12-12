@@ -37,18 +37,32 @@ private:
   void back () { button_pushed = true; }
 };
 
+struct Size_button : public Graph_lib::Button
+{
+    Size_button(Graph_lib::Point p, int w, int h, Size size, Graph_lib::Callback cb)
+        : Graph_lib::Button(p, w, h, to_string(size), cb), _level_size{size}
+        {}
+    
+    Size level_size() { return _level_size; }
+
+private:
+    Size _level_size;
+
+};
+
 struct Main_window : public Graph_lib::Window
 {
 public:
-
     Main_window(Graph_lib::Point xy, int w, int h, const std::string &title, Windows_wrapper& own);
 
 private:
     static void cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr);
     static void cb_create_level(Graph_lib::Address, Graph_lib::Address addr);
 
-    void go_to_level(std::string btn_label);
+    void go_to_level(Size btn_label);
     void create_level();
+
+    Graph_lib::Vector_ref<Size_button> size_buttons;
 
     Graph_lib::Menu main_widget;
     Windows_wrapper& own;

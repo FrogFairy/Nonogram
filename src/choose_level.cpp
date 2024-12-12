@@ -12,7 +12,7 @@ void Choose_level_window::start_level(const std::string& title, Level_button& bt
     own.open_play_window(size, title, btn);
 }
 
-Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, const std::string &size, Windows_wrapper& own)
+Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, Size size, Windows_wrapper& own)
     : Window_with_back{xy, w, h, title}, 
     level_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"}, size{size}, own{own}
 {
@@ -27,5 +27,5 @@ Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, cons
         level_widget.attach(level_buttons[level_buttons.size() - 1]);
     }
 
-    attach(level_widget); 
+    attach(level_widget);
 }

@@ -14,9 +14,8 @@ public:
         : current{level.current_values}, correct{level.correct_values},
         empty{level.empty}, row_intervals{}, col_intervals{}, status{OK}
     {
-        std::vector<int> size = size_to_int(level.size);
-        height = size[0];
-        width = size[1];
+        height = level.size.height();
+        width = level.size.width();
         fill_col_digits();
         fill_row_digits();
         if (correct_count == finish_count) status = FINISH;

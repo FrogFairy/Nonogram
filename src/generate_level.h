@@ -14,8 +14,10 @@ public:
 
 private:
     std::string filename;
-    std::string level_size;
+    Size level_size;
     std::string str_level_name;
+
+    std::vector<Size> sizes;
 
     Graph_lib::Choice_box size_box;
     Graph_lib::File_chooser_box image_chooser;

@@ -34,19 +34,7 @@ void Generate_level_window::init_hidden_digits(Level& level)
 
 void Generate_level_window::save_button()
 {
-    switch(size_box.get_value())
-    {
-        case 0:
-            level_size = "10x10";
-            break;
-        case 1:
-            level_size = "15x15";
-            break;
-        case 2:
-            level_size = "20x20";
-            break;
-
-    }
+    level_size = sizes[size_box.get_value()];
 
     str_level_name = level_name.get_string();
     
@@ -84,12 +72,17 @@ exception_label {Graph_lib::Point{210, 450}, ""},
 level_name{Graph_lib::Point{260, 400}, 200, 30, "level name: "}
 {
     Window_with_back::size_range(w, h, w, h);
-    attach(image_chooser);
+
     attach(size_box);
-    size_box.add("10x10");
-    size_box.add("15x15");
-    size_box.add("20x20");
+    for (unsigned int i = 10; i < 30; i += 5)
+    {
+        Size s = Size(i, i);
+        sizes.push_back(s);
+        size_box.add(to_string(s));
+    }
     size_box.set_value(0);
+
+    attach(image_chooser);
 
     Graph_lib::Button save_button {Graph_lib::Point{590, 670}, 100, 20, "save", cb_save_button};
     attach(save_button);

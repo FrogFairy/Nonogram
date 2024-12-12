@@ -21,8 +21,8 @@ struct Windows_wrapper
   Database_levels db_levels;
 
   void open_generate_window();
-  void open_choose_window(const std::string& btn_label);
-  void open_play_window(const std::string& size, const std::string& level_title, Level_button& btn);
+  void open_choose_window(Size btn_label);
+  void open_play_window(Size size, const std::string& level_title, Level_button& btn);
   void open_rules_window();
 
 private:

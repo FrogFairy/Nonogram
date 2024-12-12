@@ -1,4 +1,5 @@
 #include "create_level.h"
+#include <Graph_lib/Graph.h>
 
 #include <string>
 #include <iostream>
@@ -33,30 +34,31 @@ std::vector<std::vector<double>> const get_grey_pixels(Graph_lib::Image& img)
     return res;
 }
 
-double const get_limit(std::vector<std::vector<double>>& pixels)
+double const get_threshold(std::vector<std::vector<double>>& pixels)
 {
     int w = pixels[0].size(), h = pixels.size();
-    int x1, x2, y1, y2;
-    double g_m, g_n;
-    double sum_f_g, sum_g;
+    double sum_f_g = 0, sum_g = 0;
+
     std::vector<std::vector<double>> gradient_brightness(h, std::vector<double> (w));
     for (int j = 0; j < h; ++j)
     {
         for (int i = 0; i < w; ++i)
         {
-            g_m = (j + 1 < h ? pixels[j + 1][i] : 0) - (j - 1 >= 0 ? pixels[j - 1][i] : 0);
-            g_n = (i + 1 < w ? pixels[j][i + 1] : 0) - (i - 1 >= 0 ? pixels[j][i - 1] : 0);
+            double g_m = (j + 1 < h ? pixels[j + 1][i] : 0) - (j - 1 >= 0 ? pixels[j - 1][i] : 0);
+            double g_n = (i + 1 < w ? pixels[j][i + 1] : 0) - (i - 1 >= 0 ? pixels[j][i - 1] : 0);
             gradient_brightness[j][i] = std::max(std::abs(g_m), std::abs(g_n));
             sum_f_g += pixels[j][i] * gradient_brightness[j][i];
             sum_g += gradient_brightness[j][i];
         }
     }
+
     return sum_f_g / sum_g;
 }
 
-std::vector<std::vector<double>> const resize(std::vector<std::vector<double>>& pixels, int new_w, int new_h)
+std::vector<std::vector<double>> const resize(const std::vector<std::vector<double>>& pixels, Size size)
 {
     int w = pixels[0].size(), h = pixels.size();
+    int new_w = size.width, new_h = size.height;
     double percent_w = (double) new_w / w, percent_h = (double) new_h / h;
 
     std::vector<std::vector<double>> result(new_h, std::vector<double> (new_w));
@@ -78,6 +80,7 @@ std::vector<std::vector<double>> const resize(std::vector<std::vector<double>>& 
             result[y][x] = (prev * (cur_count - 1) + pixels[i][j]) / cur_count;
         }
     }
+
     return result;
 }
 
@@ -85,7 +88,7 @@ std::vector<std::vector<int>> const brightness_method(std::vector<std::vector<do
 {
     int w = pixels[0].size(), h = pixels.size();
     std::vector<std::vector<int>> result(h, std::vector<int> (w));
-    double t = get_limit(pixels);
+    double t = get_threshold(pixels);
     for (int j = 0; j < h; ++j)
     {
         for (int i = 0; i < w; ++i)
@@ -94,14 +97,15 @@ std::vector<std::vector<int>> const brightness_method(std::vector<std::vector<do
             else result[j][i] = 0; // white pixel, cross
         }
     }
+
     return result;
 }
 
-std::vector<std::vector<int>> const create_matrix_level(int w, int h, const std::string& filename)
+std::vector<std::vector<int>> const create_matrix_level(Size size, const std::string& filename)
 {
     Graph_lib::Image img {Graph_lib::Point{0, 0}, filename};
     auto pixels = get_grey_pixels(img);
-    auto pixels1 = resize(pixels, w, h);
+    auto pixels1 = resize(pixels, size);
     
     return brightness_method(pixels1);
 }

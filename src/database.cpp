@@ -2,18 +2,18 @@
 
 #include "database.h"
 
-std::vector<int> size_to_int(const std::string& size)
+Size size_to_int(const std::string& size)
 {
     int w = std::stoi(size.substr(0, size.find("x")));
-    int h = std::stoi(size.substr(size.find("x" + 1)));
-    return std::vector<int> {w, h};
+    int h = std::stoi(size.substr(size.find("x") + 1));
+    return Size(w, h);
 }
 
 Database_levels::Response Database_levels::add_level(Level& level)
 {
-    char* err;
+    char* err = nullptr;
     Response response = Response::OK;
-    std::string sql_check = "SELECT title, size FROM levels WHERE title = '" + level.title + "' AND size = '" + level.size + "'";
+    std::string sql_check = "SELECT title, size FROM levels WHERE title = '" + level._title + "' AND size = '" + to_string(level._size) + "'";
     int rs = sqlite3_exec(db, sql_check.c_str(), check_exists, &response, &err);
     if (rs != SQLITE_OK)
     {
@@ -28,7 +28,7 @@ Database_levels::Response Database_levels::add_level(Level& level)
     
     std::string finish = level.finished ? "1" : "0";
     std::string sql = "INSERT INTO levels (title, size, correct_values, current_values, empty, hidden_rows, hidden_cols, empty_rows, empty_cols, hearts_count, finished) "
-                    "VALUES ('" + level.title + "', '" + level.size + "', '" +
+                    "VALUES ('" + level.title + "', '" + to_string(level.size) + "', '" +
                     vector_to_string(level.correct_values) + "', '" + vector_to_string(level.current_values) +
                     "', '" + vector_to_string(level.empty) + "', '" + vector_to_string(level.empty_rows) + 
                     "', '" + vector_to_string(level.empty_cols) +
@@ -46,12 +46,12 @@ Database_levels::Response Database_levels::add_level(Level& level)
     return Response::OK;
 }
 
-Level Database_levels::get_level(const std::string& size, const std::string& title)
+Level Database_levels::get_level(Size size, const std::string& title)
 {
-    char* err;
+    char* err = nullptr;
     std::vector<Level> level{};
     std::string sql = "SELECT title, size, correct_values, current_values, empty, hidden_rows, hidden_cols, empty_rows, empty_cols, hearts_count, finished "
-                            "FROM levels WHERE size = '" + size + "' AND title = '" + title + "'";
+                            "FROM levels WHERE size = '" + to_string(size) + "' AND title = '" + title + "'";
     int rs = sqlite3_exec(db, sql.c_str(), select_levels, &level, &err);
     if (rs != SQLITE_OK)
     {
@@ -62,12 +62,12 @@ Level Database_levels::get_level(const std::string& size, const std::string& tit
     return level[0];
 }
 
-std::vector<Level> Database_levels::get_levels(const std::string& size)
+std::vector<Level> Database_levels::get_levels(Size size)
 {
-    char* err;
+    char* err = nullptr;
     std::vector<Level> levels{};
     std::string sql = "SELECT title, size, correct_values, current_values, empty, hidden_rows, hidden_cols, empty_rows, empty_cols, hearts_count, finished "
-                            "FROM levels WHERE size = '" + size + "'";
+                            "FROM levels WHERE size = '" + to_string(size) + "'";
     int rs = sqlite3_exec(db, sql.c_str(), select_levels, &levels, &err);
     if (rs != SQLITE_OK)
     {
@@ -80,7 +80,7 @@ std::vector<Level> Database_levels::get_levels(const std::string& size)
 
 Database_levels::Response Database_levels::update_level(Level& level)
 {
-    char* err;
+    char* err = nullptr;
     Response response = Response::OK;
     std::string finish = level.finished ? "1" : "0";
     std::string sql = "UPDATE levels SET correct_values = '" + vector_to_string(level.correct_values) + 
@@ -89,7 +89,7 @@ Database_levels::Response Database_levels::update_level(Level& level)
                       "', hidden_rows = '" + vector_to_string(level.hidden_rows) +
                       "', hidden_cols = '" + vector_to_string(level.hidden_cols) +
                       "', hearts_count = '" + std::to_string(level.hearts_count) + 
-                      "', finished = '" + finish + "' WHERE size = '" + level.size +
+                      "', finished = '" + finish + "' WHERE size = '" + to_string(level.size) +
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
@@ -103,10 +103,10 @@ Database_levels::Response Database_levels::update_level(Level& level)
 
 Database_levels::Response Database_levels::update_current(Level& level)
 {
-    char* err;
+    char* err = nullptr;
     Response response = Response::OK;
     std::string sql = "UPDATE levels SET current_values = '" + vector_to_string(level.current_values) +
-                      "', empty = '" + vector_to_string(level.empty) + "' WHERE size = '" + level.size + 
+                      "', empty = '" + vector_to_string(level.empty) + "' WHERE size = '" + to_string(level.size) + 
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
@@ -120,10 +120,10 @@ Database_levels::Response Database_levels::update_current(Level& level)
 
 Database_levels::Response Database_levels::update_finished(Level& level)
 {
-    char* err;
+    char* err = nullptr;
     Response response = Response::OK;
     std::string finish = level.finished ? "1" : "0";
-    std::string sql = "UPDATE levels SET finished = '" + finish + "' WHERE size = '" + level.size +
+    std::string sql = "UPDATE levels SET finished = '" + finish + "' WHERE size = '" + to_string(level.size) +
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
@@ -137,9 +137,9 @@ Database_levels::Response Database_levels::update_finished(Level& level)
 
 Database_levels::Response Database_levels::update_heart_count(Level& level)
 {
-    char* err;
+    char* err = nullptr;
     Response response = Response::OK;
-    std::string sql = "UPDATE levels SET hearts_count = '" + std::to_string(level.hearts_count) + "' WHERE size = '" + level.size +
+    std::string sql = "UPDATE levels SET hearts_count = '" + std::to_string(level.hearts_count) + "' WHERE size = '" + to_string(level.size) +
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
@@ -153,9 +153,9 @@ Database_levels::Response Database_levels::update_heart_count(Level& level)
 
 Database_levels::Response Database_levels::update_hidden_rows(Level& level)
 {
-    char* err;
+    char* err = nullptr;
     Response response = Response::OK;
-    std::string sql = "UPDATE levels SET hidden_rows = '" + vector_to_string(level.hidden_rows) + "' WHERE size = '" + level.size +
+    std::string sql = "UPDATE levels SET hidden_rows = '" + vector_to_string(level.hidden_rows) + "' WHERE size = '" + to_string(level.size) +
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
@@ -169,9 +169,9 @@ Database_levels::Response Database_levels::update_hidden_rows(Level& level)
 
 Database_levels::Response Database_levels::update_hidden_cols(Level& level)
 {
-    char* err;
+    char* err = nullptr;
     Response response = Response::OK;
-    std::string sql = "UPDATE levels SET hidden_cols = '" + vector_to_string(level.hidden_cols) + "' WHERE size = '" + level.size +
+    std::string sql = "UPDATE levels SET hidden_cols = '" + vector_to_string(level.hidden_cols) + "' WHERE size = '" + to_string(level.size) +
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
@@ -183,11 +183,11 @@ Database_levels::Response Database_levels::update_hidden_cols(Level& level)
     return Response::OK;
 }
 
-int Database_levels::get_new_id(const std::string& size)
+int Database_levels::get_new_id(Size size)
 {
-    char* err;
+    char* err = nullptr;
     int id = 1;
-    std::string sql_check = "SELECT size FROM levels WHERE size = '" + size + "'";
+    std::string sql_check = "SELECT size FROM levels WHERE size = '" + to_string(size) + "'";
     int rs = sqlite3_exec(db, sql_check.c_str(), new_id, &id, &err);
     if (rs != SQLITE_OK)
     {
@@ -210,7 +210,7 @@ int Database_levels::select_levels(void * l, int count, char **values, char **co
     if (count)
     {
         level.title = values[0];
-        level.size = values[1];
+        level.size = size_to_int(values[1]);
         level.correct_values = string_to_vector(values[2]);
         level.current_values = string_to_vector(values[3]);
         level.empty = string_to_vector(values[4]);

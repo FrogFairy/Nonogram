@@ -38,18 +38,13 @@ private:
 struct Choose_level_window : public Window_with_back
 {
 public:
-    Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, const std::string &size, Windows_wrapper& own);
-
-    void update_level_button(Level& level) 
-    {
-        
-    }
+    Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, Size size, Windows_wrapper& own);
 
 private:
     static void cb_start_level(Graph_lib::Address, Graph_lib::Address addr);
     void start_level(const std::string& title, Level_button& btn);
 
-    std::string size;
+    Size size;
     Graph_lib::Menu level_widget;
     std::vector<Level> levels;
     Graph_lib::Vector_ref<Level_button*> level_buttons;

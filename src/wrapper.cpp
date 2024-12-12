@@ -4,7 +4,7 @@
 #include "choose_level.h"
 #include "generate_level.h"
 
-void Windows_wrapper::open_choose_window(const std::string& btn_label)
+void Windows_wrapper::open_choose_window(Size btn_label)
 {
     main_win->hide();
     choose_win = new Choose_level_window(xy, w, h, "Choice level", btn_label, *this);
@@ -26,7 +26,7 @@ void Windows_wrapper::open_generate_window()
     main_win->show();
 }
 
-void Windows_wrapper::open_play_window(const std::string& size, const std::string& level_title, Level_button& btn)
+void Windows_wrapper::open_play_window(Size size, const std::string& level_title, Level_button& btn)
 {
     choose_win->hide();
 
@@ -38,7 +38,7 @@ void Windows_wrapper::open_play_window(const std::string& size, const std::strin
     delete play_win;
 
     level = db_levels.get_level(size, level_title);
-    if (level.finished)
+    if (level.finished())
         btn.change_color(true);
     choose_win->show();
 }
