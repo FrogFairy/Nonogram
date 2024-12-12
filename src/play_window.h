@@ -71,8 +71,8 @@ private:
     bool filled;
     Graph_lib::Image* img;
 
-    const std::string fill_heart = "resources/heart.png";
-    const std::string empty_heart = "resources/empty_heart.png";
+    const std::string fill_heart = "resources/heart2.png";
+    const std::string empty_heart = "resources/empty_heart2.png";
 };
 
 

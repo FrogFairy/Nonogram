@@ -102,6 +102,7 @@ void File_chooser_box::attach(Window& win)
 {
   win.attach(btn);
   win.attach(out_box);
+  win.attach(err_rectangle);
   own = &win;
 }
 
@@ -119,5 +120,17 @@ void File_chooser_box::choose_file()
   {
     out_box.put(chooser->value());
     window_callback(own, chooser->value());
+  }
+}
+
+void File_chooser_box::change_state(State state)
+{
+  if(state == ERR)
+  {
+    err_rectangle.set_color(FL_RED);
+  }
+  else
+  {
+    err_rectangle.set_color(FL_BACKGROUND_COLOR);
   }
 }

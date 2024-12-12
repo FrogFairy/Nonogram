@@ -23,8 +23,6 @@ private:
     Graph_lib::File_chooser_box image_chooser;
     Graph_lib::In_box level_name;
 
-    Graph_lib::Label_widget exception_label;
-
     Windows_wrapper& own;
 
     static void cb_choose_file(Graph_lib::Address, Graph_lib::Address);
