@@ -57,7 +57,8 @@ void Generate_level_window::save_button()
 
     if(filename == "")
     {
-        exception_label.set_label("please specify the path to the image");
+        image_chooser.change_state();
+        this -> redraw();
     }
     else
     {
@@ -68,7 +69,8 @@ void Generate_level_window::save_button()
         Database_levels::Response res = own.db_levels.add_level(level);
         if (res == Database_levels::ALREADY_EXISTS) 
         {
-            exception_label.set_label("level with this size and title already exists");
+            level_name.set_color(FL_RED);
+            this -> redraw();
             return;
         }
         button_pushed = true;

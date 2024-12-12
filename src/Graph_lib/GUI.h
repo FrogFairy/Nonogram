@@ -48,6 +48,8 @@ public:
 
   virtual void redraw () { pw->redraw(); }
 
+  virtual void set_color(Color color){ pw->color(color.as_int()); }
+
   virtual void attach (Window&) = 0;
 
   Window& window () { return *own; }
@@ -165,19 +167,35 @@ struct Choice_box : Widget
 
 struct File_chooser_box : Widget
 {
+  enum State
+  {
+    OK,
+    ERR
+  };
+
   File_chooser_box(Point xy, int w, int h, const std::string& label, const std::string& btn_label, const std::string& files,
                    Callback_for_file window_callback, Callback button_callback) 
-    : Widget{xy, w, h, label, nullptr}, btn{Button(xy, w / 2, h / 2, btn_label, button_callback)}, files{files},
-    window_callback{window_callback}, out_box{Out_box(Point{xy.x + w / 2, xy.y}, w / 2, h / 2, label)} {}
+    : Widget{xy, w, h, label, nullptr}, btn{Button(xy, w / 2, h / 2, btn_label, button_callback)}, 
+    files{files},
+    window_callback{window_callback}, 
+    out_box{Out_box(Point{xy.x + w / 2, xy.y}, w / 2, h / 2, label)},
+    err_rectangle{Point{xy.x-margin, xy.y-margin}, w, h/2} 
+    {
+      err_rectangle.set_color(FL_BACKGROUND_COLOR);
+    }
   
+  State state{OK};
   Button btn;
   Out_box out_box;
   Fl_File_Chooser *chooser;
+  Rectangle err_rectangle;
   std::string files;
   Callback_for_file window_callback;
+  int margin = 3;
 
   void choose_file();
   // Callback_for_file window_callback;
+  void change_state();
   void attach(Window&);
 };
 

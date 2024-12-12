@@ -98,10 +98,23 @@ void Choice_box::set_value(int ind)
   static_cast<Fl_Choice*>(pw)->value(ind);
 }
 
+void File_chooser_box::change_state()
+{
+  if(state == OK)
+  {
+    err_rectangle.set_color(FL_RED);
+  }
+  else
+  {
+    err_rectangle.set_color(FL_BACKGROUND_COLOR);
+  }
+}
+
 void File_chooser_box::attach(Window& win)
 {
   win.attach(btn);
   win.attach(out_box);
+  win.attach(err_rectangle);
   own = &win;
 }
 
