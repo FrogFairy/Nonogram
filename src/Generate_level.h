@@ -31,6 +31,7 @@ private:
 
     void init_hidden_digits(Level& level);
     void save_button();
+
 };
 
 #endif // GENERATE_LEVEL_H

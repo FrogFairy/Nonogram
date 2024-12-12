@@ -59,6 +59,7 @@ void Generate_level_window::save_button()
     {
         image_chooser.change_state();
         this -> redraw();
+        fl_alert("please specify the path to the file");
     }
     else
     {
@@ -71,6 +72,7 @@ void Generate_level_window::save_button()
         {
             level_name.set_color(FL_RED);
             this -> redraw();
+            fl_alert("this level is already exsists");
             return;
         }
         button_pushed = true;
