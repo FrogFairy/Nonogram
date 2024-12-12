@@ -12,7 +12,7 @@ struct Windows_wrapper;
 struct Window_with_back : public Graph_lib::Window
 {
   Window_with_back(Graph_lib::Point xy, int w, int h, const std::string& title)
-      : Graph_lib::Window{xy, w, h, title}, back_button{Graph_lib::Point{10, y_max() - 30}, 100, 20, "Back", cb_back} 
+      : Graph_lib::Window{xy, w, h, title}, back_button{Graph_lib::Point{10, y_max() - 30}, 100, 20, "back", cb_back} 
   {
     attach(back_button);
   }
@@ -43,13 +43,13 @@ public:
 
     Main_window(Graph_lib::Point xy, int w, int h, const std::string &title, Windows_wrapper& own);
 
+private:
     static void cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr);
     static void cb_create_level(Graph_lib::Address, Graph_lib::Address addr);
 
     void go_to_level(std::string btn_label);
     void create_level();
 
-private:
     Graph_lib::Menu main_widget;
     Windows_wrapper& own;
 };

@@ -30,6 +30,7 @@ struct Color
 {
   enum Color_type
   {
+    no_color = FL_BACKGROUND_COLOR,
     red = FL_RED,
     blue = FL_BLUE,
     green = FL_GREEN,
@@ -332,6 +333,8 @@ struct Text : Shape
 
   int font_size () const { return fnt_sz; }
 
+  int length() const { return lab.length(); }
+
 private:
   std::string lab;  // label
   Font fnt{fl_font()};
@@ -490,6 +493,8 @@ struct Image : Shape
   {
     p = p->copy(new_w, new_h);
   }
+
+  Fl_Image* fl_image() { return p; }
 
 private:
   int w, h, cx, cy;  // define "masking box" within image relative to position (cx,cy)

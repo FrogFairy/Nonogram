@@ -2,28 +2,35 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 
 
 std::vector<std::vector<double>> const get_grey_pixels(Graph_lib::Image& img)
 {
     int w = img.width(), h = img.height();
+
     Fl_Offscreen buff = fl_create_offscreen(w, h);
     fl_begin_offscreen(buff);
     img.draw();
-    std::vector<std::vector<double>> result(h, std::vector<double> (w));
-    for (int j = 0; j < h; ++j)
-    {
-        for (int i = 0; i < w; ++i)
-        {
-            uchar pixel[3];
-            fl_read_image(pixel, i, j, 1, 1, 0);
-            double grey_pixel = 0.2125 * pixel[0] + 0.7154 * pixel[1] + 0.0721 * pixel[2];
-            result[j][i] = grey_pixel;
-        }
-    }
+
+    uchar pixels[w * h * 3];
+    fl_read_image(pixels, 0, 0, w, h, 0);
+
     fl_end_offscreen();
     fl_delete_offscreen(buff);
-    return result;
+
+    std::vector<std::vector<double>> res (h, std::vector<double> (w));
+
+    for (int i = 0; i < h; ++i)
+    {
+        for (int j = 0; j < w; ++j)
+        {
+            double grey_pixel = 0.2125 * pixels[i * w * 3 + j * 3] + 0.7154 * pixels[i * w * 3 + j * 3 + 1] + 0.0721 * pixels[i * w * 3 + j * 3 + 2];
+            res[i][j] = grey_pixel;
+        }
+    }
+    
+    return res;
 }
 
 double const get_limit(std::vector<std::vector<double>>& pixels)
@@ -47,18 +54,44 @@ double const get_limit(std::vector<std::vector<double>>& pixels)
     return sum_f_g / sum_g;
 }
 
-std::vector<std::vector<int>> const brightness_method(Graph_lib::Image& img)
+std::vector<std::vector<double>> const resize(std::vector<std::vector<double>>& pixels, int new_w, int new_h)
 {
-    int w = img.width(), h = img.height();
-    std::vector<std::vector<double>> pixels = get_grey_pixels(img);
+    int w = pixels[0].size(), h = pixels.size();
+    double percent_w = (double) new_w / w, percent_h = (double) new_h / h;
+
+    std::vector<std::vector<double>> result(new_h, std::vector<double> (new_w));
+    std::vector<std::vector<int>> count_colors (new_h, std::vector<int> (new_w));
+
+    for (int i = 0; i < h; ++i)
+    {
+        int y = i * percent_h;
+        if (y >= new_h) y = new_h - 1;
+
+        for (int j = 0; j < w; ++j)
+        {
+            int x = j * percent_w;
+            if (x >= new_w) x = new_w - 1;
+
+            count_colors[y][x]++;
+            double prev = result[y][x];
+            double cur_count = count_colors[y][x];
+            result[y][x] = (prev * (cur_count - 1) + pixels[i][j]) / cur_count;
+        }
+    }
+    return result;
+}
+
+std::vector<std::vector<int>> const brightness_method(std::vector<std::vector<double>>& pixels)
+{
+    int w = pixels[0].size(), h = pixels.size();
     std::vector<std::vector<int>> result(h, std::vector<int> (w));
     double t = get_limit(pixels);
     for (int j = 0; j < h; ++j)
     {
         for (int i = 0; i < w; ++i)
         {
-            if (pixels[j][i] < t) result[j][i] = 0; // white pixel, cross
-            else result[j][i] = 1; // black pixel, painted
+            if (pixels[j][i] < t) result[j][i] = 1; // black pixel, painted
+            else result[j][i] = 0; // white pixel, cross
         }
     }
     return result;
@@ -67,6 +100,8 @@ std::vector<std::vector<int>> const brightness_method(Graph_lib::Image& img)
 std::vector<std::vector<int>> const create_matrix_level(int w, int h, const std::string& filename)
 {
     Graph_lib::Image img {Graph_lib::Point{0, 0}, filename};
-    img.resize(w, h);
-    return brightness_method(img);
+    auto pixels = get_grey_pixels(img);
+    auto pixels1 = resize(pixels, w, h);
+    
+    return brightness_method(pixels1);
 }

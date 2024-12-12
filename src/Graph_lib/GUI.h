@@ -46,6 +46,8 @@ public:
 
   virtual void show () { pw->show(); }
 
+  virtual void redraw () { pw->redraw(); }
+
   virtual void attach (Window&) = 0;
 
   Window& window () { return *own; }
@@ -59,16 +61,17 @@ public:
   virtual ~Widget() {}
 
   Widget& operator= (const Widget&) = delete;  // don't copy Widgets
-  Widget(const Widget&) = delete;
+  // Widget(const Widget&) = delete;
+  Fl_Widget* pw;  // connection to the FLTK Widget
 
 protected:
   Window* own;    // every Widget belongs to a Window
-  Fl_Widget* pw;  // connection to the FLTK Widget
+  
 };
 
 //------------------------------------------------------------------------------
 
-struct Button : Widget
+struct Button : public Widget
 {
   Button(Point xy, int w, int h, const std::string& label, Callback cb) : Widget{xy, w, h, label, cb} {}
 
@@ -176,6 +179,47 @@ struct File_chooser_box : Widget
   void choose_file();
   // Callback_for_file window_callback;
   void attach(Window&);
+};
+
+//------------------------------------------------------------------------------
+
+struct Label_widget : Widget
+{
+public:
+    Label_widget(Graph_lib::Point xy, const std::string& text)
+        : Widget{xy, w, h, "", nullptr}, text{text} 
+    {}
+    
+    void attach (Window& win) override
+    {
+      pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, w, h, text.c_str());
+      own = &win;
+    }
+
+    void set_label(const std::string& label)
+    {
+      pw->label(label.c_str());
+    }
+
+    void set_font_size(int fnt_size)
+    {
+      pw->labelsize(fnt_size);
+    }
+
+    void set_color(Graph_lib::Color color)
+    {
+      pw->labelcolor(color.as_int());
+    }
+
+    int length()
+    {
+      return text.length();
+    }
+
+private:
+    std::string text;
+    const int w = 300;
+    const int h = 20;
 };
 
 }  // namespace Graph_lib

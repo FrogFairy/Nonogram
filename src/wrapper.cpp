@@ -1,5 +1,4 @@
 #include <string>
-#include <iostream>
 
 #include "wrapper.h"
 #include "choose_level.h"
@@ -16,17 +15,6 @@ void Windows_wrapper::open_choose_window(const std::string& btn_label)
     main_win->show();
 }
 
-void Windows_wrapper::open_play_window(const std::string& size, const std::string& level_title)
-{
-    choose_win->hide();
-    win_back = new Window_with_back(xy, w, h, level_title); // заменить на окно с уровнем
-    win_back->wait_for_button();
-    if (!win_back->shown())
-        exit(0);
-    delete win_back;
-    choose_win->show();
-}
-
 void Windows_wrapper::open_generate_window()
 {
     main_win->hide();
@@ -36,4 +24,32 @@ void Windows_wrapper::open_generate_window()
         exit(0);
     delete generate_win;
     main_win->show();
+}
+
+void Windows_wrapper::open_play_window(const std::string& size, const std::string& level_title, Level_button& btn)
+{
+    choose_win->hide();
+
+    Level level = db_levels.get_level(size, level_title);
+    play_win = new Play_window(xy, w, h, "Play window", level, *this);
+    play_win->wait_for_button();
+    if (!play_win->shown())
+        exit(0);
+    delete play_win;
+
+    level = db_levels.get_level(size, level_title);
+    if (level.finished)
+        btn.change_color(true);
+    choose_win->show();
+}
+
+void Windows_wrapper::open_rules_window()
+{
+    play_win->hide();
+    rul_win = new Rules_window(xy, w, h, "Rules window", *this);
+    rul_win->wait_for_button();
+    if (!rul_win->shown())
+        exit(0);
+    delete rul_win;
+    play_win->show();
 }
