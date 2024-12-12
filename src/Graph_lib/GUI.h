@@ -183,14 +183,14 @@ struct File_chooser_box : Widget
 
 //------------------------------------------------------------------------------
 
-struct Label_widget : public Widget
+struct Label_widget : Widget
 {
 public:
     Label_widget(Graph_lib::Point xy, const std::string& text)
         : Widget{xy, w, h, "", nullptr}, text{text} 
     {}
     
-    void attach (Window& win)
+    void attach (Window& win) override
     {
       pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, w, h, text.c_str());
       own = &win;
