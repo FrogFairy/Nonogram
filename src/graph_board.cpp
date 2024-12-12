@@ -46,7 +46,6 @@ void Game_button::init_mark()
 
     mark->set_color(color);
     mark->set_fill_color(color);
-
 }
 
 void Game_button::change_button(State state)

@@ -76,7 +76,7 @@ level_name{Graph_lib::Point{260, 400}, 200, 30, "level name: "}
     attach(size_box);
     for (unsigned int i = 10; i < 30; i += 5)
     {
-        Size s = Size(i, i);
+        Size s {i, i};
         sizes.push_back(s);
         size_box.add(to_string(s));
     }

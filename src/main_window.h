@@ -6,6 +6,7 @@
 
 #include <Graph_lib/GUI.h>
 #include <Graph_lib/Window.h>
+#include "database.h"
 
 struct Windows_wrapper;
 
@@ -42,6 +43,8 @@ struct Size_button : public Graph_lib::Button
     Size_button(Graph_lib::Point p, int w, int h, Size size, Graph_lib::Callback cb)
         : Graph_lib::Button(p, w, h, to_string(size), cb), _level_size{size}
         {}
+
+    void attach(Graph_lib::Window& win) { Graph_lib::Button::attach(win); }
     
     Size level_size() { return _level_size; }
 
@@ -62,7 +65,7 @@ private:
     void go_to_level(Size btn_label);
     void create_level();
 
-    Graph_lib::Vector_ref<Size_button> size_buttons;
+    std::vector<Size_button> size_buttons;
 
     Graph_lib::Menu main_widget;
     Windows_wrapper& own;

@@ -2,6 +2,7 @@
 #define WRAPPER_H
 
 #include <string>
+#include <exception>
 
 #include <Graph_lib/Window.h>
 #include "main_window.h"
@@ -12,6 +13,8 @@
 struct Choose_level_window;
 struct Generate_level_window;
 struct Level_button;
+
+struct Exit_exception {};
 
 struct Windows_wrapper
 {

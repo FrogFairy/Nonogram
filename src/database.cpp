@@ -2,18 +2,23 @@
 
 #include "database.h"
 
+std::string to_string(Size size)
+{
+    return std::to_string(size.width) + "x" + std::to_string(size.height);
+}
+
 Size size_to_int(const std::string& size)
 {
-    int w = std::stoi(size.substr(0, size.find("x")));
-    int h = std::stoi(size.substr(size.find("x") + 1));
-    return Size(w, h);
+    unsigned int w = std::stoi(size.substr(0, size.find("x")));
+    unsigned int h = std::stoi(size.substr(size.find("x") + 1));
+    return Size{w, h};
 }
 
 Database_levels::Response Database_levels::add_level(Level& level)
 {
     char* err = nullptr;
     Response response = Response::OK;
-    std::string sql_check = "SELECT title, size FROM levels WHERE title = '" + level._title + "' AND size = '" + to_string(level._size) + "'";
+    std::string sql_check = "SELECT title, size FROM levels WHERE title = '" + level.title + "' AND size = '" + to_string(level.size) + "'";
     int rs = sqlite3_exec(db, sql_check.c_str(), check_exists, &response, &err);
     if (rs != SQLITE_OK)
     {

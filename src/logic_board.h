@@ -14,8 +14,8 @@ public:
         : current{level.current_values}, correct{level.correct_values},
         empty{level.empty}, row_intervals{}, col_intervals{}, status{OK}
     {
-        height = level.size.height();
-        width = level.size.width();
+        height = level.size.height;
+        width = level.size.width;
         fill_col_digits();
         fill_row_digits();
         if (correct_count == finish_count) status = FINISH;

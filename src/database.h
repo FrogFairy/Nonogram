@@ -10,20 +10,11 @@
 
 struct Size
 {
-    Size() : _width(0), _height(0) {};
-    Size(unsigned int width, unsigned int height) : _width{width}, _height{height} {}
-    unsigned int width() { return _width; }
-    unsigned int height() { return _height; }
-
-private:
-    unsigned int _width;
-    unsigned int _height;
+    unsigned int width;
+    unsigned int height;
 };
 
-std::string to_string(Size size)
-{
-    return std::string {size.width() + "x" + size.height()};
-}
+std::string to_string(Size size);
 
 struct Level
 {
