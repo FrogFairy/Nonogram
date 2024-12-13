@@ -25,24 +25,24 @@ void Fill_button::set_color()
 {
     if (active)
     {
-        pw->color(Graph_lib::Color::light_green);
-        pw->color2(Graph_lib::Color::light_green);
+        Fill_button::mark->set_color(Graph_lib::Color::dark_green);
+        Fill_button::mark->set_fill_color(Graph_lib::Color::dark_green);
     }
     else
     {
-        pw->color(Graph_lib::Color::no_color);
-        pw->color2(Graph_lib::Color::no_color);
+        Fill_button::mark->set_color(Graph_lib::Color::black);
+        Fill_button::mark->set_fill_color(Graph_lib::Color::black);
     }
 }
 
 Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& title, Level& level, Windows_wrapper &own)
     : Window_with_back{xy, w, h, title}, level{level}, own{own}, 
-      rules_button{Graph_lib::Button{Graph_lib::Point{10, 10}, 40, 40, "?", cb_rules}},
-      hint_button{Graph_lib::Point{60, 10}, 40, 40, "", cb_hint},
-      lamp{Graph_lib::Point{63, 12}, "resources/hint.png"},
-      restart_button{Graph_lib::Point{175, 10}, 100, 40, "restart", cb_restart},
-      filled_button{Graph_lib::Point{460, 10}, 40, 40, "", cb_choose_option, true, Fill_button::FILLED},
-      cross_button{Graph_lib::Point{510, 10}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
+      rules_button{Graph_lib::Button{Graph_lib::Point{470, 10}, 40, 40, "?", cb_rules}},
+      hint_button{Graph_lib::Point{520, 10}, 40, 40, "", cb_hint},
+      lamp{Graph_lib::Point{523, 12}, "resources/hint.png"},
+      restart_button{Graph_lib::Point{120, 10}, 100, 40, "restart", cb_restart},
+      filled_button{Graph_lib::Point{295, 10}, 40, 40, "", cb_choose_option, true, Fill_button::FILLED},
+      cross_button{Graph_lib::Point{345, 10}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
       button_option{Game_button::FILLED},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 80, level},
       exception_label{Graph_lib::Point{220, y_max() - 30}, ""},
