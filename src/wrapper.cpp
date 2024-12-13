@@ -47,8 +47,7 @@ void Windows_wrapper::open_play_window(Size size, const std::string& level_title
     delete play_win;
 
     level = db_levels.get_level(size, level_title);
-    if (level.finished)
-        btn.change_color(true);
+    btn.change_color(level.finished);
     choose_win->show();
 }
 

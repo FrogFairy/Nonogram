@@ -6,6 +6,8 @@
 #include "database.h"
 #include "graph_board.h"
 
+#include <memory>
+
 struct Fill_button : public Graph_lib::Button
 {
 public:
@@ -24,16 +26,16 @@ public:
 
     virtual void change_color()
     {
-        active = !active;
+        _active = !_active;
         set_color();
     }
 
     void set_color();
-    
-    bool active;
+    bool active() { return _active; }
 
 private:
     Graph_lib::Shape* mark;
+    bool _active;
 };
 
 struct Heart : public Graph_lib::Widget
@@ -44,8 +46,6 @@ public:
     {
         img = new Graph_lib::Image(loc, (filled ? fill_heart : empty_heart));
     }
-
-    // ~Heart() { delete img; }
 
     void attach(Graph_lib::Window& win) 
     {
@@ -71,8 +71,8 @@ private:
     bool filled;
     Graph_lib::Image* img;
 
-    const std::string fill_heart = "resources/heart2.png";
-    const std::string empty_heart = "resources/empty_heart2.png";
+    const std::string fill_heart = "resources/heart.png";
+    const std::string empty_heart = "resources/empty_heart.png";
 };
 
 
@@ -111,7 +111,6 @@ private:
     Graph_lib::Button hint_button;
     Graph_lib::Button restart_button;
     Graph_lib::Image lamp;
-    Graph_lib::Label_widget exception_label;
 
     Fill_button filled_button;
     Fill_button cross_button;
@@ -121,7 +120,6 @@ private:
 
     const std::string text_finish = "you have completed this level!";
     const std::string text_hearts = "you've run out of hearts.";
-    const std::string text_empty = "";
 };
 
 

@@ -17,4 +17,6 @@
 #include <FL/Fl_JPEG_Image.H>
 #include <FL/Fl_PNG_Image.H>
 
+#include <FL/fl_ask.H>
+
 #endif  // #ifndef FLTK_GUARD

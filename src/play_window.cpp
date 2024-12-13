@@ -3,7 +3,7 @@
 #include "wrapper.h"
 
 Fill_button::Fill_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active, Button_type b_type)
-                : Graph_lib::Button{xy, w, h, label, cb}, active{active} 
+                : Graph_lib::Button{xy, w, h, label, cb}, _active{active} 
 {
     int margin = 5;
     if (b_type == Button_type::FILLED)
@@ -23,7 +23,7 @@ Fill_button::Fill_button(Graph_lib::Point xy, int w, int h, const std::string& l
 
 void Fill_button::set_color()
 {
-    if (active)
+    if (_active)
     {
         pw->color(Graph_lib::Color::dark_green);
         pw->color2(Graph_lib::Color::dark_green);
@@ -45,12 +45,11 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       cross_button{Graph_lib::Point{x_max() - 100, y_max() - 50}, 40, 40, "", cb_choose_option, false, Fill_button::CROSS},
       button_option{Game_button::FILLED},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
-      exception_label{Graph_lib::Point{220, y_max() - 30}, ""},
       hearts_img{}
 {
     Window_with_back::size_range(w, h, w, h);
     
-    int heart_size = 20, margin = 5;
+    int heart_size = 40, margin = 10;
     for (int i = 0; i < 3; ++i)
         hearts_img.push_back(Heart{Graph_lib::Point(x_max() - (heart_size + margin) * (3 - i), 20), heart_size, heart_size, level.hearts_count - (2 - i) > 0});
     
@@ -64,12 +63,11 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
     attach(filled_button);
     attach(cross_button);
     attach(board);
-    attach(exception_label);
 
     if (level.finished)
-        exception_label.set_label(text_finish);
+        fl_alert(text_finish.c_str());
     else if (level.hearts_count == 0)
-        exception_label.set_label(text_hearts);
+        fl_alert(text_hearts.c_str());
 }
 
 void Play_window::cb_rules(Graph_lib::Address, Graph_lib::Address addr)
@@ -114,8 +112,6 @@ void Play_window::restart()
         attach(hearts_img[i]);
     }
 
-    exception_label.set_label(text_empty);
-
     own.db_levels.update_level(level);
 }
 
@@ -134,7 +130,7 @@ void Play_window::choose_option()
     filled_button.redraw();
     cross_button.redraw();
 
-    if (filled_button.active)
+    if (filled_button.active())
         button_option = Game_button::FILLED;
     else
         button_option = Game_button::CROSS;
@@ -158,8 +154,7 @@ void Play_window::update_current(Level& level)
 void Play_window::update_finished(Level& level)
 {
     own.db_levels.update_finished(level);
-    exception_label.set_label(text_finish);
-
+    fl_alert(text_finish.c_str());
 }
 
 void Play_window::update_heart_count(Level& level)
@@ -177,5 +172,5 @@ void Play_window::update_heart_count(Level& level)
 
     own.db_levels.update_heart_count(level);
     if (board.is_blocked())
-        exception_label.set_label(text_hearts);
+        fl_alert(text_hearts.c_str());
 }

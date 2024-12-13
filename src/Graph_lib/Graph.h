@@ -215,7 +215,7 @@ public:
 
   virtual ~Shape() = 0;
 
-  Shape(const Shape&) = delete;  // don't copy Shapes
+  // Shape(const Shape&) = delete;  // don't copy Shapes
   Shape& operator= (const Shape&) = delete;
 
 private:
@@ -457,7 +457,7 @@ struct Suffix
 
 Suffix::Encoding get_encoding (const std::string& s);
 
-struct Image : Shape
+struct Image : public Shape
 {
   Image(Point xy, const std::string& s, Suffix::Encoding e = Suffix::none);
 
