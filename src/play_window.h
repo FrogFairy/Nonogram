@@ -8,16 +8,14 @@
 
 #include <memory>
 
-struct Fill_button : public Graph_lib::Button
+struct Option_button : public Graph_lib::Button
 {
 public:
-    enum Button_type {FILLED, CROSS};
+    Option_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
+        : Graph_lib::Button{xy, w, h, label, cb}, _active{active} 
+        {};
 
-    Fill_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active, Button_type b_type);
-
-    ~Fill_button() { delete mark; }
-
-    void attach(Graph_lib::Window& win)
+    virtual void attach(Graph_lib::Window& win)
     {
         Graph_lib::Button::attach(win);
         win.attach(*mark);
@@ -33,9 +31,35 @@ public:
     void set_color();
     bool active() { return _active; }
 
+protected:
+    std::unique_ptr<Graph_lib::Shape> mark;
+
 private:
-    Graph_lib::Shape* mark;
     bool _active;
+};
+
+struct Fill_button : public Option_button
+{
+    Fill_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active);
+};
+
+struct Cross_button : public Option_button
+{
+    Cross_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active);
+};
+
+struct Invert_button : public Option_button
+{
+public:
+    Invert_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
+        : Option_button{xy, w, h, label, cb, active}
+    {}
+
+    void attach(Graph_lib::Window& win) override;
+    void change_color() override;
+
+private:
+    // Graph_lib::Label_widget label;
 };
 
 struct Heart : public Graph_lib::Widget
@@ -113,7 +137,7 @@ private:
     Graph_lib::Image lamp;
 
     Fill_button filled_button;
-    Fill_button cross_button;
+    Cross_button cross_button;
     Game_button::State button_option;
 
     std::vector<Heart> hearts_img;
