@@ -71,5 +71,9 @@ private:
     Windows_wrapper& own;
 };
 
+<<<<<<< HEAD
 #endif // MAIN_WINDOWS_H
 
+=======
+#endif // MAIN_WINDOWS_H
+>>>>>>> 6fcd1fe6d635c6ef404d813332abac3084d103f3

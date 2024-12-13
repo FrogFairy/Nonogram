@@ -20,7 +20,7 @@ Fill_button::Fill_button(Graph_lib::Point xy, int w, int h, const std::string& l
     mark->set_color(Graph_lib::Color::black);
     mark->set_fill_color(Graph_lib::Color::black);
 }
-
+ 
 void Fill_button::set_color()
 {
     if (active)
