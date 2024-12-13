@@ -50,6 +50,12 @@ public:
 
   virtual void set_color(Color color) { pw->color(color.as_int()); }
 
+  virtual void set_label(const std::string& label) { pw->label(label.c_str()); }
+
+  virtual void set_font_size(int fnt_size) { pw->labelsize(fnt_size); }
+
+  virtual void set_label_color(Graph_lib::Color color) { pw->labelcolor(color.as_int()); }
+
   virtual void attach (Window&) = 0;
 
   Window& window () { return *own; }
@@ -89,6 +95,12 @@ struct In_box : Widget
   int get_int ();
   std::string get_string ();
 
+  void set_font_size(int s) 
+  { 
+    pw->labelsize(s);
+    ((Fl_Input*) pw)->textsize(s); 
+  }
+
   void attach (Window& win);
 };
 
@@ -100,6 +112,12 @@ struct Out_box : Widget
 
   void put (int);
   void put (const std::string&);
+
+  void set_font_size(int s) 
+  { 
+    pw->labelsize(s);
+    ((Fl_Output*) pw)->textsize(s); 
+  }
 
   void attach (Window& win);
 };
@@ -150,6 +168,12 @@ struct Menu : Widget
       win.attach(selection[i]);
     own = &win;
   }
+
+  void set_font_size(int s)
+  {
+    for (int i = 0; i < selection.size(); ++i)
+      selection[i].set_font_size(s);
+  }
 };
 
 //------------------------------------------------------------------------------
@@ -161,6 +185,12 @@ struct Choice_box : Widget
   void add(const std::string& option);
   int get_value();
   void set_value(int ind);
+
+  void set_font_size(int s) 
+  { 
+    pw->labelsize(s);
+    ((Fl_Choice*) pw)->textsize(s); 
+  }
 };
 
 //------------------------------------------------------------------------------
@@ -175,12 +205,18 @@ struct File_chooser_box : Widget
 
   File_chooser_box(Point xy, int w, int h, const std::string& label, const std::string& btn_label, const std::string& files,
                    Callback_for_file window_callback, Callback button_callback) 
-    : Widget{xy, w, h, label, nullptr}, btn{Button(xy, w / 2, h / 2, btn_label, button_callback)}, files{files},
-    window_callback{window_callback}, out_box{Out_box(Point{xy.x + w / 2, xy.y}, w / 2, h / 2, label)},
-	  err_rectangle{Point{xy.x - margin, xy.y - margin}, w, h / 2}
+    : Widget{xy, w, h, label, nullptr}, btn{Button(Point(xy.x - w, xy.y), w, h, btn_label, button_callback)}, files{files},
+    window_callback{window_callback}, out_box{Out_box(xy, w, h, label)},
+	  err_rectangle{Point{xy.x - margin, xy.y - margin}, w, h}
 	{
 		err_rectangle.set_color(FL_BACKGROUND_COLOR);
 	}
+
+  void set_font_size(int s)
+  {
+    btn.set_font_size(s);
+    out_box.set_font_size(s);
+  }
   
   Button btn;
   Out_box out_box;
@@ -203,29 +239,14 @@ struct File_chooser_box : Widget
 struct Label_widget : Widget
 {
 public:
-    Label_widget(Graph_lib::Point xy, const std::string& text)
+    Label_widget(Graph_lib::Point xy, const std::string& text, int w = 300, int h = 20)
         : Widget{xy, w, h, "", nullptr}, text{text} 
     {}
     
     void attach (Window& win) override
     {
-      pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, w, h, text.c_str());
+      pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, width, height, text.c_str());
       own = &win;
-    }
-
-    void set_label(const std::string& label)
-    {
-      pw->label(label.c_str());
-    }
-
-    void set_font_size(int fnt_size)
-    {
-      pw->labelsize(fnt_size);
-    }
-
-    void set_color(Graph_lib::Color color)
-    {
-      pw->labelcolor(color.as_int());
     }
 
     int length()
@@ -235,8 +256,6 @@ public:
 
 private:
     std::string text;
-    const int w = 300;
-    const int h = 20;
 };
 
 }  // namespace Graph_lib

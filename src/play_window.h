@@ -33,6 +33,7 @@ public:
 
 protected:
     std::unique_ptr<Graph_lib::Shape> mark;
+    const int margin = 5;
 
 private:
     bool _active;
@@ -51,15 +52,12 @@ struct Cross_button : public Option_button
 struct Invert_button : public Option_button
 {
 public:
-    Invert_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
-        : Option_button{xy, w, h, label, cb, active}
-    {}
-
+    Invert_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active);
     void attach(Graph_lib::Window& win) override;
-    void change_color() override;
+    // void change_color() override;
 
 private:
-    // Graph_lib::Label_widget label;
+    std::unique_ptr<Graph_lib::Label_widget> label_widget;
 };
 
 struct Heart : public Graph_lib::Widget
@@ -138,6 +136,7 @@ private:
 
     Fill_button filled_button;
     Cross_button cross_button;
+    Invert_button invert_button;
     Game_button::State button_option;
 
     std::vector<Heart> hearts_img;

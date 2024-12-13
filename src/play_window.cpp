@@ -19,7 +19,6 @@ void Option_button::set_color()
 Fill_button::Fill_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
     : Option_button{xy, w, h, label, cb, active}
 {
-    int margin = 5;
     mark = std::make_unique<Graph_lib::Rectangle> (Graph_lib::Rectangle(Graph_lib::Point(xy.x + margin, xy.y + margin), w - margin * 2, h - margin * 2));
     mark->set_color(Graph_lib::Color::black);
     mark->set_fill_color(Graph_lib::Color::black);
@@ -28,7 +27,6 @@ Fill_button::Fill_button(Graph_lib::Point xy, int w, int h, const std::string& l
 Cross_button::Cross_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
     : Option_button{xy, w, h, label, cb, active}
 {
-    int margin = 5;
     mark = std::make_unique<Graph_lib::Lines> (Graph_lib::Lines());
 
     ((Graph_lib::Lines*) mark.get())->add(Graph_lib::Point(xy.x + margin, xy.y + margin), Graph_lib::Point(xy.x + w - margin, xy.y + h - margin));
@@ -36,7 +34,29 @@ Cross_button::Cross_button(Graph_lib::Point xy, int w, int h, const std::string&
     mark->set_style(Graph_lib::Line_style(Graph_lib::Line_style::solid, 3));
 
     mark->set_color(Graph_lib::Color::black);
-    mark->set_fill_color(Graph_lib::Color::black);
+}
+
+Invert_button::Invert_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
+    : Option_button{xy, w, h, label, cb, active}
+{
+    label_widget = std::make_unique<Graph_lib::Label_widget> (Graph_lib::Label_widget(Graph_lib::Point(xy.x - 60, xy.y + 2 * margin), "invert:", 50, 20));
+
+    mark = std::make_unique<Graph_lib::Lines> (Graph_lib::Lines());
+
+    ((Graph_lib::Lines*) mark.get())->add(Graph_lib::Point(int(xy.x + 1.5 * margin), xy.y + int(h / 2) - margin), 
+                                          Graph_lib::Point(int(xy.x + w / 2 - 0.5 * margin), xy.y + h - margin));
+    ((Graph_lib::Lines*) mark.get())->add(Graph_lib::Point(int(xy.x + w / 2 - 0.5 * margin), xy.y + h - margin), 
+                                          Graph_lib::Point(int(xy.x + w - 1.5 * margin), xy.y + margin));
+
+    mark->set_style(Graph_lib::Line_style(Graph_lib::Line_style::solid, 3));
+    mark->set_color(Graph_lib::Color::black);
+}
+
+void Invert_button::attach(Graph_lib::Window& win)
+{
+    Option_button::attach(win);
+    win.attach(*label_widget);
+    label_widget->set_font_size(20);
 }
 
 Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& title, Level& level, Windows_wrapper &own)
@@ -47,6 +67,7 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       restart_button{Graph_lib::Point{120, 10}, 100, 40, "restart", cb_restart},
       filled_button{Graph_lib::Point{295, 10}, 40, 40, "", cb_choose_option, true},
       cross_button{Graph_lib::Point{345, 10}, 40, 40, "", cb_choose_option, false},
+      invert_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "", cb_choose_option, false},
       button_option{Game_button::FILLED},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
       hearts_img{}
@@ -59,14 +80,18 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
     
     for (int i = 0; i < hearts_img.size(); ++i)
         attach(hearts_img[i]);
-
+        
     attach(rules_button);
     attach(hint_button);
     attach(lamp);
     attach(restart_button);
     attach(filled_button);
     attach(cross_button);
+    attach(invert_button);
     attach(board);
+
+    rules_button.set_font_size(20);
+    restart_button.set_font_size(20);
 
     if (level.finished)
         fl_alert(text_finish.c_str());
