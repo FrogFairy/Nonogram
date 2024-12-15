@@ -67,23 +67,23 @@ void Graph_board::init_buttons()
     int font_width = Graph_lib::font_width(font_size);
     int font_height = Graph_lib::font_height(font_size);
 
-    int button_size = std::min((height - logic_board.max_cols * font_height) / logic_board.height, 
-                                (width - logic_board.max_rows * font_width) / logic_board.width);
-    int x_margin = width - button_size * logic_board.width;
-    int y_margin = height - button_size * logic_board.height;
+    int button_size = std::min((height - logic_board.max_cols() * font_height) / logic_board.height(), 
+                                (width - logic_board.max_rows() * font_width) / logic_board.width());
+    int x_margin = width - button_size * logic_board.width();
+    int y_margin = height - button_size * logic_board.height();
 
-    for (int i = 0; i < logic_board.height; ++i)
+    for (int i = 0; i < logic_board.height(); ++i)
     {
-        for (int j = 0; j < logic_board.width; ++j)
+        for (int j = 0; j < logic_board.width(); ++j)
         {
-            Game_button::State state = Game_button::State(logic_board.current[i][j]);
+            Game_button::State state = Game_button::State(logic_board.current()[i][j]);
             switch (state)
             {
                 case Game_button::HINT_CROSS:
                 case Game_button::HINT_FILLED:
                 {
                     logic_board.after_hint(std::vector<int> {i, j});
-                    state = Game_button::State(logic_board.current[i][j]);
+                    state = Game_button::State(logic_board.current()[i][j]);
                     break;
                 }
 
@@ -91,7 +91,7 @@ void Graph_board::init_buttons()
                 case Game_button::MISTAKE_FILLED:
                 {
                     logic_board.after_mistake(std::vector<int> {i, j});
-                    state = Game_button::State(logic_board.current[i][j]);
+                    state = Game_button::State(logic_board.current()[i][j]);
                     break;
                 }
             }
@@ -112,26 +112,27 @@ void Graph_board::init_digits()
     int font_width = Graph_lib::font_width(font_size);
     int font_height = Graph_lib::font_height(font_size);
 
-    int button_size = std::min((height - logic_board.max_cols * font_height) / logic_board.height, 
-                                (width - logic_board.max_rows * font_width) / logic_board.width);
-    int x_margin = width - button_size * logic_board.width;
-    int y_margin = height - button_size * logic_board.height;
+    int button_size = std::min((height - logic_board.max_cols() * font_height) / logic_board.height(), 
+                                (width - logic_board.max_rows() * font_width) / logic_board.width());
+    int x_margin = width - button_size * logic_board.width();
+    int y_margin = height - button_size * logic_board.height();
 
     auto hidden_rows = logic_board.hidden_rows();
+    auto row_intervals = logic_board.row_intervals();
 
-    for (int i = 0; i < logic_board.row_intervals.size(); ++i)
+    for (int i = 0; i < row_intervals.size(); ++i)
     {
         Graph_lib::Vector_ref<Graph_lib::Text> r_digits;
-        for (int j = 0; j < logic_board.row_intervals[i].size(); ++j)
+        for (int j = 0; j < row_intervals[i].size(); ++j)
         {
             std::string value = "0";
-            if (!logic_board.row_intervals[i][j].empty())
-                value = std::to_string(logic_board.row_intervals[i][j][1] - logic_board.row_intervals[i][j][0] + 1);
+            if (!row_intervals[i][j].empty())
+                value = std::to_string(row_intervals[i][j][1] - row_intervals[i][j][0] + 1);
 
             auto text = new Graph_lib::Text{Graph_lib::Point(0, 0), value};
             auto color = (std::find(hidden_rows.begin(), hidden_rows.end(), std::vector<int> {i, j}) == hidden_rows.end() ? 
                                     Graph_lib::Color::black : Graph_lib::Color::white);
-            Graph_lib::Point p{(int) (loc.x + x_margin - 3 * (logic_board.row_intervals[i].size() - j) * font_width), 
+            Graph_lib::Point p{(int) (loc.x + x_margin - 3 * (row_intervals[i].size() - j) * font_width), 
                         loc.y + y_margin + i * button_size + int(button_size / 2) + int(font_height / 2)};
             text->move(p.x, p.y);
             text->set_font_size(font_size);
@@ -142,15 +143,16 @@ void Graph_board::init_digits()
     }
 
     auto hidden_cols = logic_board.hidden_cols();
+    auto col_intervals = logic_board.col_intervals();
 
-    for (int i = 0; i < logic_board.col_intervals.size(); ++i)
+    for (int i = 0; i < col_intervals.size(); ++i)
     {
         Graph_lib::Vector_ref<Graph_lib::Text> c_digits;
-        for (int j = 0; j < logic_board.col_intervals[i].size(); ++j)
+        for (int j = 0; j < col_intervals[i].size(); ++j)
         {
             std::string value = "0";
-            if (!logic_board.col_intervals[i][j].empty())
-                value = std::to_string(logic_board.col_intervals[i][j][1] - logic_board.col_intervals[i][j][0] + 1);
+            if (!col_intervals[i][j].empty())
+                value = std::to_string(col_intervals[i][j][1] - col_intervals[i][j][0] + 1);
 
             auto text = new Graph_lib::Text{Graph_lib::Point(0, 0), value};
             auto color = (std::find(hidden_cols.begin(), hidden_cols.end(), std::vector<int> {i, j}) == hidden_cols.end() ? 
@@ -183,12 +185,12 @@ Level Graph_board::invert_digits()
 
 void Graph_board::change_buttons(bool state)
 {
-    for (int i = 0; i < logic_board.height; ++i)
+    for (int i = 0; i < logic_board.height(); ++i)
     {
-        for (int j = 0; j < logic_board.width; ++j)
+        for (int j = 0; j < logic_board.width(); ++j)
         {
-            buttons[i * logic_board.height + j].change_button((Game_button::State) logic_board.current[i][j]);
-            buttons[i * logic_board.height + j].block(state);
+            buttons[i * logic_board.height() + j].change_button((Game_button::State) logic_board.current()[i][j]);
+            buttons[i * logic_board.height() + j].block(state);
         }
     }
 }
@@ -293,8 +295,8 @@ void Graph_board::change_previous()
     {
         logic_board.after_mistake(mistake);
         int x = mistake[0], y = mistake[1];
-        Game_button& button = buttons[logic_board.height * x + y];
-        button.change_button(logic_board.current[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
+        Game_button& button = buttons[logic_board.height() * x + y];
+        button.change_button(logic_board.current()[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
         button.redraw();
         mistake = {};
     }
@@ -302,8 +304,8 @@ void Graph_board::change_previous()
     {
         logic_board.after_hint(hint);
         int x = hint[0], y = hint[1];
-        Game_button& button = buttons[logic_board.height * x + y];
-        button.change_button(logic_board.current[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
+        Game_button& button = buttons[logic_board.height() * x + y];
+        button.change_button(logic_board.current()[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
         button.redraw();
         hint = {};
     }
@@ -348,21 +350,23 @@ void Graph_board::get_hint()
 
     std::vector<int> pos = logic_board.hint_click();
     int x = pos[0], y = pos[1];
-    Game_button& btn = buttons[x * logic_board.height + y];
+    Game_button& btn = buttons[x * logic_board.height() + y];
 
-    auto state = (Game_button::State) logic_board.current[x][y];
+    auto state = (Game_button::State) logic_board.current()[x][y];
 
-    level.set_current(logic_board.current, logic_board.empty);
+    auto current = logic_board.current();
+    auto empty = logic_board.empty();
+    level.set_current(current, empty);
     win->update_current(level);
 
     change_digits(x, y);
 
-    if (logic_board.status == Logic_board::OK)
+    if (logic_board.status() == Logic_board::OK)
     {
         hint = {x, y};
         btn.change_button(state);
     }
-    else if (logic_board.status == Logic_board::FINISH)
+    else if (logic_board.status() == Logic_board::FINISH)
     {
         btn.change_button(state);
         level.finished = true;
@@ -388,15 +392,17 @@ void Graph_board::click_button(Game_button* btn)
     int x = btn->x(), y = btn->y();
 
     logic_board.set_click(x, y, state);
-    level.set_current(logic_board.current, logic_board.empty);
+    auto current = logic_board.current();
+    auto empty = logic_board.empty();
+    level.set_current(current, empty);
     win->update_current(level);
 
     change_digits(x, y);
 
-    if (logic_board.status == Logic_board::OK)
+    if (logic_board.status() == Logic_board::OK)
         btn->change_button(state);
 
-    else if (logic_board.status == Logic_board::FINISH)
+    else if (logic_board.status() == Logic_board::FINISH)
     {
         btn->change_button(state);
         level.finished = true;
@@ -404,10 +410,10 @@ void Graph_board::click_button(Game_button* btn)
         win->update_finished(level);
     }
     
-    else if (logic_board.status == Logic_board::MISTAKE)
+    else if (logic_board.status() == Logic_board::MISTAKE)
     {
         mistake = {x, y};
-        btn->change_button(logic_board.current[x][y] == 4 ? Game_button::MISTAKE_CROSS : Game_button::MISTAKE_FILLED);
+        btn->change_button(logic_board.current()[x][y] == 4 ? Game_button::MISTAKE_CROSS : Game_button::MISTAKE_FILLED);
         level.hearts_count = level.hearts_count - 1;
         if (level.hearts_count == 0) block_buttons(true);
         win->update_heart_count(level);
