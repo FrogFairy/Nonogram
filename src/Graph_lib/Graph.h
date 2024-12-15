@@ -215,8 +215,8 @@ public:
 
   virtual ~Shape() = 0;
 
-  // Shape(const Shape&) = delete;  // don't copy Shapes
-  Shape& operator= (const Shape&) = delete;
+  // Shape(const Shape&) {};  // don't copy Shapes
+  // Shape& operator= (const Shape&) {};
 
 private:
   std::vector<Point> points;  // not used by all shapes
@@ -314,10 +314,25 @@ struct Lines : Shape  // indepentdent lines
   }
 };
 
-struct Text : Shape
+struct Text : public Shape
 {
   // the point is the bottom left of the first letter
   Text(Point x, const std::string& s) : lab{s} { add(x); }
+
+  Text (const Text& other)
+  {
+    lab = other.lab;
+    fnt = other.fnt;
+    fnt_sz = other.fnt_sz;
+  }
+
+  Text& operator= (const Text& other)
+  {
+    lab = other.lab;
+    fnt = other.fnt;
+    fnt_sz = other.fnt_sz;
+    return *this;
+  }
 
   void draw_lines () const override;
 
@@ -462,6 +477,13 @@ struct Image : public Shape
   Image(Point xy, const std::string& s, Suffix::Encoding e = Suffix::none);
 
   ~Image() { delete p; }
+
+  Image(const Image& other)
+  : fn{other.fn}
+  {
+    p = other.p->copy();
+    delete other.p;
+  }
 
   void draw_lines () const override;
 

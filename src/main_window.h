@@ -16,7 +16,7 @@ struct Window_with_back : public Graph_lib::Window
       : Graph_lib::Window{xy, w, h, title}, back_button{Graph_lib::Point{10, 10}, 100, 40, "back", cb_back} 
   {
     attach(back_button);
-    back_button.set_font_size(20);
+    back_button.set_font_size(18);
   }
 
   void wait_for_button()

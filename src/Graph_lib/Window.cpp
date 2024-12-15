@@ -32,7 +32,11 @@ void Window::attach(Widget& w)
   end();            // FTLK: stop attaching new Fl_Widgets to this window
 }
 
-void Window::detach(Widget& w) { w.hide(); }
+void Window::detach(Widget& w) 
+{ 
+  w.hide(); 
+  w.clean_pointer();
+}
 
 void Window::attach(Shape& s) { shapes.push_back(&s); }
 

@@ -12,7 +12,8 @@ struct Option_button : public Graph_lib::Button
 {
 public:
     Option_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
-        : Graph_lib::Button{xy, w, h, label, cb}, _active{active} 
+        : Graph_lib::Button{xy, w, h, label, cb}, _active{active}, 
+        default_color{Graph_lib::Color::black}, active_color{Graph_lib::Color::dark_green}
         {};
 
     virtual void attach(Graph_lib::Window& win)
@@ -22,7 +23,7 @@ public:
         set_color();
     }
 
-    virtual void change_color()
+    virtual void change_state()
     {
         _active = !_active;
         set_color();
@@ -34,6 +35,8 @@ public:
 protected:
     std::unique_ptr<Graph_lib::Shape> mark;
     const int margin = 5;
+    Graph_lib::Color default_color;
+    Graph_lib::Color active_color;
 
 private:
     bool _active;
@@ -54,7 +57,6 @@ struct Invert_button : public Option_button
 public:
     Invert_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active);
     void attach(Graph_lib::Window& win) override;
-    // void change_color() override;
 
 private:
     std::unique_ptr<Graph_lib::Label_widget> label_widget;
@@ -65,26 +67,36 @@ struct Heart : public Graph_lib::Widget
 public:
     Heart(Graph_lib::Point xy, int w, int h, bool fill)
     : Graph_lib::Widget{xy, w, h, "", nullptr}, filled{fill}
-    {
-        img = new Graph_lib::Image(loc, (filled ? fill_heart : empty_heart));
-    }
+    {}
+
+    Heart(const Heart& other)
+    : Graph_lib::Widget{other}, img{other.img}, filled{other.filled}
+    {}
 
     void attach(Graph_lib::Window& win) 
     {
+        img = new Graph_lib::Image(loc, (filled ? fill_heart : empty_heart));
         pw = new Fl_Box(FL_NO_BOX, loc.x, loc.y, width, height, "");
         pw->image(img->fl_image());
         own = &win;
+    }
+
+    void clean_pointer()
+    {
+        pw->deimage();
+        Graph_lib::Widget::clean_pointer();
+        delete img;
     }
 
     void change(bool fill)
     {
         if (fill == filled) return;
         filled = fill;
-        pw->deimage();
-        delete img;
-        img = new Graph_lib::Image(loc, (filled ? fill_heart : empty_heart));
-        pw->image(img->fl_image());
-        pw->redraw();
+        // pw->deimage();
+        // delete img;
+        // img = new Graph_lib::Image(loc, (filled ? fill_heart : empty_heart));
+        // pw->image(img->fl_image());
+        // pw->redraw();
     }
 
     bool is_filled() { return filled; }
@@ -103,13 +115,17 @@ struct Play_window : public Window_with_back
 public:
     Play_window(Graph_lib::Point xy, int w, int h, const std::string& title, Level& level, Windows_wrapper &own);
 
+    ~Play_window()
+    {
+        for (Heart heart : hearts_img)
+            heart.clean_pointer();
+    }
+
     Game_button::State option() { return button_option; }
 
     void update_current(Level& level);
     void update_finished(Level& level);
     void update_heart_count(Level& level);
-    void update_hidden_rows(Level& level);
-    void update_hidden_cols(Level& level);
 
 private:
     static void cb_rules(Graph_lib::Address, Graph_lib::Address addr);
@@ -123,6 +139,9 @@ private:
 
     static void cb_choose_option(Graph_lib::Address, Graph_lib::Address addr);
     void choose_option();
+
+    static void cb_invert(Graph_lib::Address, Graph_lib::Address addr);
+    void invert();
 
     Graph_board board;
     Level level;

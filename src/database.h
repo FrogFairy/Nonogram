@@ -18,19 +18,25 @@ std::string to_string(Size size);
 
 struct Level
 {
+    friend class Database_levels;
+
+    enum Needful
+    {
+        CROSS = 0,
+        FILLED = 1
+    };
+
     Level() = default;
     Level(const std::string& title, Size size, const std::string& filename)
         : title{title}, size{size}
     {
-        correct_values = create_matrix_level(size, filename);
+        _correct_values = create_matrix_level(size, filename);
     }
 
     void restart()
     {
-        current_values = std::vector<std::vector<int>> {};
-        empty = std::vector<std::vector<int>> {};
-        hidden_rows = empty_rows;
-        hidden_cols = empty_cols;
+        _current_values = std::vector<std::vector<int>> {};
+        _empty = std::vector<std::vector<int>> {};
         hearts_count = 3;
         finished = false;
         init();
@@ -38,34 +44,36 @@ struct Level
     
     void init()
     {
-        for (int j = 0; j < correct_values.size(); ++j)
+        for (int j = 0; j < _correct_values.size(); ++j)
         {
-            for (int i = 0; i < correct_values[0].size(); ++i)
+            for (int i = 0; i < _correct_values[0].size(); ++i)
             {
-                empty.push_back(std::vector<int> {j, i});
+                _empty.push_back(std::vector<int> {j, i});
             }
-            current_values.push_back(std::vector<int>(correct_values[0].size(), -1));
+            _current_values.push_back(std::vector<int>(_correct_values[0].size(), -1));
         }
     }
     
     void set_current(std::vector<std::vector<int>>& current, std::vector<std::vector<int>>& empty) 
     { 
-        current_values = current;
-        empty = empty;
+        _current_values = current;
+        _empty = empty;
     }
-    
+
+    std::vector<std::vector<int>> correct_values() { return _correct_values; }
+    std::vector<std::vector<int>> current_values() { return _current_values; }
+    std::vector<std::vector<int>> empty() { return _empty; }
+
     std::string title{};
     Size size{};
-    std::vector<std::vector<int>> correct_values{};
-    std::vector<std::vector<int>> current_values{};
-    std::vector<std::vector<int>> empty{};
-    std::vector<std::vector<int>> hidden_rows{};
-    std::vector<std::vector<int>> hidden_cols{};
     char hearts_count = 3;
     bool finished = false;
+    Needful inverted = FILLED;
 
-    std::vector<std::vector<int>> empty_rows {}; // for coord 0 digits in rows
-    std::vector<std::vector<int>> empty_cols {}; // for coord 0 digits in cols
+protected:
+    std::vector<std::vector<int>> _correct_values{};
+    std::vector<std::vector<int>> _current_values{};
+    std::vector<std::vector<int>> _empty{}; // empty positions in user`s board
 };
 
 struct Database_levels
@@ -93,9 +101,8 @@ public:
     Response update_level(Level& level);
     Response update_current(Level& level);
     Response update_finished(Level& level);
+    Response update_inverted(Level& level);
     Response update_heart_count(Level& level);
-    Response update_hidden_rows(Level& level);
-    Response update_hidden_cols(Level& level);
 
     int get_new_id(Size size);
 

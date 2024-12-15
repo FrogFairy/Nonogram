@@ -29,7 +29,6 @@ private:
     static void save_image(Graph_lib::Window *own, const std::string&);
     static void cb_save_button(Graph_lib::Address, Graph_lib::Address addr);
 
-    void init_hidden_digits(Level& level);
     void save_button();
 };
 

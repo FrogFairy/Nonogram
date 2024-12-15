@@ -28,5 +28,5 @@ Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, cons
     }
 
     attach(level_widget);
-    level_widget.set_font_size(20);
+    level_widget.set_font_size(18);
 }

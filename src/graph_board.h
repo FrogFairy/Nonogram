@@ -68,7 +68,8 @@ public:
     Graph_board(Graph_lib::Point xy, int w, int h, Level& level)
         : Widget{xy, w, h, "", nullptr}, level{level}, logic_board{Logic_board(level)}
     {
-        init_widgets();
+        init_buttons();
+        init_digits();
         if (level.hearts_count == 0 || level.finished) block_buttons(true);
     }
 
@@ -82,13 +83,17 @@ public:
         change_buttons(false);
     }
     
-    void init_widgets();
+    void init_buttons();
+    void init_digits();
 
     void get_hint();
+
+    Level invert_digits();
 
     bool is_blocked() { return blocked; }
 
     void attach(Graph_lib::Window &win);
+    void detach();
 
     void redraw() override;
     
@@ -103,9 +108,12 @@ private:
     void set_digit_color(Graph_lib::Text& text, Graph_lib::Color color);
     void block_buttons(bool state);
 
-    Graph_lib::Vector_ref<Game_button> buttons {};
-    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> row_digits {};
-    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> col_digits {};
+    void detach_digits();
+    void attach_digits(Graph_lib::Window& win);
+
+    Graph_lib::Vector_ref<Game_button> buttons;
+    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> row_digits;
+    std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> col_digits;
 
     Logic_board logic_board;
     Level level;

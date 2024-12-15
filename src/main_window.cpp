@@ -45,6 +45,6 @@ Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &t
     }
 
     attach(main_widget); 
-    main_widget.set_font_size(20);
+    main_widget.set_font_size(18);
 }
 

@@ -10,28 +10,6 @@ void Generate_level_window::cb_save_button(Graph_lib::Address, Graph_lib::Addres
     static_cast<Generate_level_window&>(pb->window()).save_button();
 }
 
-void Generate_level_window::init_hidden_digits(Level& level)
-{
-    Logic_board logic_board {level};
-    for (int i = 0; i < logic_board.row_intervals.size(); ++i)
-    {
-        for (int j = 0; j < logic_board.row_intervals[i].size(); ++j)
-        {
-            if (logic_board.row_intervals[i][j].empty())
-                level.empty_rows.push_back(std::vector<int> {i, j});
-        }
-    }
-
-    for (int i = 0; i < logic_board.col_intervals.size(); ++i)
-    {
-        for (int j = 0; j < logic_board.col_intervals[i].size(); ++j)
-        {
-            if (logic_board.col_intervals[i][j].empty())
-                level.empty_cols.push_back(std::vector<int> {i, j});
-        }
-    }
-}
-
 void Generate_level_window::save_button()
 {
     level_size = sizes[size_box.get_value()];
@@ -53,7 +31,6 @@ void Generate_level_window::save_button()
     {
         Level level {str_level_name, level_size, filename};
         level.init();
-        init_hidden_digits(level);
 
         Database_levels::Response res = own.db_levels.add_level(level);
         if (res == Database_levels::ALREADY_EXISTS) 
@@ -78,7 +55,7 @@ level_name{Graph_lib::Point{260, 400}, 200, 50, "level name: "}
     Window_with_back::size_range(w, h, w, h);
 
     attach(size_box);
-    size_box.set_font_size(20);
+    size_box.set_font_size(18);
     for (unsigned int i = 10; i < 30; i += 5)
     {
         Size s {i, i};
@@ -88,13 +65,13 @@ level_name{Graph_lib::Point{260, 400}, 200, 50, "level name: "}
     size_box.set_value(0);
 
     attach(image_chooser);
-    image_chooser.set_font_size(20);
+    image_chooser.set_font_size(18);
 
-    Graph_lib::Button save_button {Graph_lib::Point{590, 630}, 100, 40, "save", cb_save_button};
+    Graph_lib::Button save_button {Graph_lib::Point{x_max() - 110, y_max() - 50}, 100, 40, "save", cb_save_button};
     attach(save_button);
     attach(level_name);
-    save_button.set_font_size(20);
-    level_name.set_font_size(20);
+    save_button.set_font_size(18);
+    level_name.set_font_size(18);
 }
 
 void Generate_level_window::cb_choose_file(Graph_lib::Address, Graph_lib::Address addr)

@@ -68,8 +68,10 @@ public:
 
   virtual ~Widget() {}
 
-  Widget& operator= (const Widget&) = delete;  // don't copy Widgets
-  // Widget(const Widget&) = delete;
+  virtual void clean_pointer() { delete pw; }
+
+  // Widget& operator= (const Widget&) {};  // don't copy Widgets
+  // Widget(const Widget&) {};
   Fl_Widget* pw;  // connection to the FLTK Widget
 
 protected:
@@ -205,7 +207,7 @@ struct File_chooser_box : Widget
 
   File_chooser_box(Point xy, int w, int h, const std::string& label, const std::string& btn_label, const std::string& files,
                    Callback_for_file window_callback, Callback button_callback) 
-    : Widget{xy, w, h, label, nullptr}, btn{Button(Point(xy.x - w, xy.y), w, h, btn_label, button_callback)}, files{files},
+    : Widget{xy, w, h, label, nullptr}, btn{Button(Point(xy.x - w / 3 * 2, xy.y), w / 3 * 2, h, btn_label, button_callback)}, files{files},
     window_callback{window_callback}, out_box{Out_box(xy, w, h, label)},
 	  err_rectangle{Point{xy.x - margin, xy.y - margin}, w, h}
 	{

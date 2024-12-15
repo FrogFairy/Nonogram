@@ -32,15 +32,11 @@ Database_levels::Response Database_levels::add_level(Level& level)
     }
     
     std::string finish = level.finished ? "1" : "0";
-    std::string sql = "INSERT INTO levels (title, size, correct_values, current_values, empty, hidden_rows, hidden_cols, empty_rows, empty_cols, hearts_count, finished) "
+    std::string sql = "INSERT INTO levels (title, size, correct_values, current_values, empty, hearts_count, finished, inverted) " \
                     "VALUES ('" + level.title + "', '" + to_string(level.size) + "', '" +
-                    vector_to_string(level.correct_values) + "', '" + vector_to_string(level.current_values) +
-                    "', '" + vector_to_string(level.empty) + "', '" + vector_to_string(level.empty_rows) + 
-                    "', '" + vector_to_string(level.empty_cols) +
-                    "', '" + vector_to_string(level.empty_rows) + 
-                    "', '" + vector_to_string(level.empty_cols) + "', '"
-                    + std::to_string(level.hearts_count) +
-                    "', '" + finish + "')";
+                    vector_to_string(level._correct_values) + "', '" + vector_to_string(level._current_values) +
+                    "', '" + vector_to_string(level._empty) + "', '" + std::to_string(level.hearts_count) +
+                    "', '" + finish + "', '" + std::to_string(level.inverted) + "')";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
     {
@@ -55,8 +51,8 @@ Level Database_levels::get_level(Size size, const std::string& title)
 {
     char* err = nullptr;
     std::vector<Level> level{};
-    std::string sql = "SELECT title, size, correct_values, current_values, empty, hidden_rows, hidden_cols, empty_rows, empty_cols, hearts_count, finished "
-                            "FROM levels WHERE size = '" + to_string(size) + "' AND title = '" + title + "'";
+    std::string sql = "SELECT title, size, correct_values, current_values, empty, hearts_count, finished, inverted " \
+                        "FROM levels WHERE size = '" + to_string(size) + "' AND title = '" + title + "'";
     int rs = sqlite3_exec(db, sql.c_str(), select_levels, &level, &err);
     if (rs != SQLITE_OK)
     {
@@ -71,7 +67,7 @@ std::vector<Level> Database_levels::get_levels(Size size)
 {
     char* err = nullptr;
     std::vector<Level> levels{};
-    std::string sql = "SELECT title, size, correct_values, current_values, empty, hidden_rows, hidden_cols, empty_rows, empty_cols, hearts_count, finished "
+    std::string sql = "SELECT title, size, correct_values, current_values, empty, hearts_count, finished, inverted " \
                             "FROM levels WHERE size = '" + to_string(size) + "'";
     int rs = sqlite3_exec(db, sql.c_str(), select_levels, &levels, &err);
     if (rs != SQLITE_OK)
@@ -88,13 +84,12 @@ Database_levels::Response Database_levels::update_level(Level& level)
     char* err = nullptr;
     Response response = Response::OK;
     std::string finish = level.finished ? "1" : "0";
-    std::string sql = "UPDATE levels SET correct_values = '" + vector_to_string(level.correct_values) + 
-                      "', current_values = '" + vector_to_string(level.current_values) +
-                      "', empty = '" + vector_to_string(level.empty) + 
-                      "', hidden_rows = '" + vector_to_string(level.hidden_rows) +
-                      "', hidden_cols = '" + vector_to_string(level.hidden_cols) +
+    std::string sql = "UPDATE levels SET correct_values = '" + vector_to_string(level._correct_values) + 
+                      "', current_values = '" + vector_to_string(level._current_values) +
+                      "', empty = '" + vector_to_string(level._empty) + 
                       "', hearts_count = '" + std::to_string(level.hearts_count) + 
-                      "', finished = '" + finish + "' WHERE size = '" + to_string(level.size) +
+                      "', finished = '" + finish + "', inverted = '" + std::to_string(level.inverted) +
+                      "' WHERE size = '" + to_string(level.size) +
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
@@ -110,8 +105,8 @@ Database_levels::Response Database_levels::update_current(Level& level)
 {
     char* err = nullptr;
     Response response = Response::OK;
-    std::string sql = "UPDATE levels SET current_values = '" + vector_to_string(level.current_values) +
-                      "', empty = '" + vector_to_string(level.empty) + "' WHERE size = '" + to_string(level.size) + 
+    std::string sql = "UPDATE levels SET current_values = '" + vector_to_string(level._current_values) +
+                      "', empty = '" + vector_to_string(level._empty) + "' WHERE size = '" + to_string(level.size) + 
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
     if (res != SQLITE_OK)
@@ -140,6 +135,23 @@ Database_levels::Response Database_levels::update_finished(Level& level)
     return Response::OK;
 }
 
+Database_levels::Response Database_levels::update_inverted(Level& level)
+{
+    char* err = nullptr;
+    Response response = Response::OK;
+    std::string sql = "UPDATE levels SET inverted = '" + std::to_string(level.inverted) +
+                      "' WHERE size = '" + to_string(level.size) +
+                      "' AND title = '" + level.title + "'";
+    int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
+    if (res != SQLITE_OK)
+    {
+        std::cerr << "Error update_inverted level: " << err << std::endl;
+        sqlite3_free(err);
+        return Response::FAIL;
+    }
+    return Response::OK;
+}
+
 Database_levels::Response Database_levels::update_heart_count(Level& level)
 {
     char* err = nullptr;
@@ -150,38 +162,6 @@ Database_levels::Response Database_levels::update_heart_count(Level& level)
     if (res != SQLITE_OK)
     {
         std::cerr << "Error update_finished level: " << err << std::endl;
-        sqlite3_free(err);
-        return Response::FAIL;
-    }
-    return Response::OK;
-}
-
-Database_levels::Response Database_levels::update_hidden_rows(Level& level)
-{
-    char* err = nullptr;
-    Response response = Response::OK;
-    std::string sql = "UPDATE levels SET hidden_rows = '" + vector_to_string(level.hidden_rows) + "' WHERE size = '" + to_string(level.size) +
-                      "' AND title = '" + level.title + "'";
-    int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
-    if (res != SQLITE_OK)
-    {
-        std::cerr << "Error update_hidden_rows level: " << err << std::endl;
-        sqlite3_free(err);
-        return Response::FAIL;
-    }
-    return Response::OK;
-}
-
-Database_levels::Response Database_levels::update_hidden_cols(Level& level)
-{
-    char* err = nullptr;
-    Response response = Response::OK;
-    std::string sql = "UPDATE levels SET hidden_cols = '" + vector_to_string(level.hidden_cols) + "' WHERE size = '" + to_string(level.size) +
-                      "' AND title = '" + level.title + "'";
-    int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
-    if (res != SQLITE_OK)
-    {
-        std::cerr << "Error update_hidden_cols level: " << err << std::endl;
         sqlite3_free(err);
         return Response::FAIL;
     }
@@ -216,15 +196,12 @@ int Database_levels::select_levels(void * l, int count, char **values, char **co
     {
         level.title = values[0];
         level.size = size_to_int(values[1]);
-        level.correct_values = string_to_vector(values[2]);
-        level.current_values = string_to_vector(values[3]);
-        level.empty = string_to_vector(values[4]);
-        level.hidden_rows = string_to_vector(values[5]);
-        level.hidden_cols = string_to_vector(values[6]);
-        level.empty_rows = string_to_vector(values[7]);
-        level.empty_cols = string_to_vector(values[8]);
-        level.hearts_count = std::atoi(values[9]);
-        level.finished = std::atoi(values[10]);
+        level._correct_values = string_to_vector(values[2]);
+        level._current_values = string_to_vector(values[3]);
+        level._empty = string_to_vector(values[4]);
+        level.hearts_count = std::atoi(values[5]);
+        level.finished = std::atoi(values[6]);
+        level.inverted = Level::Needful(std::atoi(values[7]));
     }
     (*(std::vector<Level>*) l).push_back(level);
     return 0;
