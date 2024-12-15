@@ -131,6 +131,9 @@ private:
   int f;
 };
 
+int font_width(int fnt_sz);
+int font_height(int fnt_sz);
+
 template <class T> class Vector_ref
 {
   std::vector<T*> v;
@@ -347,8 +350,6 @@ struct Text : public Shape
   void set_font_size (int s) { fnt_sz = s; }
 
   int font_size () const { return fnt_sz; }
-
-  int length() const { return lab.length(); }
 
 private:
   std::string lab;  // label

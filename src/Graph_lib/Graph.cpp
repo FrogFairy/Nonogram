@@ -21,6 +21,26 @@ int randint (int min, int max)
 
 int randint (int max) { return randint(0, max); }
 
+int font_width(int fnt_sz)
+{
+  int ofnt = fl_font();
+  int osz = fl_size();
+  fl_font(ofnt, fnt_sz);
+  int res = fl_width("1");
+  fl_font(ofnt, osz);
+  return res;
+}
+
+int font_height(int fnt_sz)
+{
+  int ofnt = fl_font();
+  int osz = fl_size();
+  fl_font(ofnt, fnt_sz);
+  int res = fl_height();
+  fl_font(ofnt, osz);
+  return res;
+}
+
 Shape::Shape(std::initializer_list<Point> lst)
 {
   for (Point p : lst)

@@ -64,7 +64,11 @@ void Graph_board::init_buttons()
     buttons = {};
 
     int font_size = 18;
-    int button_size = std::min((height - logic_board.max_cols * font_size) / logic_board.width, (width - logic_board.max_rows) / logic_board.height);
+    int font_width = Graph_lib::font_width(font_size);
+    int font_height = Graph_lib::font_height(font_size);
+
+    int button_size = std::min((height - logic_board.max_cols * font_height) / logic_board.height, 
+                                (width - logic_board.max_rows * font_width) / logic_board.width);
     int x_margin = width - button_size * logic_board.width;
     int y_margin = height - button_size * logic_board.height;
 
@@ -105,7 +109,11 @@ void Graph_board::init_digits()
     col_digits = {};
 
     int font_size = 18;
-    int button_size = std::min((height - logic_board.max_cols * font_size) / logic_board.width, (width - logic_board.max_rows) / logic_board.height);
+    int font_width = Graph_lib::font_width(font_size);
+    int font_height = Graph_lib::font_height(font_size);
+
+    int button_size = std::min((height - logic_board.max_cols * font_height) / logic_board.height, 
+                                (width - logic_board.max_rows * font_width) / logic_board.width);
     int x_margin = width - button_size * logic_board.width;
     int y_margin = height - button_size * logic_board.height;
 
@@ -123,8 +131,8 @@ void Graph_board::init_digits()
             auto text = new Graph_lib::Text{Graph_lib::Point(0, 0), value};
             auto color = (std::find(hidden_rows.begin(), hidden_rows.end(), std::vector<int> {i, j}) == hidden_rows.end() ? 
                                     Graph_lib::Color::black : Graph_lib::Color::white);
-            Graph_lib::Point p{(int) (loc.x + x_margin - (logic_board.row_intervals[i].size() - j) * font_size - font_size / 4 * text->length()), 
-                        loc.y + y_margin + i * button_size + std::max(button_size - font_size, font_size)};
+            Graph_lib::Point p{(int) (loc.x + x_margin - 3 * (logic_board.row_intervals[i].size() - j) * font_width), 
+                        loc.y + y_margin + i * button_size + int(button_size / 2) + int(font_height / 2)};
             text->move(p.x, p.y);
             text->set_font_size(font_size);
             text->set_color(color);
@@ -147,8 +155,8 @@ void Graph_board::init_digits()
             auto text = new Graph_lib::Text{Graph_lib::Point(0, 0), value};
             auto color = (std::find(hidden_cols.begin(), hidden_cols.end(), std::vector<int> {i, j}) == hidden_cols.end() ? 
                                         Graph_lib::Color::black : Graph_lib::Color::white);
-            Graph_lib::Point p{loc.x + x_margin + i * button_size + (button_size - font_size / 2 * text->length()) / 2, 
-                            (int) (loc.y + y_margin - j * font_size - font_size / 2)};
+            Graph_lib::Point p{loc.x + x_margin + i * button_size + int(button_size / 2) - int(font_width / 2), 
+                            (int) (loc.y + y_margin - j * font_height - font_height / 2)};
 
             text->move(p.x, p.y);
             text->set_font_size(font_size);
