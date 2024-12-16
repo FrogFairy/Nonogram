@@ -77,8 +77,8 @@ public:
     {
         level.restart();
         logic_board = Logic_board(level);
-        mistake = std::vector<int> {};
-        hint = std::vector<int> {};
+        mistake = Position {};
+        hint = Position {};
         block_buttons(false);
         change_buttons(false);
     }
@@ -103,7 +103,7 @@ private:
 
     void change_previous();
     void change_buttons(bool state);
-    void change_digits(int x, int y);
+    void change_digits(Position pos);
 
     void set_digit_color(Graph_lib::Text& text, Graph_lib::Color color);
     void block_buttons(bool state);
@@ -118,8 +118,8 @@ private:
     Logic_board logic_board;
     Level level;
 
-    std::vector<int> mistake {}; // coord mistake cell
-    std::vector<int> hint {}; // coord hint cell
+    Position mistake {}; // coord mistake cell
+    Position hint {}; // coord hint cell
 
     bool blocked = false;
 };

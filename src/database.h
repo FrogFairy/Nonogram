@@ -14,6 +14,36 @@ struct Size
     unsigned int height;
 };
 
+struct Position
+{
+    bool empty() { return x < 0; }
+    bool operator == (const Position& other) const
+    {
+        return other.x == x && other.y == y;
+    }
+
+    int x = -1;
+    int y = -1;
+};
+
+struct Interval
+{
+    bool empty() { return start < 0; }
+    bool operator == (const Interval& other) const
+    {
+        return other.start == start && other.end == end;
+    }
+
+    int start = -1;
+    int end = -1;
+};
+
+struct Position_interval
+{
+    int pos = -1;
+    Interval interval {};
+};
+
 std::string to_string(Size size);
 
 struct Level
@@ -36,7 +66,7 @@ struct Level
     void restart()
     {
         _current_values = std::vector<std::vector<int>> {};
-        _empty = std::vector<std::vector<int>> {};
+        _empty = std::vector<Position> {};
         hearts_count = 3;
         finished = false;
         init();
@@ -48,13 +78,13 @@ struct Level
         {
             for (int i = 0; i < _correct_values[0].size(); ++i)
             {
-                _empty.push_back(std::vector<int> {j, i});
+                _empty.push_back(Position {j, i});
             }
             _current_values.push_back(std::vector<int>(_correct_values[0].size(), -1));
         }
     }
     
-    void set_current(std::vector<std::vector<int>>& current, std::vector<std::vector<int>>& empty) 
+    void set_current(std::vector<std::vector<int>>& current, std::vector<Position>& empty) 
     { 
         _current_values = current;
         _empty = empty;
@@ -62,7 +92,7 @@ struct Level
 
     std::vector<std::vector<int>> correct_values() { return _correct_values; }
     std::vector<std::vector<int>> current_values() { return _current_values; }
-    std::vector<std::vector<int>> empty() { return _empty; }
+    std::vector<Position> get_empty() { return _empty; }
 
     std::string title{};
     Size size{};
@@ -73,7 +103,7 @@ struct Level
 protected:
     std::vector<std::vector<int>> _correct_values{};
     std::vector<std::vector<int>> _current_values{};
-    std::vector<std::vector<int>> _empty{}; // empty positions in user`s board
+    std::vector<Position> _empty{}; // empty positions in user`s board
 };
 
 struct Database_levels
@@ -116,8 +146,10 @@ private:
     static int check_exists(void * r, int counts, char **values, char **cols);
 
     std::string vector_to_string(std::vector<std::vector<int>>& vec);
+    std::string positions_to_string(std::vector<Position>& vec);
 
     static std::vector<std::vector<int>> string_to_vector(const std::string& str);
+    static std::vector<Position> string_to_positions(const std::string& str);
 };
 
 #endif // DATABASE_H

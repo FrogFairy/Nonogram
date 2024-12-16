@@ -6,19 +6,6 @@
 #include <vector>
 #include <functional>
 
-struct Position
-{
-    int x;
-    int y;
-};
-
-struct Position_interval
-{
-    enum Type {COLUMN, ROW};
-    Position pos;
-    Type tp;
-};
-
 struct Logic_board
 {
 public:
@@ -26,7 +13,7 @@ public:
 
     Logic_board(Level& level) 
         : _current{level.current_values()}, _correct{level.correct_values()},
-        _empty{level.empty()}, _status{OK},
+        _empty{level.get_empty()}, _status{OK},
         _inverted{level.inverted}
     {
         _height = level.size.height;
@@ -38,21 +25,21 @@ public:
         if (_correct_count == _finish_count) _status = FINISH;
     }
     
-    void set_click(int x, int y, int val);
-    std::vector<int> hint_click();
-    void after_hint(std::vector<int> position);
-    void after_mistake(std::vector<int> position);
+    void set_click(Position pos, int val);
+    Position hint_click();
+    void after_hint(Position pos);
+    void after_mistake(Position pos);
 
-    std::vector<std::vector<int>> changed_digits(int x, int y, Level::Needful state);
+    std::vector<Position> changed_digits(Position pos, Level::Needful state);
 
-    std::vector<std::vector<int>> hidden_rows()
+    std::vector<Position> hidden_rows()
     {
         if (_inverted == Level::FILLED)
             return _hidden_fill_rows;
         return _hidden_cross_rows;
     }
 
-    std::vector<std::vector<int>> hidden_cols()
+    std::vector<Position> hidden_cols()
     {
         if (_inverted == Level::FILLED)
             return _hidden_fill_cols;
@@ -74,20 +61,20 @@ public:
     int width() { return _width; }
     int height() { return _height; }
 
-    std::vector<std::vector<std::vector<int>>> row_intervals() { return _row_intervals; }
-    std::vector<std::vector<std::vector<int>>> col_intervals() { return _col_intervals; }
+    std::vector<std::vector<Interval>> row_intervals() { return _row_intervals; }
+    std::vector<std::vector<Interval>> col_intervals() { return _col_intervals; }
 
     std::vector<std::vector<int>> current() { return _current; }
 
-    std::vector<std::vector<int>> empty() { return _empty; }
+    std::vector<Position> get_empty() { return _empty; }
 
     Response status() { return _status; }
 
 private:
-    bool col_find(int row, int start, int end, const std::function<bool(int)>& condition_func);
+    bool col_find(Position_interval pos_interval, const std::function<bool(int)>& condition_func);
 
-    std::vector<int> row_changed(int x, int y, int needful_value, int opposed_value, Level::Needful state);
-    std::vector<int> col_changed(int x, int y, int needful_value, int opposed_value, Level::Needful state);
+    Position row_changed(Position pos, int needful_value, int opposed_value, Level::Needful state);
+    Position col_changed(Position pos, int needful_value, int opposed_value, Level::Needful state);
 
     void fill_row_digits();
     void fill_col_digits();
@@ -100,19 +87,19 @@ private:
 
     Response _status;
 
-    std::vector<std::vector<std::vector<int>>> _row_intervals;
-    std::vector<std::vector<std::vector<int>>> _col_intervals;
+    std::vector<std::vector<Interval>> _row_intervals;
+    std::vector<std::vector<Interval>> _col_intervals;
     std::vector<std::vector<int>> _current;
-    std::vector<std::vector<int>> _empty;
+    std::vector<Position> _empty;
     std::vector<std::vector<int>> _correct;
 
-    std::vector<std::vector<int>> _hidden_fill_rows;
-    std::vector<std::vector<int>> _hidden_fill_cols;
-    std::vector<std::vector<int>> _hidden_cross_cols;
-    std::vector<std::vector<int>> _hidden_cross_rows;
+    std::vector<Position> _hidden_fill_rows;
+    std::vector<Position> _hidden_fill_cols;
+    std::vector<Position> _hidden_cross_cols;
+    std::vector<Position> _hidden_cross_rows;
 
-    std::vector<std::vector<int>> _buffer_rows; // buffer for hidden rows for inverted board
-    std::vector<std::vector<int>> _buffer_cols;
+    std::vector<Position_interval> _buffer_rows; // buffer for hidden rows for inverted board
+    std::vector<Position_interval> _buffer_cols;
 
     int _correct_count; // count of correct click (filled)
     int _finish_count; // count of filled cells in correct
