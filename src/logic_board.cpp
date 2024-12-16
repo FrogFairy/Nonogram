@@ -36,12 +36,20 @@ void Logic_board::fill_row_digits()
             }
             if (_current[i][j] == 1) ++_correct_count;
         }
-        if (!intervals.size())
+        unsigned int opposed_rows = intervals.empty() ? 1 : intervals.size() - 1;
+        if (!intervals.empty())
+        {
+            if (intervals[0].start != 0) ++opposed_rows;
+            if (intervals[intervals.size() - 1].end != _width - 1) ++opposed_rows;
+        }
+
+        if (intervals.empty())
         {
             intervals.push_back(Interval{});
         }
+
         _row_intervals.push_back(intervals);
-        _max_rows = std::max(_max_rows, (int) intervals.size());
+        _max_rows = std::max(_max_rows, std::max(unsigned(intervals.size()), opposed_rows));
     }
 }
 
@@ -73,12 +81,19 @@ void Logic_board::fill_col_digits()
                 end = -1;
             }
         }
-        if (!intervals.size())
+        unsigned int opposed_cols = intervals.empty() ? 1 : intervals.size() - 1;
+        if (!intervals.empty())
+        {
+            if (intervals[0].end != _height - 1) ++opposed_cols;
+            if (intervals[intervals.size() - 1].start != 0) ++opposed_cols;
+        }
+
+        if (intervals.empty())
         {
             intervals.push_back(Interval {});
         }
         _col_intervals.push_back(intervals);
-        _max_cols = std::max(_max_cols, (int) intervals.size());
+        _max_cols = std::max(_max_cols, std::max(unsigned(intervals.size()), opposed_cols));
     }  
 }
 
@@ -145,7 +160,7 @@ void Logic_board::init_hidden_rows()
             if (std::find_if(&_current[i][prev], &_current[i][_width - 1] + 1, 
                     [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
                                   || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }) == &_current[i][_width - 1] + 1)
-                _buffer_rows.push_back(Position_interval {i, prev, _width - 1});
+                _buffer_rows.push_back(Position_interval {i, prev, (int) (_width - 1)});
         }
     }
 }
@@ -180,7 +195,7 @@ void Logic_board::init_hidden_cols()
                     _hidden_cross_cols.push_back(Position {i, j});
                 prev = _height;
 
-                if (col_find(Position_interval {i, 0, _height}, 
+                if (col_find(Position_interval {i, 0, int(_height)}, 
                             [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
                                   || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }))
                 {
@@ -221,11 +236,11 @@ void Logic_board::init_hidden_cols()
 
         if (prev < _height)
         {
-            if (col_find(Position_interval{i, prev, _height}, 
+            if (col_find(Position_interval{i, prev, int(_height)}, 
                 [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
                                   || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }))
             {
-                _buffer_cols.push_back({i, prev, _height - 1});
+                _buffer_cols.push_back({i, prev, int(_height - 1)});
             }
 
         }

@@ -55,11 +55,11 @@ public:
         load_hidden_cols();
     }
 
-    int max_rows() { return _max_rows; }
-    int max_cols() { return _max_cols; }
+    unsigned int max_rows() { return _max_rows; }
+    unsigned int max_cols() { return _max_cols; }
 
-    int width() { return _width; }
-    int height() { return _height; }
+    unsigned int width() { return _width; }
+    unsigned int height() { return _height; }
 
     std::vector<std::vector<Interval>> row_intervals() { return _row_intervals; }
     std::vector<std::vector<Interval>> col_intervals() { return _col_intervals; }
@@ -101,13 +101,13 @@ private:
     std::vector<Position_interval> _buffer_rows; // buffer for hidden rows for inverted board
     std::vector<Position_interval> _buffer_cols;
 
-    int _correct_count; // count of correct click (filled)
-    int _finish_count; // count of filled cells in correct
+    unsigned int _correct_count; // count of correct click (filled)
+    unsigned int _finish_count; // count of filled cells in correct
     Level::Needful _inverted;
 
-    int _max_rows; // maximum of digits in rows
-    int _max_cols; // maximum of digits in cols
-    int _width, _height;
+    unsigned int _max_rows; // maximum of digits in rows
+    unsigned int _max_cols; // maximum of digits in cols
+    unsigned int _width, _height;
 };
 
 #endif // LOGIC_BOARD_H
