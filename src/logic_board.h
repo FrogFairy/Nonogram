@@ -25,7 +25,7 @@ public:
         if (_correct_count == _finish_count) _status = FINISH;
     }
     
-    void set_click(Position pos, int val);
+    void set_click(Position pos, Level::Cell_state val);
     Position hint_click();
     void after_hint(Position pos);
     void after_mistake(Position pos);
@@ -34,21 +34,21 @@ public:
 
     std::vector<Position> hidden_rows()
     {
-        if (_inverted == Level::FILLED)
+        if (_inverted == Level::FILLED_VAL)
             return _hidden_fill_rows;
         return _hidden_cross_rows;
     }
 
     std::vector<Position> hidden_cols()
     {
-        if (_inverted == Level::FILLED)
+        if (_inverted == Level::FILLED_VAL)
             return _hidden_fill_cols;
         return _hidden_cross_cols;
     }
 
     void invert() 
     { 
-        _inverted = (_inverted == Level::FILLED ? Level::CROSS : Level::FILLED);
+        _inverted = (_inverted == Level::FILLED_VAL ? Level::CROSS_VAL : Level::FILLED_VAL);
         fill_row_digits();
         fill_col_digits();
         load_hidden_rows();
@@ -64,7 +64,7 @@ public:
     std::vector<std::vector<Interval>> row_intervals() { return _row_intervals; }
     std::vector<std::vector<Interval>> col_intervals() { return _col_intervals; }
 
-    std::vector<std::vector<int>> current() { return _current; }
+    std::vector<std::vector<Level::Cell_state>> current() { return _current; }
 
     std::vector<Position> get_empty() { return _empty; }
 
@@ -73,8 +73,8 @@ public:
 private:
     bool col_find(Position_interval pos_interval, const std::function<bool(int)>& condition_func);
 
-    Position row_changed(Position pos, int needful_value, int opposed_value, Level::Needful state);
-    Position col_changed(Position pos, int needful_value, int opposed_value, Level::Needful state);
+    Position row_changed(Position pos, Level::Cell_state needful_value, Level::Cell_state opposed_value, Level::Needful state);
+    Position col_changed(Position pos, Level::Cell_state needful_value, Level::Cell_state opposed_value, Level::Needful state);
 
     void fill_row_digits();
     void fill_col_digits();
@@ -89,9 +89,9 @@ private:
 
     std::vector<std::vector<Interval>> _row_intervals;
     std::vector<std::vector<Interval>> _col_intervals;
-    std::vector<std::vector<int>> _current;
+    std::vector<std::vector<Level::Cell_state>> _current;
     std::vector<Position> _empty;
-    std::vector<std::vector<int>> _correct;
+    std::vector<std::vector<Level::Needful>> _correct;
 
     std::vector<Position> _hidden_fill_rows;
     std::vector<Position> _hidden_fill_cols;

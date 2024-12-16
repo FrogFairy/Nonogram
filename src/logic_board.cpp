@@ -10,8 +10,8 @@ void Logic_board::fill_row_digits()
     _max_rows = 0;
     _row_intervals = {};
 
-    int needful_value = (_inverted == Level::FILLED ? 1 : 0);
-    int opposed_value = (_inverted == Level::FILLED ? 0 : 1);
+    int needful_value = (_inverted == Level::FILLED_VAL ? Level::FILLED : Level::CROSS);
+    int opposed_value = (_inverted == Level::FILLED_VAL ? Level::CROSS : Level::FILLED);
 
     for (int i = 0; i < _correct.size(); ++i)
     {
@@ -58,8 +58,8 @@ void Logic_board::fill_col_digits()
     _max_cols = 0;
     _col_intervals = {};
 
-    int needful_value = (_inverted == Level::FILLED ? 1 : 0);
-    int opposed_value = (_inverted == Level::FILLED ? 0 : 1);
+    int needful_value = (_inverted == Level::FILLED_VAL ? Level::FILLED : Level::CROSS);
+    int opposed_value = (_inverted == Level::FILLED_VAL ? Level::CROSS : Level::FILLED);
 
     for (int i = 0; i < _correct[0].size(); ++i)
     {
@@ -111,17 +111,17 @@ void Logic_board::init_hidden_rows()
             Interval interval = _row_intervals[i][j];
             if (interval.empty())
             {
-                if (_inverted == Level::FILLED)
+                if (_inverted == Level::FILLED_VAL)
                     _hidden_fill_rows.push_back(Position {i, j});
                 else
                     _hidden_cross_rows.push_back(Position {i, j});
                 prev = _width;
 
                 if (std::find_if(&_current[i][0], &_current[i][_width - 1] + 1, 
-                    [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
-                                  || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }) == &_current[i][_width - 1] + 1)
+                    [&](int val){ return _inverted == Level::FILLED_VAL && (val % 2) != 0
+                                  || _inverted == Level::CROSS_VAL && (val == -1 || (val % 2) == 0); }) == &_current[i][_width - 1] + 1)
                 {
-                    if (_inverted == Level::CROSS)
+                    if (_inverted == Level::CROSS_VAL)
                         _hidden_fill_rows.push_back(Position {i, 0});
                     else
                         _hidden_cross_rows.push_back(Position {i, 0});
@@ -131,24 +131,24 @@ void Logic_board::init_hidden_rows()
             }
             if (interval.start == 0 && interval.end == _width - 1)
             {
-                if (_inverted == Level::CROSS)
+                if (_inverted == Level::CROSS_VAL)
                     _hidden_fill_rows.push_back(Position {i, j});
                 else
                     _hidden_cross_rows.push_back(Position {i, j});
             }
 
             if (std::find_if(&_current[i][interval.start], &_current[i][interval.end] + 1, 
-                    [&](int val){ return _inverted == Level::FILLED && (val == -1 || (val % 2) == 0) 
-                                  || _inverted == Level::CROSS && (val % 2) != 0; }) == &_current[i][interval.end] + 1)
+                    [&](int val){ return _inverted == Level::FILLED_VAL && (val == -1 || (val % 2) == 0) 
+                                  || _inverted == Level::CROSS_VAL && (val % 2) != 0; }) == &_current[i][interval.end] + 1)
             {
-                if (_inverted == Level::FILLED)
+                if (_inverted == Level::FILLED_VAL)
                     _hidden_fill_rows.push_back(Position {i, j});
                 else
                     _hidden_cross_rows.push_back(Position {i, j});
             }
             if (interval.start > 0 && std::find_if(&_current[i][prev], &_current[i][interval.start], 
-                    [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
-                                  || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }) == &_current[i][interval.start])
+                    [&](int val){ return _inverted == Level::FILLED_VAL && (val % 2) != 0
+                                  || _inverted == Level::CROSS_VAL && (val == -1 || (val % 2) == 0); }) == &_current[i][interval.start])
             {
                 _buffer_rows.push_back(Position_interval {i, prev, interval.start - 1});
             }
@@ -158,8 +158,8 @@ void Logic_board::init_hidden_rows()
         if (prev < _width)
         {
             if (std::find_if(&_current[i][prev], &_current[i][_width - 1] + 1, 
-                    [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
-                                  || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }) == &_current[i][_width - 1] + 1)
+                    [&](int val){ return _inverted == Level::FILLED_VAL && (val % 2) != 0
+                                  || _inverted == Level::CROSS_VAL && (val == -1 || (val % 2) == 0); }) == &_current[i][_width - 1] + 1)
                 _buffer_rows.push_back(Position_interval {i, prev, (int) (_width - 1)});
         }
     }
@@ -189,17 +189,17 @@ void Logic_board::init_hidden_cols()
             Interval interval = _col_intervals[i][j];
             if (interval.empty())
             {
-                if (_inverted == Level::FILLED)
+                if (_inverted == Level::FILLED_VAL)
                     _hidden_fill_cols.push_back(Position {i, j});
                 else
                     _hidden_cross_cols.push_back(Position {i, j});
                 prev = _height;
 
                 if (col_find(Position_interval {i, 0, int(_height)}, 
-                            [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
-                                  || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }))
+                            [&](int val){ return _inverted == Level::FILLED_VAL && (val % 2) != 0
+                                  || _inverted == Level::CROSS_VAL && (val == -1 || (val % 2) == 0); }))
                 {
-                    if (_inverted == Level::CROSS)
+                    if (_inverted == Level::CROSS_VAL)
                         _hidden_fill_cols.push_back(Position {i, 0});
                     else
                         _hidden_cross_cols.push_back(Position {i, 0});
@@ -209,24 +209,24 @@ void Logic_board::init_hidden_cols()
             }
             if (interval.start == 0 && interval.end == _height - 1)
             {
-                if (_inverted == Level::CROSS)
+                if (_inverted == Level::CROSS_VAL)
                     _hidden_fill_cols.push_back(Position {i, j});
                 else
                     _hidden_cross_cols.push_back(Position {i, j});
             }
 
             if(col_find(Position_interval{i, interval.start, interval.end + 1}, 
-                            [&](int val){ return _inverted == Level::FILLED && (val == -1 || (val % 2) == 0) 
-                                  || _inverted == Level::CROSS && (val % 2) != 0; }))
+                            [&](int val){ return _inverted == Level::FILLED_VAL && (val == -1 || (val % 2) == 0) 
+                                  || _inverted == Level::CROSS_VAL && (val % 2) != 0; }))
             {
-                if (_inverted == Level::FILLED)
+                if (_inverted == Level::FILLED_VAL)
                     _hidden_fill_cols.push_back(Position {i, j});
                 else
                     _hidden_cross_cols.push_back(Position {i, j});
             }
             if(interval.start > 0 && col_find(Position_interval{i, prev, interval.start},
-                    [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
-                                  || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }))
+                    [&](int val){ return _inverted == Level::FILLED_VAL && (val % 2) != 0
+                                  || _inverted == Level::CROSS_VAL && (val == -1 || (val % 2) == 0); }))
             {
                 _buffer_cols.push_back({i, prev, interval.start - 1});
             }
@@ -237,8 +237,8 @@ void Logic_board::init_hidden_cols()
         if (prev < _height)
         {
             if (col_find(Position_interval{i, prev, int(_height)}, 
-                [&](int val){ return _inverted == Level::FILLED && (val % 2) != 0
-                                  || _inverted == Level::CROSS && (val == -1 || (val % 2) == 0); }))
+                [&](int val){ return _inverted == Level::FILLED_VAL && (val % 2) != 0
+                                  || _inverted == Level::CROSS_VAL && (val == -1 || (val % 2) == 0); }))
             {
                 _buffer_cols.push_back({i, prev, int(_height - 1)});
             }
@@ -254,7 +254,7 @@ void Logic_board::load_hidden_rows()
         int x = pos_interval.pos, left = pos_interval.interval.start, right = pos_interval.interval.end;
         int col = std::find(_row_intervals[x].begin(), _row_intervals[x].end(), Interval {left, right}) - _row_intervals[x].begin();
         Position res = {x, col};
-        if (_inverted == Level::FILLED)
+        if (_inverted == Level::FILLED_VAL)
             _hidden_fill_rows.push_back(res);
         else
             _hidden_cross_rows.push_back(res);
@@ -269,7 +269,7 @@ void Logic_board::load_hidden_cols()
         int y = pos_interval.pos, up = pos_interval.interval.start, down = pos_interval.interval.end;
         int row = std::find(_col_intervals[y].begin(), _col_intervals[y].end(), Interval {up, down}) - _col_intervals[y].begin();
         Position res = {y, row};
-        if (_inverted == Level::FILLED)
+        if (_inverted == Level::FILLED_VAL)
             _hidden_fill_cols.push_back(res);
         else
             _hidden_cross_cols.push_back(res);
@@ -277,7 +277,7 @@ void Logic_board::load_hidden_cols()
     _buffer_cols = {};
 }
 
-Position Logic_board::row_changed(Position pos, int needful_value, int opposed_value, Level::Needful state)
+Position Logic_board::row_changed(Position pos, Level::Cell_state needful_value, Level::Cell_state opposed_value, Level::Needful state)
 {
     Position res {};
     int x = pos.x, y = pos.y;
@@ -304,7 +304,7 @@ Position Logic_board::row_changed(Position pos, int needful_value, int opposed_v
         {
             col = std::find(_row_intervals[x].begin(), _row_intervals[x].end(), Interval {left, right}) - _row_intervals[x].begin();
             res = {x, col};
-            if (state == Level::FILLED)
+            if (state == Level::FILLED_VAL)
                 _hidden_fill_rows.push_back(res);
             else
                 _hidden_cross_rows.push_back(res);
@@ -317,7 +317,7 @@ Position Logic_board::row_changed(Position pos, int needful_value, int opposed_v
     return res;
 }
 
-Position Logic_board::col_changed(Position pos, int needful_value, int opposed_value, Level::Needful state)
+Position Logic_board::col_changed(Position pos, Level::Cell_state needful_value, Level::Cell_state opposed_value, Level::Needful state)
 {
     Position res {};
     int x = pos.x, y = pos.y;
@@ -343,7 +343,7 @@ Position Logic_board::col_changed(Position pos, int needful_value, int opposed_v
         {
             int row = std::find(_col_intervals[y].begin(), _col_intervals[y].end(), Interval {up, down}) - _col_intervals[y].begin();
             res = {y, row};
-            if (state == Level::FILLED)
+            if (state == Level::FILLED_VAL)
                 _hidden_fill_cols.push_back(res);
             else
                 _hidden_cross_cols.push_back(res);
@@ -359,8 +359,8 @@ Position Logic_board::col_changed(Position pos, int needful_value, int opposed_v
 
 std::vector<Position> Logic_board::changed_digits(Position pos, Level::Needful state)
 {
-    int needful_value = (state == Level::FILLED ? 1 : 0);
-    int opposed_value = (state == Level::FILLED ? 0 : 1);
+    Level::Cell_state needful_value = (state == Level::FILLED_VAL ? Level::FILLED : Level::CROSS);
+    Level::Cell_state opposed_value = (state == Level::FILLED_VAL ? Level::CROSS : Level::FILLED);
 
     int x = pos.x, y = pos.y;
 
@@ -373,7 +373,7 @@ std::vector<Position> Logic_board::changed_digits(Position pos, Level::Needful s
     return res;
 }
 
-void Logic_board::set_click(Position pos, int val)
+void Logic_board::set_click(Position pos, Level::Cell_state val)
 {
     int x = pos.x, y = pos.y;
 
@@ -384,9 +384,9 @@ void Logic_board::set_click(Position pos, int val)
                     _empty.end(), Position {x, y}));
         if (_correct[x][y] == 1) ++_correct_count;
     }
-    _status = (_correct_count == _finish_count ? FINISH : (_current[x][y] == _correct[x][y] ? OK : MISTAKE));
+    _status = (_correct_count == _finish_count ? FINISH : (int(_current[x][y]) == int(_correct[x][y]) ? OK : MISTAKE));
     if (_status == MISTAKE)
-        _current[x][y] = _correct[x][y] + 4;
+        _current[x][y] = Level::Cell_state(int(_correct[x][y]) + 4);
 }
 
 Position Logic_board::hint_click()
@@ -398,7 +398,7 @@ Position Logic_board::hint_click()
     Position pos = _empty[rand_ind];
     int x = pos.x;
     int y = pos.y;
-    _current[x][y] = _correct[x][y] + 2;
+    _current[x][y] = Level::Cell_state(int(_correct[x][y]) + 2);
 
     _empty.erase(_empty.begin() + rand_ind);
     if (_correct[x][y] == 1)
@@ -410,10 +410,10 @@ Position Logic_board::hint_click()
 
 void Logic_board::after_hint(Position pos)
 {
-    _current[pos.x][pos.y] -= 2;
+    _current[pos.x][pos.y] = Level::Cell_state(int(_current[pos.x][pos.y]) - 2);
 }
 
 void Logic_board::after_mistake(Position pos)
 {
-    _current[pos.x][pos.y] -= 4;
+    _current[pos.x][pos.y] = Level::Cell_state(int(_current[pos.x][pos.y]) - 4);
 }

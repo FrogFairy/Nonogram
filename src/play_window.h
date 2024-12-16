@@ -121,7 +121,7 @@ public:
             heart.clean_pointer();
     }
 
-    Game_button::State option() { return button_option; }
+    Level::Cell_state option() { return button_option; }
 
     void update_current(Level& level);
     void update_finished(Level& level);
@@ -156,7 +156,7 @@ private:
     Fill_button filled_button;
     Cross_button cross_button;
     Invert_button invert_button;
-    Game_button::State button_option;
+    Level::Cell_state button_option;
 
     std::vector<Heart> hearts_img;
 

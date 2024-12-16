@@ -209,9 +209,10 @@ struct File_chooser_box : Widget
                    Callback_for_file window_callback, Callback button_callback) 
     : Widget{xy, w, h, label, nullptr}, btn{Button(Point(xy.x - w / 3 * 2, xy.y), w / 3 * 2, h, btn_label, button_callback)}, files{files},
     window_callback{window_callback}, out_box{Out_box(xy, w, h, label)},
-	  err_rectangle{Point{xy.x - margin, xy.y - margin}, w, h}
+	  err_rectangle{Point{xy.x - margin, xy.y - margin}, w + 2 * margin, h + 2 * margin}
 	{
 		err_rectangle.set_color(FL_BACKGROUND_COLOR);
+    err_rectangle.set_style(Graph_lib::Line_style(Graph_lib::Line_style::solid, 3));
 	}
 
   void set_font_size(int s)

@@ -7,14 +7,14 @@ void Game_button::init_mark()
     int margin = width * 0.05;
     switch (cur_state)
     {
-        case EMPTY:
+        case Level::EMPTY:
         {
             mark = nullptr;
             break;
         }
-        case FILLED:
-        case HINT_FILLED:
-        case MISTAKE_FILLED:
+        case Level::FILLED:
+        case Level::HINT_FILLED:
+        case Level::MISTAKE_FILLED:
         {
             mark = new Graph_lib::Rectangle(Graph_lib::Point(int(loc.x + margin), int(loc.y + margin)), int(width - margin * 2), int(height - margin * 2));
             break;
@@ -33,14 +33,14 @@ void Game_button::init_mark()
     Graph_lib::Color color = Graph_lib::Color::black;
     switch (cur_state)
     {
-        case MISTAKE_CROSS:
-        case MISTAKE_FILLED:
+        case Level::MISTAKE_CROSS:
+        case Level::MISTAKE_FILLED:
         {
             color = Graph_lib::Color::dark_red;
             break;
         }
-        case HINT_CROSS:
-        case HINT_FILLED:
+        case Level::HINT_CROSS:
+        case Level::HINT_FILLED:
             color = Graph_lib::Color::dark_green;
     }
 
@@ -48,7 +48,7 @@ void Game_button::init_mark()
     mark->set_fill_color(color);
 }
 
-void Game_button::change_button(State state)
+void Game_button::change_button(Level::Cell_state state)
 {
     cur_state = state;
     own->detach(*mark);
@@ -76,22 +76,22 @@ void Graph_board::init_buttons()
     {
         for (int j = 0; j < logic_board.width(); ++j)
         {
-            Game_button::State state = Game_button::State(logic_board.current()[i][j]);
+            Level::Cell_state state = Level::Cell_state(logic_board.current()[i][j]);
             switch (state)
             {
-                case Game_button::HINT_CROSS:
-                case Game_button::HINT_FILLED:
+                case Level::HINT_CROSS:
+                case Level::HINT_FILLED:
                 {
                     logic_board.after_hint(Position {i, j});
-                    state = Game_button::State(logic_board.current()[i][j]);
+                    state = Level::Cell_state(logic_board.current()[i][j]);
                     break;
                 }
 
-                case Game_button::MISTAKE_CROSS:
-                case Game_button::MISTAKE_FILLED:
+                case Level::MISTAKE_CROSS:
+                case Level::MISTAKE_FILLED:
                 {
                     logic_board.after_mistake(Position {i, j});
-                    state = Game_button::State(logic_board.current()[i][j]);
+                    state = Level::Cell_state(logic_board.current()[i][j]);
                     break;
                 }
             }
@@ -171,7 +171,7 @@ void Graph_board::init_digits()
 
 Level Graph_board::invert_digits()
 {
-    level.inverted = (level.inverted == Level::FILLED ? Level::CROSS : Level::FILLED);
+    level.inverted = (level.inverted == Level::FILLED_VAL ? Level::CROSS_VAL : Level::FILLED_VAL);
     logic_board.invert();
 
     detach_digits();
@@ -189,7 +189,7 @@ void Graph_board::change_buttons(bool state)
     {
         for (int j = 0; j < logic_board.width(); ++j)
         {
-            buttons[i * logic_board.height() + j].change_button((Game_button::State) logic_board.current()[i][j]);
+            buttons[i * logic_board.height() + j].change_button((Level::Cell_state) logic_board.current()[i][j]);
             buttons[i * logic_board.height() + j].block(state);
         }
     }
@@ -296,7 +296,7 @@ void Graph_board::change_previous()
         logic_board.after_mistake(mistake);
         int x = mistake.x, y = mistake.y;
         Game_button& button = buttons[logic_board.height() * x + y];
-        button.change_button(logic_board.current()[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
+        button.change_button(logic_board.current()[x][y] == 0 ? Level::CROSS : Level::FILLED);
         button.redraw();
         mistake = {};
     }
@@ -305,7 +305,7 @@ void Graph_board::change_previous()
         logic_board.after_hint(hint);
         int x = hint.x, y = hint.y;
         Game_button& button = buttons[logic_board.height() * x + y];
-        button.change_button(logic_board.current()[x][y] == 0 ? Game_button::CROSS : Game_button::FILLED);
+        button.change_button(logic_board.current()[x][y] == 0 ? Level::CROSS : Level::FILLED);
         button.redraw();
         hint = {};
     }
@@ -339,7 +339,7 @@ void Graph_board::change_digits(Position pos)
         own->redraw();
     }
 
-    logic_board.changed_digits(pos, level.inverted == Level::FILLED ? Level::CROSS : Level::FILLED);
+    logic_board.changed_digits(pos, level.inverted == Level::FILLED_VAL ? Level::CROSS_VAL : Level::FILLED_VAL);
 }
 
 void Graph_board::get_hint()
@@ -352,7 +352,7 @@ void Graph_board::get_hint()
     int x = pos.x, y = pos.y;
     Game_button& btn = buttons[x * logic_board.height() + y];
 
-    auto state = (Game_button::State) logic_board.current()[x][y];
+    auto state = (Level::Cell_state) logic_board.current()[x][y];
 
     auto current = logic_board.current();
     auto empty = logic_board.get_empty();
@@ -384,11 +384,11 @@ void Graph_board::cb_click_button(Graph_lib::Address, Graph_lib::Address addr)
 
 void Graph_board::click_button(Game_button* btn)
 {
-    if (blocked || btn->state() != Game_button::EMPTY) return;
+    if (blocked || btn->state() != Level::EMPTY) return;
     change_previous();
 
     Play_window* win = (Play_window*) own;
-    Game_button::State state = win->option();
+    Level::Cell_state state = win->option();
     int x = btn->x(), y = btn->y();
     Position pos {x, y};
 
@@ -414,7 +414,7 @@ void Graph_board::click_button(Game_button* btn)
     else if (logic_board.status() == Logic_board::MISTAKE)
     {
         mistake = {x, y};
-        btn->change_button(logic_board.current()[x][y] == 4 ? Game_button::MISTAKE_CROSS : Game_button::MISTAKE_FILLED);
+        btn->change_button(logic_board.current()[x][y] == 4 ? Level::MISTAKE_CROSS : Level::MISTAKE_FILLED);
         level.hearts_count = level.hearts_count - 1;
         if (level.hearts_count == 0) block_buttons(true);
         win->update_heart_count(level);

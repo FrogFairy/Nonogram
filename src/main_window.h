@@ -67,6 +67,7 @@ private:
     void create_level();
 
     std::vector<Size_button> size_buttons;
+    Graph_lib::Button generate_button;
 
     Graph_lib::Menu main_widget;
     Windows_wrapper& own;

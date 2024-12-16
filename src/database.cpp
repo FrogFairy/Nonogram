@@ -2,18 +2,6 @@
 
 #include "database.h"
 
-std::string to_string(Size size)
-{
-    return std::to_string(size.width) + "x" + std::to_string(size.height);
-}
-
-Size size_to_int(const std::string& size)
-{
-    unsigned int w = std::stoi(size.substr(0, size.find("x")));
-    unsigned int h = std::stoi(size.substr(size.find("x") + 1));
-    return Size{w, h};
-}
-
 Database_levels::Response Database_levels::add_level(Level& level)
 {
     char* err = nullptr;
@@ -34,7 +22,8 @@ Database_levels::Response Database_levels::add_level(Level& level)
     std::string finish = level.finished ? "1" : "0";
     std::string sql = "INSERT INTO levels (title, size, correct_values, current_values, empty, hearts_count, finished, inverted) " \
                     "VALUES ('" + level.title + "', '" + to_string(level.size) + "', '" +
-                    vector_to_string(level._correct_values) + "', '" + vector_to_string(level._current_values) +
+                    vector_to_string(enum_to_vec(level._correct_values)) + 
+                    "', '" + vector_to_string(enum_to_vec(level._current_values)) +
                     "', '" + positions_to_string(level._empty) + "', '" + std::to_string(level.hearts_count) +
                     "', '" + finish + "', '" + std::to_string(level.inverted) + "')";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
@@ -84,8 +73,8 @@ Database_levels::Response Database_levels::update_level(Level& level)
     char* err = nullptr;
     Response response = Response::OK;
     std::string finish = level.finished ? "1" : "0";
-    std::string sql = "UPDATE levels SET correct_values = '" + vector_to_string(level._correct_values) + 
-                      "', current_values = '" + vector_to_string(level._current_values) +
+    std::string sql = "UPDATE levels SET correct_values = '" + vector_to_string(enum_to_vec(level._correct_values)) + 
+                      "', current_values = '" + vector_to_string(enum_to_vec(level._current_values)) +
                       "', empty = '" + positions_to_string(level._empty) + 
                       "', hearts_count = '" + std::to_string(level.hearts_count) + 
                       "', finished = '" + finish + "', inverted = '" + std::to_string(level.inverted) +
@@ -105,7 +94,7 @@ Database_levels::Response Database_levels::update_current(Level& level)
 {
     char* err = nullptr;
     Response response = Response::OK;
-    std::string sql = "UPDATE levels SET current_values = '" + vector_to_string(level._current_values) +
+    std::string sql = "UPDATE levels SET current_values = '" + vector_to_string(enum_to_vec(level._current_values)) +
                       "', empty = '" + positions_to_string(level._empty) + "' WHERE size = '" + to_string(level.size) + 
                       "' AND title = '" + level.title + "'";
     int res = sqlite3_exec(db, sql.c_str(), 0, 0, &err);
@@ -196,8 +185,8 @@ int Database_levels::select_levels(void * l, int count, char **values, char **co
     {
         level.title = values[0];
         level.size = size_to_int(values[1]);
-        level._correct_values = string_to_vector(values[2]);
-        level._current_values = string_to_vector(values[3]);
+        level._correct_values = vec_to_enum(string_to_vector(values[2]), Level::Needful::FILLED_VAL);
+        level._current_values = vec_to_enum(string_to_vector(values[3]), Level::Cell_state::FILLED);
         level._empty = string_to_positions(values[4]);
         level.hearts_count = std::atoi(values[5]);
         level.finished = std::atoi(values[6]);
@@ -214,7 +203,7 @@ int Database_levels::check_exists(void * r, int counts, char **values, char **co
     return 0;
 }
 
-std::string Database_levels::vector_to_string(std::vector<std::vector<int>>& vec)
+std::string Database_levels::vector_to_string(std::vector<std::vector<int>> vec) const
 {
     std::string res = "";
     for (size_t y = 0; y < vec.size(); ++y)
@@ -229,12 +218,12 @@ std::string Database_levels::vector_to_string(std::vector<std::vector<int>>& vec
     return res;
 }
 
-std::string Database_levels::positions_to_string(std::vector<Position>& vec)
+std::string Database_levels::positions_to_string(std::vector<Position>& vec) const
 {
     std::string res = "";
     for (size_t y = 0; y < vec.size(); ++y)
     {
-        res += std::to_string(vec[y].x) + " " + std::to_string(vec[y].y) + "\n";
+        res += std::to_string(vec[y].x) + " " + std::to_string(vec[y].x) + "\n";
     }
     return res;
 }
@@ -277,6 +266,34 @@ std::vector<Position> Database_levels::string_to_positions(const std::string& st
         digits >> y;
         res.push_back(Position {x, y});
         ++i;
+    }
+    return res;
+}
+
+template<LevelConcept T>
+std::vector<std::vector<int>> Database_levels::enum_to_vec(std::vector<std::vector<T>>& vec) const
+{
+    std::vector<std::vector<int>> res {vec.size()};
+    for (int i = 0; i < vec.size(); ++i)
+    {
+        for (int j = 0; j < vec[i].size(); ++j)
+        {
+            res[i].push_back(int(vec[i][j]));
+        }
+    }
+    return res;
+}
+
+template<LevelConcept T>
+std::vector<std::vector<T>> Database_levels::vec_to_enum(std::vector<std::vector<int>> vec, T val)
+{
+    std::vector<std::vector<T>> res {vec.size()};
+    for (int i = 0; i < vec.size(); ++i)
+    {
+        for (int j = 0; j < vec[i].size(); ++j)
+        {
+            res[i].push_back(T(vec[i][j]));
+        }
     }
     return res;
 }

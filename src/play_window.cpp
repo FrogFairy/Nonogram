@@ -70,8 +70,8 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
       restart_button{Graph_lib::Point{120, 10}, 100, 40, "restart", cb_restart},
       filled_button{Graph_lib::Point{295, 10}, 40, 40, "", cb_choose_option, true},
       cross_button{Graph_lib::Point{345, 10}, 40, 40, "", cb_choose_option, false},
-      invert_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "", cb_invert, (level.inverted == Level::CROSS ? true : false)},
-      button_option{Game_button::FILLED},
+      invert_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "", cb_invert, (level.inverted == Level::CROSS_VAL ? true : false)},
+      button_option{Level::FILLED},
       board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
       hearts_img{}
 {
@@ -179,9 +179,9 @@ void Play_window::choose_option()
     cross_button.redraw();
 
     if (filled_button.active())
-        button_option = Game_button::FILLED;
+        button_option = Level::FILLED;
     else
-        button_option = Game_button::CROSS;
+        button_option = Level::CROSS;
 }
 
 void Play_window::update_current(Level& level)

@@ -14,18 +14,7 @@ struct Graph_board;
 struct Game_button : public Graph_lib::Button
 {
 public:
-    enum State
-    {
-        EMPTY = -1,
-        CROSS = 0,
-        FILLED = 1,
-        HINT_CROSS = 2,
-        HINT_FILLED = 3,
-        MISTAKE_CROSS = 4,
-        MISTAKE_FILLED = 5
-    };
-
-    Game_button(Graph_lib::Point xy, int w, int h, const std::string &label, Graph_lib::Callback cb, int x, int y, State state, Graph_board& board)
+    Game_button(Graph_lib::Point xy, int w, int h, const std::string &label, Graph_lib::Callback cb, int x, int y, Level::Cell_state state, Graph_board& board)
         : Graph_lib::Button{xy, w, h, label, cb}, x_coord{x}, y_coord{y}, cur_state{state}, board{board}, blocked{false}
     {
         init_mark();
@@ -42,7 +31,7 @@ public:
             win.attach(*mark);
     }
 
-    void change_button(State state);
+    void change_button(Level::Cell_state state);
     void init_mark();
 
     int x() { return x_coord; }
@@ -50,7 +39,7 @@ public:
 
     void block(bool state) { blocked = state; }
 
-    Game_button::State state() { return cur_state; }
+    Level::Cell_state state() { return cur_state; }
 
     Graph_board& board;
 
@@ -58,7 +47,7 @@ private:
     int x_coord, y_coord;
     bool blocked;
 
-    State cur_state;
+    Level::Cell_state cur_state;
     Graph_lib::Shape* mark;
 };
 

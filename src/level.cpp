@@ -1,13 +1,23 @@
-#include "create_level.h"
-#include "database.h"
+#include "level.h"
 #include <Graph_lib/Graph.h>
 
 #include <string>
 #include <iostream>
 #include <fstream>
 
+std::string to_string(Size size)
+{
+    return std::to_string(size.width) + "x" + std::to_string(size.height);
+}
 
-std::vector<std::vector<double>> const get_grey_pixels(Graph_lib::Image& img)
+Size size_to_int(const std::string& size)
+{
+    unsigned int w = std::stoi(size.substr(0, size.find("x")));
+    unsigned int h = std::stoi(size.substr(size.find("x") + 1));
+    return Size{w, h};
+}
+
+std::vector<std::vector<double>> get_grey_pixels(Graph_lib::Image& img)
 {
     int w = img.width(), h = img.height();
 
@@ -35,7 +45,7 @@ std::vector<std::vector<double>> const get_grey_pixels(Graph_lib::Image& img)
     return res;
 }
 
-double const get_threshold(std::vector<std::vector<double>>& pixels)
+double get_threshold(std::vector<std::vector<double>>& pixels)
 {
     int w = pixels[0].size(), h = pixels.size();
     double sum_f_g = 0, sum_g = 0;
@@ -56,7 +66,7 @@ double const get_threshold(std::vector<std::vector<double>>& pixels)
     return sum_f_g / sum_g;
 }
 
-std::vector<std::vector<double>> const resize(const std::vector<std::vector<double>>& pixels, Size size)
+std::vector<std::vector<double>> resize(const std::vector<std::vector<double>>& pixels, Size size)
 {
     int w = pixels[0].size(), h = pixels.size();
     int new_w = size.width, new_h = size.height;
@@ -85,24 +95,24 @@ std::vector<std::vector<double>> const resize(const std::vector<std::vector<doub
     return result;
 }
 
-std::vector<std::vector<int>> const brightness_method(std::vector<std::vector<double>>& pixels)
+std::vector<std::vector<Level::Needful>> brightness_method(std::vector<std::vector<double>>& pixels)
 {
     int w = pixels[0].size(), h = pixels.size();
-    std::vector<std::vector<int>> result(h, std::vector<int> (w));
+    std::vector<std::vector<Level::Needful>> result(h, std::vector<Level::Needful> (w));
     double t = get_threshold(pixels);
     for (int j = 0; j < h; ++j)
     {
         for (int i = 0; i < w; ++i)
         {
-            if (pixels[j][i] < t) result[j][i] = 1; // black pixel, painted
-            else result[j][i] = 0; // white pixel, cross
+            if (pixels[j][i] < t) result[j][i] = Level::Needful::FILLED_VAL; // black pixel, painted
+            else result[j][i] = Level::Needful::CROSS_VAL; // white pixel, cross
         }
     }
 
     return result;
 }
 
-std::vector<std::vector<int>> const create_matrix_level(Size size, const std::string& filename)
+std::vector<std::vector<Level::Needful>> Level::create_matrix_level(Size size, const std::string& filename) const
 {
     Graph_lib::Image img {Graph_lib::Point{0, 0}, filename};
     auto pixels = get_grey_pixels(img);

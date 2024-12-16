@@ -27,7 +27,8 @@ void Main_window::create_level()
 Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &title, Windows_wrapper& own)
     : Graph_lib::Window{xy, w, h, title}, own{own},
     main_widget{Graph_lib::Point{int((x_max() - 200) / 2), int((y_max() - ((30 - 10) / 5 + 1) * 50 - (30 - 10) / 5 * 20) / 2)}, 
-                200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"}
+                200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"},
+    generate_button {Graph_lib::Point{0, 0}, 0, 0, "Generate level", cb_create_level}
 {
     Graph_lib::Window::size_range(w, h, w, h);
 
@@ -36,7 +37,6 @@ Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &t
         size_buttons.push_back(Size_button{Graph_lib::Point{0, 0}, 0, 0, Size{i, i}, cb_go_to_level});
     }
 
-    Graph_lib::Button generate_button {Graph_lib::Point{0, 0}, 0, 0, "Generate level", cb_create_level};
     main_widget.attach(generate_button);
 
     for (int i = 0; i < size_buttons.size(); ++i)

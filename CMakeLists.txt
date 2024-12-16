@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(nonogram)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 set(FLTK_ROOT "C:/Program Files (x86)/FLTK/bin")
 find_package(FLTK REQUIRED)
@@ -11,7 +11,7 @@ add_executable(
     ${TARGET} 
     src/main.cpp
     src/database.cpp
-    src/create_level.cpp
+    src/level.cpp
 
     src/main_window.cpp
     src/generate_level.cpp
