@@ -35,7 +35,7 @@ void Window::attach(Widget& w)
 void Window::detach(Widget& w) 
 { 
   w.hide(); 
-  w.clean_pointer();
+  // w.clean_pointer();
 }
 
 void Window::attach(Shape& s) { shapes.push_back(&s); }
