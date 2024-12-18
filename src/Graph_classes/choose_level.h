@@ -6,7 +6,7 @@
 
 #include <Graph_lib/GUI.h>
 #include "main_window.h"
-#include "database.h"
+#include "../Logic_classes/database.h"
 
 struct Level_button: public Graph_lib::Button
 {

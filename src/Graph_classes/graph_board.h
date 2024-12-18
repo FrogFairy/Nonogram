@@ -3,8 +3,8 @@
 
 #include <Graph_lib/GUI.h>
 #include <Graph_lib/Graph.h>
-#include "database.h"
-#include "logic_board.h"
+#include "../Logic_classes/database.h"
+#include "../Logic_classes/logic_board.h"
 
 #include <vector>
 #include <algorithm>

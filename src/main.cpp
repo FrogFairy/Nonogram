@@ -1,6 +1,4 @@
-#include "wrapper.h"
-#include "logic_board.h"
-#include "database.h"
+#include <Graph_classes/wrapper.h>
 
 #include <ctime>
 #include <iostream>

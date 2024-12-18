@@ -6,7 +6,7 @@
 
 #include <Graph_lib/GUI.h>
 #include <Graph_lib/Window.h>
-#include "database.h"
+#include "../Logic_classes/database.h"
 
 struct Windows_wrapper;
 

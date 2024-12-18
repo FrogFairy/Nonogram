@@ -10,18 +10,18 @@ set(TARGET "nonogram")
 add_executable(
     ${TARGET} 
     src/main.cpp
-    src/database.cpp
-    src/level.cpp
+    src/Logic_classes/database.cpp
+    src/Logic_classes/level.cpp
 
-    src/main_window.cpp
-    src/generate_level.cpp
-    src/choose_level.cpp
-    src/play_window.cpp
-    src/rules_window.cpp
-    src/wrapper.cpp
+    src/Graph_classes/main_window.cpp
+    src/Graph_classes/generate_level.cpp
+    src/Graph_classes/choose_level.cpp
+    src/Graph_classes/play_window.cpp
+    src/Graph_classes/rules_window.cpp
+    src/Graph_classes/wrapper.cpp
 
-    src/logic_board.cpp
-    src/graph_board.cpp
+    src/Logic_classes/logic_board.cpp
+    src/Graph_classes/graph_board.cpp
 
     src/Graph_lib/Graph.cpp
     src/Graph_lib/GUI.cpp

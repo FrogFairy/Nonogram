@@ -6,7 +6,7 @@
 
 #include <Graph_lib/Window.h>
 #include "main_window.h"
-#include "database.h"
+#include "../Logic_classes/database.h"
 #include "play_window.h"
 #include "rules_window.h"
 

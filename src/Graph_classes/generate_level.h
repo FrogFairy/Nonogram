@@ -5,7 +5,7 @@
 
 #include <Graph_lib/GUI.h>
 #include "main_window.h"
-#include "database.h"
+#include "../Logic_classes/database.h"
 
 struct Generate_level_window: public Window_with_back
 {

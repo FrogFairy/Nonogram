@@ -1,6 +1,6 @@
 #include "main_window.h"
 #include "wrapper.h"
-#include "database.h"
+#include "../Logic_classes/database.h"
 
 void Main_window::cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr)
 {
