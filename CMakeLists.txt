@@ -20,7 +20,7 @@ add_executable(
     src/Graph_classes/rules_window.cpp
     src/Graph_classes/wrapper.cpp
 
-    src/Logic_classes/logic_board.cpp
+    src/Logic_classes/nonogram_logic.cpp
     src/Graph_classes/graph_board.cpp
 
     src/Graph_lib/Graph.cpp

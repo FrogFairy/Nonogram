@@ -1,4 +1,4 @@
-#include "logic_board.h"
+#include "nonogram_logic.h"
 
 #include <random>
 #include <algorithm>
@@ -387,7 +387,6 @@ void Nonogram_logic::set_cell(Position pos, Level::Cell_state val)
     _status = (_correct_count == _finish_count ? FINISH : (int(_current[x][y]) % 2 == int(_correct[x][y]) % 2 ? OK : MISTAKE));
     if (_status == MISTAKE)
         _current[x][y] = Level::Cell_state(int(_correct[x][y]) + 4);
-    std::cout << _correct_count << "/" << _finish_count << std::endl;
 }
 
 void Nonogram_logic::change_cell(Position pos, Level::Cell_state val)

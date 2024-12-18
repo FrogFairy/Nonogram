@@ -261,6 +261,38 @@ private:
     std::string text;
 };
 
+struct Scrollable_Menu : Widget {
+public:
+    Scrollable_Menu(Point xy, int w, int h, Menu& m)
+        : Widget{ xy, w, h, m.label, nullptr }, menu{ m }
+    {
+    }
+
+    Menu& menu;
+
+    int attach(Button& b) { return menu.attach(b); }
+    int attach(Button* p) { return menu.attach(p); }
+
+    void attach(Window& win) override {
+        Fl_Scroll* scroll = new Fl_Scroll(loc.x, loc.y, width, height);
+        scroll->box(FL_FLAT_BOX);
+        scroll->type(Fl_Scroll::VERTICAL);
+
+        for (int i = 0; i < menu.selection.size(); ++i) {
+            win.attach(menu.selection[i]);
+            scroll->add(menu.selection[i].pw);
+        }
+
+        pw = scroll;
+        own = &win;
+    }
+
+    void show() { menu.show(); }
+    void hide() { menu.hide(); }
+    void move(int dx, int dy) { menu.move(dx, dy); }
+    void set_font_size(int s) { menu.set_font_size(s); }
+};
+
 }  // namespace Graph_lib
 
 #endif  // GUI_GUARD

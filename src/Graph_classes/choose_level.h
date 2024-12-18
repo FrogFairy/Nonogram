@@ -46,6 +46,7 @@ private:
 
     Size size;
     Graph_lib::Menu level_widget;
+    // Graph_lib::Scrollable_Menu scroll_box;
     std::vector<Level> levels;
     Graph_lib::Vector_ref<Level_button*> level_buttons;
     Windows_wrapper& own;
