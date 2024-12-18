@@ -3,7 +3,7 @@
 #include <random>
 #include <algorithm>
 
-void Logic_board::fill_row_digits()
+void Nonogram_logic::fill_row_digits()
 {
     _correct_count = 0;
     _finish_count = 0;
@@ -19,7 +19,7 @@ void Logic_board::fill_row_digits()
         int start = -1;
         for (int j = 0; j < _correct[0].size(); ++j)
         {
-            if (_correct[i][j] == 1)
+            if (_correct[i][j] == Level::FILLED_VAL)
                 ++_finish_count;
             if (_correct[i][j] == needful_value)
             {
@@ -34,7 +34,7 @@ void Logic_board::fill_row_digits()
                     intervals.push_back(Interval {start, j});
                 start = -1;
             }
-            if (_current[i][j] == 1) ++_correct_count;
+            if (int(_current[i][j]) % 2 == 1) ++_correct_count;
         }
         unsigned int opposed_rows = intervals.empty() ? 1 : intervals.size() - 1;
         if (!intervals.empty())
@@ -53,7 +53,7 @@ void Logic_board::fill_row_digits()
     }
 }
 
-void Logic_board::fill_col_digits()
+void Nonogram_logic::fill_col_digits()
 {
     _max_cols = 0;
     _col_intervals = {};
@@ -97,7 +97,7 @@ void Logic_board::fill_col_digits()
     }  
 }
 
-void Logic_board::init_hidden_rows()
+void Nonogram_logic::init_hidden_rows()
 {
     _hidden_fill_rows = {};
     _hidden_cross_rows = {};
@@ -165,7 +165,7 @@ void Logic_board::init_hidden_rows()
     }
 }
 
-bool Logic_board::col_find(Position_interval pos_interval, const std::function<bool(int)>& condition_func)
+bool Nonogram_logic::col_find(Position_interval pos_interval, const std::function<bool(int)>& condition_func)
 {
     std::vector<int> vec = {};
     for (int i = pos_interval.interval.start; i < pos_interval.interval.end; ++i)
@@ -175,7 +175,7 @@ bool Logic_board::col_find(Position_interval pos_interval, const std::function<b
     return std::find_if(&vec[0], &vec[vec.size() - 1] + 1, condition_func) == &vec[vec.size() - 1] + 1;
 }
 
-void Logic_board::init_hidden_cols()
+void Nonogram_logic::init_hidden_cols()
 {
     _hidden_fill_cols = {};
     _hidden_cross_cols = {};
@@ -247,7 +247,7 @@ void Logic_board::init_hidden_cols()
     }
 }
 
-void Logic_board::load_hidden_rows()
+void Nonogram_logic::load_hidden_rows()
 {
     for (Position_interval pos_interval : _buffer_rows)
     {
@@ -262,7 +262,7 @@ void Logic_board::load_hidden_rows()
     _buffer_rows = {};
 }
 
-void Logic_board::load_hidden_cols()
+void Nonogram_logic::load_hidden_cols()
 {
     for (Position_interval pos_interval : _buffer_cols)
     {
@@ -277,7 +277,7 @@ void Logic_board::load_hidden_cols()
     _buffer_cols = {};
 }
 
-Position Logic_board::row_changed(Position pos, Level::Cell_state needful_value, Level::Cell_state opposed_value, Level::Needful state)
+Position Nonogram_logic::row_changed(Position pos, Level::Cell_state needful_value, Level::Cell_state opposed_value, Level::Needful state)
 {
     Position res {};
     int x = pos.x, y = pos.y;
@@ -317,7 +317,7 @@ Position Logic_board::row_changed(Position pos, Level::Cell_state needful_value,
     return res;
 }
 
-Position Logic_board::col_changed(Position pos, Level::Cell_state needful_value, Level::Cell_state opposed_value, Level::Needful state)
+Position Nonogram_logic::col_changed(Position pos, Level::Cell_state needful_value, Level::Cell_state opposed_value, Level::Needful state)
 {
     Position res {};
     int x = pos.x, y = pos.y;
@@ -357,7 +357,7 @@ Position Logic_board::col_changed(Position pos, Level::Cell_state needful_value,
     return res;
 }
 
-std::vector<Position> Logic_board::changed_digits(Position pos, Level::Needful state)
+std::vector<Position> Nonogram_logic::changed_digits(Position pos, Level::Needful state)
 {
     Level::Cell_state needful_value = (state == Level::FILLED_VAL ? Level::FILLED : Level::CROSS);
     Level::Cell_state opposed_value = (state == Level::FILLED_VAL ? Level::CROSS : Level::FILLED);
@@ -373,7 +373,7 @@ std::vector<Position> Logic_board::changed_digits(Position pos, Level::Needful s
     return res;
 }
 
-void Logic_board::set_click(Position pos, Level::Cell_state val)
+void Nonogram_logic::set_cell(Position pos, Level::Cell_state val)
 {
     int x = pos.x, y = pos.y;
 
@@ -382,38 +382,35 @@ void Logic_board::set_click(Position pos, Level::Cell_state val)
         _current[x][y] = val;
         _empty.erase(std::find(_empty.begin(), 
                     _empty.end(), Position {x, y}));
-        if (_correct[x][y] == 1) ++_correct_count;
+        if (_correct[x][y] == Level::FILLED_VAL) ++_correct_count;
     }
-    _status = (_correct_count == _finish_count ? FINISH : (int(_current[x][y]) == int(_correct[x][y]) ? OK : MISTAKE));
+    _status = (_correct_count == _finish_count ? FINISH : (int(_current[x][y]) % 2 == int(_correct[x][y]) % 2 ? OK : MISTAKE));
     if (_status == MISTAKE)
         _current[x][y] = Level::Cell_state(int(_correct[x][y]) + 4);
+    std::cout << _correct_count << "/" << _finish_count << std::endl;
 }
 
-Position Logic_board::hint_click()
+void Nonogram_logic::change_cell(Position pos, Level::Cell_state val)
 {
-    if (_correct_count == _finish_count) 
+    _current[pos.x][pos.y] = val;
+}
+
+Position Prompter::get_hint()
+{
+    if (logic_board->status() == Nonogram_logic::FINISH) 
         return Position {};
     
+    auto _empty = logic_board->get_empty();
     int rand_ind = std::rand() % _empty.size();
     Position pos = _empty[rand_ind];
-    int x = pos.x;
-    int y = pos.y;
-    _current[x][y] = Level::Cell_state(int(_correct[x][y]) + 2);
-
-    _empty.erase(_empty.begin() + rand_ind);
-    if (_correct[x][y] == 1)
-        ++_correct_count;
-    _status = (_correct_count == _finish_count ? FINISH : OK);
+    Level::Cell_state val = (logic_board->correct(pos) == Level::FILLED_VAL ? Level::HINT_FILLED : Level::HINT_CROSS);
+    logic_board->set_cell(pos, val);
 
     return pos;
 }
 
-void Logic_board::after_hint(Position pos)
+void Prompter::after_hint(Position pos)
 {
-    _current[pos.x][pos.y] = Level::Cell_state(int(_current[pos.x][pos.y]) - 2);
-}
-
-void Logic_board::after_mistake(Position pos)
-{
-    _current[pos.x][pos.y] = Level::Cell_state(int(_current[pos.x][pos.y]) - 4);
+    Level::Cell_state val = (logic_board->current(pos) == Level::HINT_FILLED ? Level::FILLED : Level::CROSS);
+    logic_board->change_cell(pos, val);
 }

@@ -55,21 +55,23 @@ struct Graph_board : public Graph_lib::Widget
 {
 public:
     Graph_board(Graph_lib::Point xy, int w, int h, Level& level)
-        : Widget{xy, w, h, "", nullptr}, level{level}, logic_board{Logic_board(level)}
+        : Widget{xy, w, h, "", nullptr}, level{level}, logic_board{Nonogram_logic(level)}
     {
+        prompter = Prompter{logic_board};
         init_buttons();
         init_digits();
         if (level.hearts_count == 0 || level.finished) block_buttons(true);
     }
 
-    void restart()
+    Level restart()
     {
         level.restart();
-        logic_board = Logic_board(level);
+        logic_board = Nonogram_logic(level);
         mistake = Position {};
         hint = Position {};
         block_buttons(false);
         change_buttons(false);
+        return level;
     }
     
     void init_buttons();
@@ -104,7 +106,8 @@ private:
     std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> row_digits;
     std::vector<Graph_lib::Vector_ref<Graph_lib::Text>> col_digits;
 
-    Logic_board logic_board;
+    Nonogram_logic logic_board;
+    Prompter prompter;
     Level level;
 
     Position mistake {}; // coord mistake cell

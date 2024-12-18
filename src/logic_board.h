@@ -6,12 +6,12 @@
 #include <vector>
 #include <functional>
 
-struct Logic_board
+struct Nonogram_logic
 {
 public:
     enum Response {OK, MISTAKE, FINISH};
 
-    Logic_board(Level& level) 
+    Nonogram_logic(Level& level) 
         : _current{level.current_values()}, _correct{level.correct_values()},
         _empty{level.get_empty()}, _status{OK},
         _inverted{level.inverted}
@@ -25,10 +25,8 @@ public:
         if (_correct_count == _finish_count) _status = FINISH;
     }
     
-    void set_click(Position pos, Level::Cell_state val);
-    Position hint_click();
-    void after_hint(Position pos);
-    void after_mistake(Position pos);
+    void set_cell(Position pos, Level::Cell_state val);
+    void change_cell(Position pos, Level::Cell_state val);
 
     std::vector<Position> changed_digits(Position pos, Level::Needful state);
 
@@ -64,7 +62,9 @@ public:
     std::vector<std::vector<Interval>> row_intervals() { return _row_intervals; }
     std::vector<std::vector<Interval>> col_intervals() { return _col_intervals; }
 
+    Level::Cell_state current(Position pos) { return _current[pos.x][pos.y]; }
     std::vector<std::vector<Level::Cell_state>> current() { return _current; }
+    Level::Needful correct(Position pos) { return _correct[pos.x][pos.y]; }
 
     std::vector<Position> get_empty() { return _empty; }
 
@@ -108,6 +108,27 @@ private:
     unsigned int _max_rows; // maximum of digits in rows
     unsigned int _max_cols; // maximum of digits in cols
     unsigned int _width, _height;
+};
+
+struct Prompter
+{
+    Prompter() 
+        : logic_board{nullptr} {}
+        
+    Prompter(Nonogram_logic& logic_board)
+        : logic_board{&logic_board} {}
+    
+    Prompter& operator=(const Prompter& other)
+    {
+        logic_board = other.logic_board;
+        return *this;
+    }
+    
+    Position get_hint();
+    void after_hint(Position pos);
+
+private:
+    Nonogram_logic* logic_board;
 };
 
 #endif // LOGIC_BOARD_H

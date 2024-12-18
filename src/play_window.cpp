@@ -134,9 +134,7 @@ void Play_window::cb_restart(Graph_lib::Address, Graph_lib::Address addr)
 
 void Play_window::restart()
 {
-    level.restart();
-
-    board.restart();
+    level = board.restart();
     board.redraw();
 
     for (int i = 0; i < hearts_img.size(); ++i)
@@ -159,8 +157,8 @@ void Play_window::invert()
 {
     invert_button.change_state();
     invert_button.redraw();
-    Level inv_level = board.invert_digits();
-    own.db_levels.update_inverted(inv_level);
+    level = board.invert_digits();
+    own.db_levels.update_inverted(level);
 }
 
 

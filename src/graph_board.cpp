@@ -76,22 +76,27 @@ void Graph_board::init_buttons()
     {
         for (int j = 0; j < logic_board.width(); ++j)
         {
-            Level::Cell_state state = Level::Cell_state(logic_board.current()[i][j]);
+            Position pos = Position{i, j};
+            Level::Cell_state state = logic_board.current(pos);
             switch (state)
             {
                 case Level::HINT_CROSS:
                 case Level::HINT_FILLED:
                 {
-                    logic_board.after_hint(Position {i, j});
-                    state = Level::Cell_state(logic_board.current()[i][j]);
+                    hint = {};
+                    prompter.after_hint(pos);
+                    state = logic_board.current(pos);
+                    level.set_current(logic_board.current(), logic_board.get_empty());
                     break;
                 }
 
                 case Level::MISTAKE_CROSS:
                 case Level::MISTAKE_FILLED:
                 {
-                    logic_board.after_mistake(Position {i, j});
-                    state = Level::Cell_state(logic_board.current()[i][j]);
+                    mistake = {};
+                    logic_board.change_cell(pos, state == Level::MISTAKE_FILLED ? Level::FILLED : Level::CROSS);
+                    state = logic_board.current(pos);
+                    level.set_current(logic_board.current(), logic_board.get_empty());
                     break;
                 }
             }
@@ -174,9 +179,10 @@ Level Graph_board::invert_digits()
     level.inverted = (level.inverted == Level::FILLED_VAL ? Level::CROSS_VAL : Level::FILLED_VAL);
     logic_board.invert();
 
-    detach_digits();
+    detach();
     init_digits();
-    attach_digits(*own);
+    init_buttons();
+    attach(*own);
 
     own->redraw();
 
@@ -189,8 +195,7 @@ void Graph_board::change_buttons(bool state)
     {
         for (int j = 0; j < logic_board.width(); ++j)
         {
-            buttons[i * logic_board.height() + j].change_button((Level::Cell_state) logic_board.current()[i][j]);
-            buttons[i * logic_board.height() + j].block(state);
+            buttons[i * logic_board.height() + j].change_button(logic_board.current(Position{i, j}));
         }
     }
 }
@@ -293,19 +298,19 @@ void Graph_board::change_previous()
 {
     if (!mistake.empty())
     {
-        logic_board.after_mistake(mistake);
         int x = mistake.x, y = mistake.y;
+        logic_board.change_cell(mistake, logic_board.current(mistake) == Level::MISTAKE_FILLED ? Level::FILLED : Level::CROSS);
         Game_button& button = buttons[logic_board.height() * x + y];
-        button.change_button(logic_board.current()[x][y] == 0 ? Level::CROSS : Level::FILLED);
+        button.change_button(logic_board.current(mistake));
         button.redraw();
         mistake = {};
     }
     else if (!hint.empty())
     {
-        logic_board.after_hint(hint);
+        prompter.after_hint(hint);
         int x = hint.x, y = hint.y;
         Game_button& button = buttons[logic_board.height() * x + y];
-        button.change_button(logic_board.current()[x][y] == 0 ? Level::CROSS : Level::FILLED);
+        button.change_button(logic_board.current(hint));
         button.redraw();
         hint = {};
     }
@@ -348,31 +353,31 @@ void Graph_board::get_hint()
     change_previous();
     Play_window* win = (Play_window*) own;
 
-    Position pos = logic_board.hint_click();
+    Position pos = prompter.get_hint();
     int x = pos.x, y = pos.y;
+    hint = {x, y};
     Game_button& btn = buttons[x * logic_board.height() + y];
 
-    auto state = (Level::Cell_state) logic_board.current()[x][y];
+    change_digits(pos);
+
+    if (logic_board.status() == Nonogram_logic::OK)
+    {
+        btn.change_button(logic_board.current(pos));
+    }
+    else if (logic_board.status() == Nonogram_logic::FINISH)
+    {
+        change_previous();
+        btn.change_button(logic_board.current(pos));
+        level.finished = true;
+        block_buttons(true);
+        win->update_finished(level);
+    }
 
     auto current = logic_board.current();
     auto empty = logic_board.get_empty();
     level.set_current(current, empty);
     win->update_current(level);
 
-    change_digits(Position {x, y});
-
-    if (logic_board.status() == Logic_board::OK)
-    {
-        hint = {x, y};
-        btn.change_button(state);
-    }
-    else if (logic_board.status() == Logic_board::FINISH)
-    {
-        btn.change_button(state);
-        level.finished = true;
-        block_buttons(true);
-        win->update_finished(level);
-    }
     btn.redraw();
 }
 
@@ -392,7 +397,7 @@ void Graph_board::click_button(Game_button* btn)
     int x = btn->x(), y = btn->y();
     Position pos {x, y};
 
-    logic_board.set_click(pos, state);
+    logic_board.set_cell(pos, state);
     auto current = logic_board.current();
     auto empty = logic_board.get_empty();
     level.set_current(current, empty);
@@ -400,10 +405,10 @@ void Graph_board::click_button(Game_button* btn)
 
     change_digits(pos);
 
-    if (logic_board.status() == Logic_board::OK)
+    if (logic_board.status() == Nonogram_logic::OK)
         btn->change_button(state);
 
-    else if (logic_board.status() == Logic_board::FINISH)
+    else if (logic_board.status() == Nonogram_logic::FINISH)
     {
         btn->change_button(state);
         level.finished = true;
@@ -411,7 +416,7 @@ void Graph_board::click_button(Game_button* btn)
         win->update_finished(level);
     }
     
-    else if (logic_board.status() == Logic_board::MISTAKE)
+    else if (logic_board.status() == Nonogram_logic::MISTAKE)
     {
         mistake = {x, y};
         btn->change_button(logic_board.current()[x][y] == 4 ? Level::MISTAKE_CROSS : Level::MISTAKE_FILLED);
