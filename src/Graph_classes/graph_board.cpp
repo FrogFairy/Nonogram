@@ -181,6 +181,7 @@ Level Graph_board::invert_digits()
 
     detach();
     change_buttons(blocked);
+    init_digits();
     attach(*own);
 
     own->redraw();
