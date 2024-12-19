@@ -17,7 +17,7 @@ Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, cons
     level_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "levels" }, size{size}, own{own}
 {
     Window_with_back::size_range(w, h, w, h);
-    // Graph_lib::Scrollable_Menu scroll_widget {Graph_lib::Point{0, 250}, w, h-250, level_widget};
+    Graph_lib::Scrollable_Menu scroll_widget {Graph_lib::Point{0, 250}, w, h-250, level_widget};
 
     levels = own.db_levels.get_levels(size);
     for (Level level : levels)
@@ -27,7 +27,8 @@ Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, cons
         level_widget.attach(level_buttons[level_buttons.size() - 1]);
     }
 
-    attach(level_widget);
-    // attach(scroll_widget);
+    // attach(level_widget);
+    
+    attach(scroll_widget);
     level_widget.set_font_size(18);
 }
