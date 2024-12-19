@@ -1,5 +1,6 @@
 #include "level.h"
 #include <Graph_lib/Graph.h>
+#include "constants.h"
 
 #include <string>
 #include <iostream>
@@ -37,7 +38,7 @@ std::vector<std::vector<double>> get_grey_pixels(Graph_lib::Image& img)
     {
         for (int j = 0; j < w; ++j)
         {
-            double grey_pixel = 0.2125 * pixels[i * w * 3 + j * 3] + 0.7154 * pixels[i * w * 3 + j * 3 + 1] + 0.0721 * pixels[i * w * 3 + j * 3 + 2];
+            double grey_pixel = r_koeff * pixels[i * w * 3 + j * 3] + g_koeff * pixels[i * w * 3 + j * 3 + 1] + b_koeff * pixels[i * w * 3 + j * 3 + 2];
             res[i][j] = grey_pixel;
         }
     }
