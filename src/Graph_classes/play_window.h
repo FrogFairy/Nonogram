@@ -13,7 +13,7 @@ struct Option_button : public Graph_lib::Button
 public:
     Option_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
         : Graph_lib::Button{xy, w, h, label, cb}, _active{active}, 
-        default_color{Graph_lib::Color::black}, active_color{Graph_lib::Color::dark_green}
+        default_color{black}, active_color{dark_green}
         {};
 
     virtual void attach(Graph_lib::Window& win)

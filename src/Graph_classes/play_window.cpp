@@ -1,6 +1,7 @@
 #include "play_window.h"
 #include "rules_window.h"
 #include "wrapper.h"
+#include "constants.h"
 
 void Option_button::set_color()
 {
@@ -33,14 +34,14 @@ Cross_button::Cross_button(Graph_lib::Point xy, int w, int h, const std::string&
     ((Graph_lib::Lines*) mark.get())->add(Graph_lib::Point(xy.x + margin, xy.y + h - margin), Graph_lib::Point(xy.x + w - margin, xy.y + margin));
 
     mark->set_style(Graph_lib::Line_style(Graph_lib::Line_style::solid, 3));
-    mark->set_color(Graph_lib::Color::black);
+    mark->set_color(black);
 }
 
 Invert_button::Invert_button(Graph_lib::Point xy, int w, int h, const std::string& label, Graph_lib::Callback cb, bool active)
     : Option_button{xy, w, h, label, cb, active}
 {
-    default_color = Graph_lib::Color::no_color;
-    active_color = Graph_lib::Color::black;
+    default_color = no_color;
+    active_color = black;
 
     label_widget = std::make_unique<Graph_lib::Label_widget> (Graph_lib::Label_widget(Graph_lib::Point(xy.x - 60, xy.y + 2 * margin), "invert:", 50, 20));
 
@@ -52,35 +53,34 @@ Invert_button::Invert_button(Graph_lib::Point xy, int w, int h, const std::strin
                                           Graph_lib::Point(int(xy.x + w - 1.5 * margin), xy.y + margin));
 
     mark->set_style(Graph_lib::Line_style(Graph_lib::Line_style::solid, 3));
-    mark->set_color(Graph_lib::Color::black);
+    mark->set_color(black);
 }
 
 void Invert_button::attach(Graph_lib::Window& win)
 {
     Option_button::attach(win);
     win.attach(*label_widget);
-    label_widget->set_font_size(18);
+    label_widget->set_font_size(p_win_text_size);
 }
 
-Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& title, Level& level, Windows_wrapper &own)
-    : Window_with_back{xy, w, h, title}, level{level}, own{own}, 
-      rules_button{Graph_lib::Button{Graph_lib::Point{430, 10}, 40, 40, "?", cb_rules}},
-      hint_button{Graph_lib::Point{480, 10}, 40, 40, "", cb_hint},
-      lamp{Graph_lib::Point{483, 12}, "resources/hint.png"},
-      restart_button{Graph_lib::Point{120, 10}, 100, 40, "restart", cb_restart},
-      filled_button{Graph_lib::Point{295, 10}, 40, 40, "", cb_choose_option, true},
-      cross_button{Graph_lib::Point{345, 10}, 40, 40, "", cb_choose_option, false},
-      invert_button{Graph_lib::Point{x_max() - 50, y_max() - 50}, 40, 40, "", cb_invert, (level.inverted == Level::CROSS_VAL ? true : false)},
+Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string &title, Level &level, Windows_wrapper &own)
+    : Window_with_back{xy, w, h, title}, level{level}, own{own},
+      rules_button{rules_button_point, rules_button_width, rules_button_height, "?", cb_rules},
+      hint_button{hint_button_point, hint_button_width, hint_button_height, "", cb_hint},
+      lamp{lamp_point, "resources/hint.png"},
+      restart_button{restart_button_point, restart_button_width, restart_button_height, "restart", cb_restart},
+      filled_button{filled_button_point, filled_button_width, filled_button_height, "", cb_choose_option, true},
+      cross_button{cross_button_point, cross_button_width, cross_button_height, "", cb_choose_option, false},
+      invert_button{invert_button_point, invert_button_width, invert_button_height, "", cb_invert, (level.inverted == Level::CROSS_VAL ? true : false)},
       button_option{Level::FILLED},
-      board{Graph_lib::Point{40, 70}, x_max() - 80, y_max() - 140, level},
+      board{board_point, board_width, board_height, level},
       hearts_img{}
 {
     Window_with_back::size_range(w, h, w, h);
     
-    int heart_size = 40, margin = 10;
     for (int i = 0; i < 3; ++i)
     {
-        hearts_img.emplace_back(Heart{Graph_lib::Point(x_max() - (heart_size + margin) * (3 - i), 20), heart_size, heart_size, level.hearts_count - (2 - i) > 0});
+        hearts_img.emplace_back(Heart{Graph_lib::Point(x_max() - (heart_size + heart_margin) * (3 - i), 20), heart_size, heart_size, level.hearts_count - (2 - i) > 0});
     }
     
     for (int i = 0; i < hearts_img.size(); ++i)
@@ -95,8 +95,8 @@ Play_window::Play_window(Graph_lib::Point xy, int w, int h, const std::string& t
     attach(invert_button);
     attach(board);
 
-    rules_button.set_font_size(18);
-    restart_button.set_font_size(18);
+    rules_button.set_font_size(p_win_text_size);
+    restart_button.set_font_size(p_win_text_size);
 
     if (level.finished)
         fl_alert(text_finish.c_str());

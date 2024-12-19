@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 
+#include "constants.h"
 #include <Graph_lib/GUI.h>
 #include "main_window.h"
 #include "../Logic_classes/database.h"
@@ -14,7 +15,7 @@ public:
     Level_button(Graph_lib::Point xy, int w, int h, const std::string& name_of_level, Graph_lib::Callback cb, bool is_finished)
         : Graph_lib::Button{xy, w, h, name_of_level, cb}
     {
-        color = (is_finished ? FL_DARK_GREEN : FL_BACKGROUND_COLOR);
+        color = (is_finished ? dark_green : default_color);
     }
 
     void attach(Graph_lib::Window& win)
@@ -26,7 +27,7 @@ public:
 
     void change_color(bool is_finished)
     {
-        color = (is_finished ? FL_DARK_GREEN : FL_BACKGROUND_COLOR);
+        color = (is_finished ? dark_green : default_color);
         pw->color(color);
         pw->color2(color);
     }

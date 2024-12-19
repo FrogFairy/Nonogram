@@ -5,6 +5,7 @@
 #include <Graph_lib/Graph.h>
 #include "../Logic_classes/database.h"
 #include "../Logic_classes/nonogram_logic.h"
+#include "constants.h"
 
 #include <vector>
 #include <algorithm>
@@ -25,8 +26,8 @@ public:
     void attach(Graph_lib::Window& win)
     {
         Graph_lib::Button::attach(win);
-        pw->color(Graph_lib::Color::white);
-        pw->color2(Graph_lib::Color::white);
+        pw->color(white);
+        pw->color2(white);
         if (mark)
             win.attach(*mark);
     }

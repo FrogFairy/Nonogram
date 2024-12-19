@@ -1,6 +1,7 @@
 #include "main_window.h"
 #include "wrapper.h"
 #include "../Logic_classes/database.h"
+#include "constants.h"
 
 void Main_window::cb_go_to_level(Graph_lib::Address, Graph_lib::Address addr)
 {
@@ -24,11 +25,10 @@ void Main_window::create_level()
     own.open_generate_window();
 }
 
-Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &title, Windows_wrapper& own)
+Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &title, Windows_wrapper &own)
     : Graph_lib::Window{xy, w, h, title}, own{own},
-    main_widget{Graph_lib::Point{int((x_max() - 200) / 2), int((y_max() - ((30 - 10) / 5 + 1) * 50 - (30 - 10) / 5 * 20) / 2)}, 
-                200, 50, Graph_lib::Menu::vertical, "widget_for_main_window"},
-    generate_button {Graph_lib::Point{0, 0}, 0, 0, "Generate level", cb_create_level}
+      main_widget{main_widget_point, main_widget_width, main_widget_height, Graph_lib::Menu::vertical, "widget_for_main_window"},
+      generate_button{Graph_lib::Point{0, 0}, 0, 0, "Generate level", cb_create_level}
 {
     Graph_lib::Window::size_range(w, h, w, h);
 
@@ -44,7 +44,7 @@ Main_window::Main_window(Graph_lib::Point xy, int w, int h, const std::string &t
         main_widget.attach(size_buttons[i]);
     }
 
-    attach(main_widget); 
-    main_widget.set_font_size(18);
+    attach(main_widget);
+    main_widget.set_font_size(m_win_text_size);
 }
 

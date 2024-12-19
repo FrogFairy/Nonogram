@@ -4,7 +4,7 @@
 
 void Game_button::init_mark()
 {
-    int margin = width * 0.05;
+    int margin = width * mark_margin;
     switch (cur_state)
     {
         case Level::EMPTY:
@@ -30,18 +30,18 @@ void Game_button::init_mark()
 
     if (!mark) return;
 
-    Graph_lib::Color color = Graph_lib::Color::black;
+    Graph_lib::Color color = black;
     switch (cur_state)
     {
         case Level::MISTAKE_CROSS:
         case Level::MISTAKE_FILLED:
         {
-            color = Graph_lib::Color::dark_red;
+            color = dark_red;
             break;
         }
         case Level::HINT_CROSS:
         case Level::HINT_FILLED:
-            color = Graph_lib::Color::dark_green;
+            color = dark_green;
     }
 
     mark->set_color(color);
@@ -63,9 +63,8 @@ void Graph_board::init_buttons()
 {
     buttons = {};
 
-    int font_size = 18;
-    int font_width = Graph_lib::font_width(font_size);
-    int font_height = Graph_lib::font_height(font_size);
+    int font_width = Graph_lib::font_width(board_text_size);
+    int font_height = Graph_lib::font_height(board_text_size);
 
     int button_size = std::min((height - logic_board.max_cols() * font_height) / logic_board.height(), 
                                 (width - logic_board.max_rows() * font_width) / logic_board.width());
@@ -113,7 +112,7 @@ void Graph_board::init_digits()
     row_digits = {};
     col_digits = {};
 
-    int font_size = 18;
+    int font_size = board_text_size;
     int font_width = Graph_lib::font_width(font_size);
     int font_height = Graph_lib::font_height(font_size);
 
@@ -136,7 +135,7 @@ void Graph_board::init_digits()
 
             auto text = new Graph_lib::Text{Graph_lib::Point(0, 0), value};
             auto color = (std::find(hidden_rows.begin(), hidden_rows.end(), Position {i, j}) == hidden_rows.end() ? 
-                                    Graph_lib::Color::black : Graph_lib::Color::white);
+                                    black : white);
             Graph_lib::Point p{(int) (loc.x + x_margin - 3 * (row_intervals[i].size() - j) * font_width), 
                         loc.y + y_margin + i * button_size + int(button_size / 2) + int(font_height / 2)};
             text->move(p.x, p.y);
@@ -161,7 +160,7 @@ void Graph_board::init_digits()
 
             auto text = new Graph_lib::Text{Graph_lib::Point(0, 0), value};
             auto color = (std::find(hidden_cols.begin(), hidden_cols.end(), Position {i, j}) == hidden_cols.end() ? 
-                                        Graph_lib::Color::black : Graph_lib::Color::white);
+                                        black : white);
             Graph_lib::Point p{loc.x + x_margin + i * button_size + int(button_size / 2) - int(font_width / 2), 
                             (int) (loc.y + y_margin - j * font_height - font_height / 2)};
 
@@ -212,7 +211,7 @@ void Graph_board::redraw()
         for (int j = 0; j < row_digits[i].size(); ++j)
         {
             auto color = (std::find(hidden_rows.begin(), hidden_rows.end(), Position {i, j}) == hidden_rows.end() ? 
-                                        Graph_lib::Color::black : Graph_lib::Color::white);
+                                        black : white);
             set_digit_color(row_digits[i][j], color);
         }
     }
@@ -222,7 +221,7 @@ void Graph_board::redraw()
         for (int j = 0; j < col_digits[i].size(); ++j)
         {
             auto color = (std::find(hidden_cols.begin(), hidden_cols.end(), Position {i, j}) == hidden_cols.end() ? 
-                                        Graph_lib::Color::black : Graph_lib::Color::white);
+                                        black : white);
             set_digit_color(col_digits[i][j], color);
         }
     }
@@ -330,15 +329,15 @@ void Graph_board::change_digits(Position pos)
     if (!pos_needful_digits[0].empty())
     {
         Graph_lib::Text& text = row_digits[pos_needful_digits[0].x][pos_needful_digits[0].y];
-        set_digit_color(text, Graph_lib::Color::white);
-        
+        set_digit_color(text, white);
+
         // text.draw();
         own->redraw();
     }
     if (!pos_needful_digits[1].empty())
     {
         Graph_lib::Text& text = col_digits[pos_needful_digits[1].x][pos_needful_digits[1].y];
-        set_digit_color(text, Graph_lib::Color::white);
+        set_digit_color(text, white);
 
         // text.draw();
         own->redraw();

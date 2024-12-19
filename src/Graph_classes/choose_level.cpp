@@ -12,12 +12,12 @@ void Choose_level_window::start_level(const std::string& title, Level_button& bt
     own.open_play_window(size, title, btn);
 }
 
-Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, Size size, Windows_wrapper& own)
-     : Window_with_back{xy, w, h, title}, 
-    level_widget{Graph_lib::Point{260, 250}, 200, 50, Graph_lib::Menu::vertical, "levels" }, size{size}, own{own}
+Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, const std::string &title, Size size, Windows_wrapper &own)
+    : Window_with_back{xy, w, h, title},
+      level_widget{level_widget_point, level_widget_width, level_widget_height, Graph_lib::Menu::vertical, "levels"}, size{size}, own{own}
 {
     Window_with_back::size_range(w, h, w, h);
-    Graph_lib::Scrollable_Menu scroll_widget {Graph_lib::Point{0, 250}, w, h-250, level_widget};
+    Graph_lib::Scrollable_Menu scroll_widget{scroll_widget_point, w, h - 250, level_widget};
 
     levels = own.db_levels.get_levels(size);
     for (Level level : levels)
@@ -30,5 +30,5 @@ Choose_level_window::Choose_level_window(Graph_lib::Point xy, int w, int h, cons
     // attach(level_widget);
     
     attach(scroll_widget);
-    level_widget.set_font_size(18);
+    level_widget.set_font_size(chs_lvl_text_size);
 }
