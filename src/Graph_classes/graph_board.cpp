@@ -180,8 +180,7 @@ Level Graph_board::invert_digits()
     logic_board.invert();
 
     detach();
-    init_digits();
-    init_buttons();
+    change_buttons(blocked);
     attach(*own);
 
     own->redraw();

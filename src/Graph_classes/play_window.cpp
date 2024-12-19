@@ -158,6 +158,7 @@ void Play_window::invert()
     invert_button.change_state();
     invert_button.redraw();
     level = board.invert_digits();
+    board.redraw();
     own.db_levels.update_inverted(level);
 }
 
