@@ -25,11 +25,10 @@ struct Window_with_back : public Graph_lib::Window
     button_pushed = false;
     Fl::redraw(); 
   }
-
-  Graph_lib::Button back_button;
 protected:
   bool button_pushed{false};
 private:
+  Graph_lib::Button back_button;
   static void cb_back (Graph_lib::Address, Graph_lib::Address addr)
   {
     auto* pb = static_cast<Graph_lib::Button*>(addr);

@@ -29,10 +29,11 @@ public:
         set_color();
     }
 
-    void set_color();
     bool active() { return _active; }
 
 protected:
+    void set_color();
+
     std::unique_ptr<Graph_lib::Shape> mark;
     const int margin = 5;
     Graph_lib::Color default_color;
